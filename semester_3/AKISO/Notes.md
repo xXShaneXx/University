@@ -228,8 +228,11 @@ Dzielenie pamięci na strony o stałym rozmiarze( 4kb)
 ### GDT (Global Descriptor Table)
 GDT (Global Descriptor Table) to struktura danych używana przez procesory x86 do zarządzania segmentacją pamięci. GDT przechowuje deskryptory segmentów, które definiują różne segmenty pamięci używane przez system operacyjny i aplikacje.
 
-###$ MMU (Memory Management Unit)
+### MMU (Memory Management Unit)
 MMU (Memory Management Unit) to jednostka w procesorze, która zarządza pamięcią wirtualną i tłumaczy adresy wirtualne na adresy fizyczne. MMU wykonuje stronnicowanie pamięci, zarządza TLB, kontroluje dostęp do pamięci, itp.
+
+### TLB (Translation Lookaside Buffer)
+TLB (Translation Lookaside Buffer) to mały, szybki bufor pamięci podręcznej używany w procesorach do przechowywania informacji o tłumaczeniach adresów wirtualnych na adresy fizyczne. TLB przyspiesza dostęp do pamięci, eliminując konieczność przeszukiwania tablic stron w pamięci RAM.
 
 #### Struktura GDT
 GDT składa się z tablicy deskryptorów segmentów. Każdy deskryptor segmentu zawiera informacje o bazie segmentu, jego długości oraz prawach dostępu.
@@ -240,6 +243,11 @@ Deskryptor segmentu to 8-bajtowa struktura, która zawiera następujące pola:
 - **Limit**: Rozmiar segmentu.
 - **Access Byte**: Określa prawa dostępu do segmentu (np. czy segment jest kodem, danymi, czy jest dostępny do zapisu).
 - **Flags**: Dodatkowe flagi, takie jak granularity (czy limit jest w bajtach czy w jednostkach 4KB) i size (czy segment jest 16-bitowy czy 32-bitowy).
+
+#### Deskryptor pliku
+Deskryptor pliku to unikalny identyfikator używany przez system operacyjny do zarządzania otwartymi plikami. Deskryptory plików są używane do identyfikacji plików podczas operacji wejścia/wyjścia i są zwykle reprezentowane jako liczby całkowite.
+
+Kiedy program otwiera plik, system operacyjny przydziela deskryptor pliku, który jest następnie używany do wykonywania operacji na tym pliku, takich jak odczyt, zapis czy zamknięcie pliku. Deskryptory plików są specyficzne dla procesu, co oznacza, że różne procesy mogą mieć różne deskryptory dla tego samego pliku.
 
 ## Realizacja pamięci wirtualnej
 Pamięć wirtualna to technika zarządzania pamięcią, która umożliwia programom korzystanie z większej ilości pamięci, niż jest dostępna fizycznie. Pamięć wirtualna jest podzielona na strony o stałym rozmiarze (np. 4KB), które są mapowane na ramki pamięci fizycznej w pamięci RAM.
@@ -292,9 +300,6 @@ to abstrakcyjna przestrzeń adresowa, w której programy przechowują dane i ins
 
 ### Pamięć fizyczna
 to rzeczywista pamięć RAM, w której dane są przechowywane fizycznie. Adresy w pamięci fizycznej odpowiadają rzeczywistym adresom komórek pamięci w pamięci RAM.
-
-### TLB (Translation Lookaside Buffer)
-TLB (Translation Lookaside Buffer) to mały, szybki bufor pamięci podręcznej używany w procesorach do przechowywania informacji o tłumaczeniach adresów wirtualnych na adresy fizyczne. TLB przyspiesza dostęp do pamięci, eliminując konieczność przeszukiwania tablic stron w pamięci RAM.
 
 ## Rejestry i Flagi
 Rejestry to małe obszary pamięci w procesorze, które służą do przechowywania danych tymczasowych, adresów, wyników obliczeń, itp. Procesory x86 mają wiele różnych rodzajów rejestrów, takich jak ogólnego przeznaczenia, indeksowe, segmentowe, itp.
