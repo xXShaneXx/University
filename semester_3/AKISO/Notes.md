@@ -13,20 +13,20 @@
 ### Sprzętowe
 - wywołane przez I/O devices()
 - obsługiwane przez kontroler przerwań
-- są asynchroniczne(nie)
-
-## Przykłady
-- Otwieranie i zamkykanie plików
-- Odczyt i zapis danych do plików
-- Alokacja i zwalnianie pamięci
-- Obsługa sygnałów
-- Zarządzanie procesami
+- są asynchroniczne
 
 ### Systemowe
 - wywołane przez programy użytkownika
 - obsługiwane przez jądro systemu operacyjnego
 - służą do realizacji funkcji systemowych lub wywołania syscalli
 - są synchroniczne
+
+### Przykłady Zastosowań
+- Otwieranie i zamkykanie plików
+- Odczyt i zapis danych do plików
+- Alokacja i zwalnianie pamięci
+- Obsługa sygnałów
+- Zarządzanie procesami
 
 ### Synchroniczność
 Synchroniczność oznacza, że operacje są wykonywane 
@@ -91,9 +91,7 @@ Sterta (heap) to obszar pamięci używany do dynamicznej alokacji pamięci w tra
 
 
 
-## Pamięć współdzielona
-Obszar pamięci, który może być współdzielony przez wiele procesów, wątków.
-Daje to możliwość 
+## Procesy i wątki
 
 ### Proces
 Program wykonujący się w systemie operacyjnym.
