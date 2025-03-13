@@ -1,0 +1,18 @@
+Checks: >
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  performance-*,
+  readability-*,
+  objc-*,
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+FormatStyle:     none
+User:            ''
+CheckOptions:
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+  - key:             modernize-use-nullptr.NullPtrs
+    value:           '0'
+  - key:             modernize-use-nullptr.NullptrMacros
+    value:           'nullptr'

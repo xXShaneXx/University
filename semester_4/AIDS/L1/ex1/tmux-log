@@ -1,0 +1,205 @@
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex1$ g++ main.cpp
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex1$ ./main
+Stack push 0
+Stack push 1
+Stack push 2
+Stack push 3
+Stack push 4
+Stack push 5
+Stack push 6
+Stack push 7
+Stack push 8
+Stack push 9
+Stack push 10
+Stack push 11
+Stack push 12
+Stack push 13
+Stack push 14
+Stack push 15
+Stack push 16
+Stack push 17
+Stack push 18
+Stack push 19
+Stack push 20
+Stack push 21
+Stack push 22
+Stack push 23
+Stack push 24
+Stack push 25
+Stack push 26
+Stack push 27
+Stack push 28
+Stack push 29
+Stack push 30
+Stack push 31
+Stack push 32
+Stack push 33
+Stack push 34
+Stack push 35
+Stack push 36
+Stack push 37
+Stack push 38
+Stack push 39
+Stack push 40
+Stack push 41
+Stack push 42
+Stack push 43
+Stack push 44
+Stack push 45
+Stack push 46
+Stack push 47
+Stack push 48
+Stack push 49
+Stack pop 49 
+Stack pop 48 
+Stack pop 47 
+Stack pop 46 
+Stack pop 45 
+Stack pop 44 
+Stack pop 43 
+Stack pop 42 
+Stack pop 41 
+Stack pop 40 
+Stack pop 39 
+Stack pop 38 
+Stack pop 37 
+Stack pop 36 
+Stack pop 35 
+Stack pop 34 
+Stack pop 33 
+Stack pop 32 
+Stack pop 31 
+Stack pop 30 
+Stack pop 29 
+Stack pop 28 
+Stack pop 27 
+Stack pop 26 
+Stack pop 25 
+Stack pop 24 
+Stack pop 23 
+Stack pop 22 
+Stack pop 21 
+Stack pop 20 
+Stack pop 19 
+Stack pop 18 
+Stack pop 17 
+Stack pop 16 
+Stack pop 15 
+Stack pop 14 
+Stack pop 13 
+Stack pop 12 
+Stack pop 11 
+Stack pop 10 
+Stack pop 9 
+Stack pop 8 
+Stack pop 7 
+Stack pop 6 
+Stack pop 5 
+Stack pop 4 
+Stack pop 3 
+Stack pop 2 
+Stack pop 1 
+Stack pop 0 
+
+Queue  enqueue0
+Queue  enqueue1
+Queue  enqueue2
+Queue  enqueue3
+Queue  enqueue4
+Queue  enqueue5
+Queue  enqueue6
+Queue  enqueue7
+Queue  enqueue8
+Queue  enqueue9
+Queue  enqueue10
+Queue  enqueue11
+Queue  enqueue12
+Queue  enqueue13
+Queue  enqueue14
+Queue  enqueue15
+Queue  enqueue16
+Queue  enqueue17
+Queue  enqueue18
+Queue  enqueue19
+Queue  enqueue20
+Queue  enqueue21
+Queue  enqueue22
+Queue  enqueue23
+Queue  enqueue24
+Queue  enqueue25
+Queue  enqueue26
+Queue  enqueue27
+Queue  enqueue28
+Queue  enqueue29
+Queue  enqueue30
+Queue  enqueue31
+Queue  enqueue32
+Queue  enqueue33
+Queue  enqueue34
+Queue  enqueue35
+Queue  enqueue36
+Queue  enqueue37
+Queue  enqueue38
+Queue  enqueue39
+Queue  enqueue40
+Queue  enqueue41
+Queue  enqueue42
+Queue  enqueue43
+Queue  enqueue44
+Queue  enqueue45
+Queue  enqueue46
+Queue  enqueue47
+Queue  enqueue48
+Queue  enqueue49
+Queue dequeue 0 
+Queue dequeue 1 
+Queue dequeue 2 
+Queue dequeue 3 
+Queue dequeue 4 
+Queue dequeue 5 
+Queue dequeue 6 
+Queue dequeue 7 
+Queue dequeue 8 
+Queue dequeue 9 
+Queue dequeue 10 
+Queue dequeue 11 
+Queue dequeue 12 
+Queue dequeue 13 
+Queue dequeue 14 
+Queue dequeue 15 
+Queue dequeue 16 
+Queue dequeue 17 
+Queue dequeue 18 
+Queue dequeue 19 
+Queue dequeue 20 
+Queue dequeue 21 
+Queue dequeue 22 
+Queue dequeue 23 
+Queue dequeue 24 
+Queue dequeue 25 
+Queue dequeue 26 
+Queue dequeue 27 
+Queue dequeue 28 
+Queue dequeue 29 
+Queue dequeue 30 
+Queue dequeue 31 
+Queue dequeue 32 
+Queue dequeue 33 
+Queue dequeue 34 
+Queue dequeue 35 
+Queue dequeue 36 
+Queue dequeue 37 
+Queue dequeue 38 
+Queue dequeue 39 
+Queue dequeue 40 
+Queue dequeue 41 
+Queue dequeue 42 
+Queue dequeue 43 
+Queue dequeue 44 
+Queue dequeue 45 
+Queue dequeue 46 
+Queue dequeue 47 
+Queue dequeue 48 
+Queue dequeue 49 
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex1$ tmux capture-pane -p -S'-' -E'-' -J > tmux-log                                                                           
+

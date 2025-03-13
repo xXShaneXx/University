@@ -1,0 +1,3 @@
+/home/pawel/Desktop/Github/University/semester_4/AIDS/L1/ex3/build/CMakeFiles/main.dir
+/home/pawel/Desktop/Github/University/semester_4/AIDS/L1/ex3/build/CMakeFiles/edit_cache.dir
+/home/pawel/Desktop/Github/University/semester_4/AIDS/L1/ex3/build/CMakeFiles/rebuild_cache.dir

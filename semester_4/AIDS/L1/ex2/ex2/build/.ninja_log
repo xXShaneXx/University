@@ -1,0 +1,4 @@
+# ninja log v5
+0	329	1741558836605462856	CMakeFiles/main.dir/cpp/src/LinkedCircularList.cpp.o	e622cf4f7f2d9e87
+0	390	1741558836666463105	CMakeFiles/main.dir/cpp/main/main.cpp.o	3cc4adfd998d60df
+390	481	1741558836755463468	bin/main	24297dfc2e56ea8e

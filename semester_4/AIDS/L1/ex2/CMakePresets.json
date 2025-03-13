@@ -1,0 +1,16 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "ex2",
+            "displayName": "ex2",
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${workspaceFolder}/ex2/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMOILE_COMMANDS": "YES"
+            }
+        }
+    ]
+}
