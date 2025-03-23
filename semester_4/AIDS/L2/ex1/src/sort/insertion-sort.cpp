@@ -5,16 +5,16 @@
 #include <algorithm>
 
 void insertionSort(std::vector<int>& arr) {
-    for(int i=1; i<arr.size(); i++)
+    for(auto it = arr.begin() + 1; it != arr.end(); ++it)
     {
-        int j = i-1;
-        int key = arr[i];
-        while(j >= 0 && arr[j] > key)
+        auto key = *it;
+        auto j = it - 1;
+        while(j >= arr.begin() && *j > key)
         {
-            arr[j+1] = arr[j];
-            j--;  
+            *(j + 1) = *j;
+            --j;
         }
-        arr[j+1] = key;
+        *(j + 1) = key;
     }
 }
 
