@@ -17,8 +17,3 @@ Trains a sequential neural network model with TensorFlow/Keras.
 - Uses Adam optimizer and sparse categorical crossentropy loss
 - Implements TensorBoard callbacks for visualization
 - Saves trained model to `model/my_model.h5`
-
-**Usage:**
-```bash
-python main.py
-tensorboard --logdir logs/fit  # To view training metrics
