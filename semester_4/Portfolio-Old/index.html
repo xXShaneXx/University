@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio PG</title>
+    <link rel="stylesheet" href="PortfolioSaS.css">
+  </head>
+  <body>
+    <!-- Header with introduction and navigation -->
+    <header>
+        <h1>Paweł Grzegory</h1>
+        <p class="p1">
+          Jestem studentem Informatyki na Politechnice Wrocławskiej, pasjonującym się machine learningiem, algorytmami oraz tworzeniem gier. W wolnym czasie rozwijam umiejętności w Blenderze, a także aktywnie gram w siatkówkę.
+        </p>
+      <nav class="selection">
+        <ul>
+          <li><a class="soption" href="#section-blender">Blender</a></li>
+          <li><a class="soption" href="#section-unity">Unity</a></li>
+          <li><a class="soption" href="#section-c++">C++</a></li>
+          <li><a class="soption" href="#section-algorithm">Algorytmy</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main content organized by sections -->
+    <main>
+      <!-- Blender Section -->
+      <section id="section-blender">
+        <h2>Blender &#10098; część projektów na podstawie tutoriali &#10099;</h2>
+
+        <article>
+          <h3>Projekt Krzesła</h3>
+          <div class="main3">
+            <img class="imchar2" src="/Blender/char3.JPG" alt="char3">
+            <img class="imchar2" src="/Blender/char4.JPG" alt="char4">
+          </div>
+        </article>
+
+        <article>
+          <h3>Projekt Kurtyny</h3>
+          <div class="main3">
+            <img class="imcourtain" src="/Blender/courtain2.png" alt="courtain2">
+            <img class="imcourtain" src="/Blender/Courtain4.JPG" alt="courtain4">
+            <img class="imcourtain" src="/Blender/courtain5.JPG" alt="courtain5">
+          </div>
+        </article>
+
+        <article>
+          <h3>Projekt Pistoletu</h3>
+          <div class="main3">
+            <img class="imdeagle" src="/Blender/Deagle.png" alt="deagle">
+            <img class="imdeagle" src="/Blender/Deagle2.JPG" alt="deagle2">
+            <img class="imdeagle" src="/Blender/Deagle3.JPG" alt="deagle3">
+          </div>
+        </article>
+
+        <article>
+          <h3>Projekt Lodów</h3>
+          <div class="main3">
+            <img class="imicecream" src="/Blender/Icecream.png" alt="icecream">
+            <img class="imicecream" src="/Blender/icecream2.JPG" alt="icecream2">
+            <img class="imicecream" src="/Blender/icecream3.JPG" alt="icecream3">
+          </div>
+        </article>
+
+        <article>
+          <h3>Projekt Węża</h3>
+          <div class="main3">
+            <img class="impython" src="/Unity/wazb1.JPG" alt="waz1">
+            <img class="impython" src="/Unity/wazb2.JPG" alt="waz2">
+            <img class="impython" src="/Unity/wazb3.JPG" alt="waz3">
+            <img class="impython" src="/Unity/wazb4.JPG" alt="waz4">
+          </div>
+        </article>
+
+        <article>
+          <h3>Animacje</h3>
+          <div class="center">
+            <video class="vdonat" src="/Blender/Donat%20Animation.mp4" controls></video>
+          </div>
+        </article>
+      </section>
+
+      <!-- Unity Section -->
+      <section id="section-unity">
+        <h2>Unity</h2>
+        <div class="center">
+          <video class="vunity" src="/Unity/Video.mp4" controls></video>
+        </div>
+      </section>
+
+      <!-- C++ Section -->
+      <section id="section-c++">
+        <h2>C++ &#10098; część projektów na podstawie ksiązki Opus Magnum &#10099;</h2>
+
+        <article class="main2">
+          <h3>Konstruktor Kopiujący i Przenoszący</h3>
+          <div class="main3">
+            <img class="imcode" src="/C++/Konstr1.JPG" alt="kon1">
+            <img class="imcode" src="/C++/Konstr2.JPG" alt="kon2">
+          </div>
+        </article>
+
+        <article>
+          <h3>Szablony</h3>
+          <div class="main3">
+            <img class="imcode" src="/C++/Szablony1.JPG" alt="S1">
+            <img class="imcode" src="/C++/Szablony2.JPG" alt="S2">
+          </div>
+        </article>
+
+        <article>
+          <h3>Tablica w pliku</h3>
+          <div class="main3">
+            <img class="imcode" src="/C++/TabwP1.JPG" alt="T1">
+            <img class="imcode" src="/C++/TabwP2.JPG" alt="T2">
+          </div>
+        </article>
+
+        <article class="main2">
+          <h3>Kalkulator liczb wymiernych</h3>
+          <div class="center">
+            <video class="vcodecal" src="/C++/Kalkulator.mp4" controls></video>
+          </div>
+        </article>
+      </section>
+
+      <!-- Algorytmy Section -->
+      <section id="section-algorithm">
+        <h2>Algorytmy</h2>
+
+        <article class="exercise">
+          <p>
+            Sylwia dostała planszę składającą się z n pól, na których są wypisane liczby całkowite p0, p1, ..., pn-1, a Jacek wymyślił zabawę.
+            Rozpoczynając od pola o numerze 0, należy przemieścić się na pole o numerze n-1. Aby wykonać ruch, należy rzucić sześcienną kostką.
+            Pionek porusza się tylko w kierunku rosnących numerów, zawsze o wartość, którą wskazuje kostka. Na koniec sumuje wszystkie wartości
+            odwiedzanych pól. Celem zabawy jest uzbieranie jak największej sumy.
+          </p>
+          <h3>Wejście</h3>
+          <p>
+            Pierwszy i jedyny wyraz wejścia powinien zawierać jedną liczbę całkowitą n oznaczającą liczbę pól na planszy.
+            W drugim wierszu wejścia jest n liczb całkowitych p0, p1, ..., pn-1, gdzie pi oznacza wartość i-tego pola.
+          </p>
+          <h3>Wyjście</h3>
+          <p>
+            Pierwszy i jedyny wyraz wyjścia powinien zawierać liczbę całkowitą, równą maksymalnej sumie liczb, jaką można uzyskać
+            poruszając się po planszy.
+          </p>
+          <h3>Przykład</h3>
+          <div class="exercise-example">
+            <div class="data">
+              <p class="p-ex-head">Dla danych wejściowych:</p>
+              <div class="data-con">
+                <p class="p-data-con">5</p>
+                <p class="p-data-con">3 1 -2 -1 3</p>
+              </div>
+            </div>
+            <div class="result">
+              <p class="p-ex-head">Poprawną odpowiedzią jest:</p>
+              <div class="d-result">
+                <p class="p-result">7</p>
+              </div>
+            </div>
+          </div>
+          <h3>Rozwiązanie</h3>
+          <img class="imex" src="/Zdania%20algorytmy/Zad1Pionek.JPG" alt="Z1">
+        </article>
+
+        <article class="exercise">
+          <p>
+            W pewnej rzece pływa n żarłacznych ryb. Rzeka płynie ze wschodu na zachód, a ryby płyną jedna za drugą,
+            niektóre z nich płyną z prądem rzeki, a inne pod prąd. Jeśli dwie ryby płynące w przeciwnych kierunkach spotkają się,
+            to tylko jedna z nich przeżyje. Wiemy, że ryba większa zawsze pożera mniejszą. Zakładamy, że wszystkie ryby płyną z tą samą
+            prędkością oraz nie ma dwóch ryb o tej samej wielkości.
+          </p>
+          <h3>Wejście</h3>
+          <p>
+            Pierwszy wiersz wejścia zawiera jedną liczbę całkowitą n oznaczającą liczbę ryb. Drugi wiersz zawiera n liczb całkowitych
+            a0, a1, ..., an-1, gdzie ai oznacza wielkość i-tej ryby. Liczby oznaczające wielkości ryb są podawane kolejno od kierunku
+            zachodniego do wschodniego. W trzecim wierszu wejścia jest n liczb k0, k1, ..., kn-1 ze zbioru &#10098;0,1&#10099;,
+            które określają kierunek, w którym płynie i-ta ryba: jeśli ki=0 – ryba płynie z prądem, a gdy ki=1 – pod prąd.
+          </p>
+          <h3>Wyjście</h3>
+          <p>
+            Pierwszy i jedyny wyraz wyjścia powinien zawierać jedną liczbę całkowitą równą liczbie ryb, które pozostaną w rzece.
+          </p>
+          <h3>Przykład</h3>
+          <div class="exercise-example">
+            <div class="data">
+              <p class="p-ex-head">Dla danych wejściowych:</p>
+              <div class="data-con">
+                <p class="p-data-con">5</p>
+                <p class="p-data-con">4 3 2 1 5</p>
+                <p class="p-data-con">0 1 0 0 0</p>
+              </div>
+            </div>
+            <div class="result">
+              <p class="p-ex-head">Poprawną odpowiedzią jest:</p>
+              <div class="d-result">
+                <p class="p-result">2</p>
+              </div>
+            </div>
+          </div>
+          <h3>Rozwiązanie</h3>
+          <img class="imex" src="/Zdania%20algorytmy/Zad2Ryby.JPG" alt="Z2">
+        </article>
+      </section>
+
+      <section id="section-python">
+        <h2>Python &#10098; Przykłady kodów &#10099;</h2>
+      
+        <article class="exercise">
+          <h3>Przykład 1: Obliczanie liczb Fibonacciego</h3>
+          <p>
+            Funkcja rekurencyjna do obliczania n-tej liczby Fibonacciego.
+          </p>
+          <pre class="code-snippet">
+      <code>
+      def fibonacci(n):
+          if n <= 1:
+              return n
+          return fibonacci(n-1) + fibonacci(n-2)
+      
+      print(fibonacci(10))  # Wynik: 55
+      </code>
+          </pre>
+        </article>
+      
+        <article class="exercise">
+          <h3>Przykład 2: Sortowanie listy</h3>
+          <p>
+            Sortowanie listy liczb za pomocą wbudowanej funkcji `sorted`.
+          </p>
+          <pre class="code-snippet">
+      <code>
+      numbers = [5, 2, 9, 1, 5, 6]
+      sorted_numbers = sorted(numbers)
+      print(sorted_numbers)  # Wynik: [1, 2, 5, 5, 6, 9]
+      </code>
+          </pre>
+        </article>
+      
+        <article class="exercise">
+          <h3>Przykład 3: Liczenie wystąpień słów</h3>
+          <p>
+            Program liczący wystąpienia słów w podanym tekście.
+          </p>
+          <pre class="code-snippet">
+      <code>
+      from collections import Counter
+      
+      text = "To jest przykład tekstu. To jest test."
+      words = text.lower().split()
+      word_count = Counter(words)
+      print(word_count)  # Wynik: Counter({'to': 2, 'jest': 2, 'przykład': 1, 'tekstu.': 1, 'test.': 1})
+      </code>
+          </pre>
+        </article>
+
+        <article class="exercise">
+          <h3>Przykład 4: Implementacja algorytmu Dijkstry</h3>
+          <p>
+            Algorytm Dijkstry do znajdowania najkrótszej ścieżki w grafie ważonym.
+          </p>
+          <pre class="code-snippet">
+        <code>
+        import heapq
+        
+        def dijkstra(graph, start):
+            # Inicjalizacja
+            distances = {node: float('infinity') for node in graph}
+            distances[start] = 0
+            priority_queue = [(0, start)]
+            
+            while priority_queue:
+                current_distance, current_node = heapq.heappop(priority_queue)
+                
+                # Jeśli znaleziono lepszą ścieżkę, pomiń
+                if current_distance > distances[current_node]:
+                    continue
+                
+                # Przejdź przez sąsiadów
+                for neighbor, weight in graph[current_node].items():
+                    distance = current_distance + weight
+                    
+                    # Jeśli znaleziono krótszą ścieżkę
+                    if distance < distances[neighbor]:
+                        distances[neighbor] = distance
+                        heapq.heappush(priority_queue, (distance, neighbor))
+            
+            return distances
+        
+        # Przykładowy graf
+        graph = {
+            'A': {'B': 1, 'C': 4},
+            'B': {'A': 1, 'C': 2, 'D': 5},
+            'C': {'A': 4, 'B': 2, 'D': 1},
+            'D': {'B': 5, 'C': 1}
+        }
+        
+        start_node = 'A'
+        print(dijkstra(graph, start_node))
+        # Wynik: {'A': 0, 'B': 1, 'C': 3, 'D': 4}
+        </code>
+          </pre>
+        </article>
+        
+      </section>
+
+    </main>
+
+    <!-- Footer with contact information -->
+    <footer class="contact">
+      <p class="pcon">Kontakt:</p>
+      <a class="acon" href="mailto:grzegory.pawel@gmail.com">grzegory.pawel@gmail.com</a>
+    </footer>
+  </body>
+</html>
