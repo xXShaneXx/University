@@ -5,35 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cba1cc09-4aba-46f8-bcff-d59de2cf44ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../ex1/ex1.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ex1/parameters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ex2.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/GetImage (1).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/GetImage (2).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/GetImage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/Notes.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/image-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/image-2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/image-3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../semester_3/AKISO/image.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/cpp/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/cpp/comperer.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/generators/decrease-generator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/generators/decrease-generator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/generators/increase-generator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/generators/increase-generator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/generators/radom-generator.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/hybrid-sort.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/hybrid-sort.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/insertion-sort.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/insertion-sort.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/quick-sort.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/src/sort/quick-sort.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/tests/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/tests/insertion_sort_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/tests/insertion_sort_test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../AIDS/L2/ex1/tests/quick_sort_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../AIDS/L2/ex1/tests/quick_sort_test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Paraller Programming/L1/ex1/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Paraller Programming/L1/ex1/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ex1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../ex1/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ex1/model/my_model.h5" beforeDir="false" afterPath="$PROJECT_DIR$/../ex1/model/my_model.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ex3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ex3/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ex1/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ex1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ex1/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +37,7 @@
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Desktop",
     "last_opened_file_path": "/home/pawel/Desktop/Github/University/semester_4/WSI/L1/ex3",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -93,6 +67,7 @@
       <workItem from="1742668478907" duration="536000" />
       <workItem from="1742669021194" duration="290000" />
       <workItem from="1743710642191" duration="1563000" />
+      <workItem from="1743715831654" duration="46000" />
     </task>
     <servers />
   </component>
