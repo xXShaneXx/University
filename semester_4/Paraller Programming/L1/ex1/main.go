@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -22,7 +23,9 @@ type Traveler struct {
 	Symbol string
 }
 
-func (t *Traveler) Move(steps int, ch chan string) {
+func (t *Traveler) Move(steps int, ch chan string, wg *sync.WaitGroup) {
+	defer wg.Done()
+
 	for i := 0; i < steps; i++ {
 		// Losowe opóźnienie
 		delay := MinDelay + time.Duration(rand.Int63n(int64(MaxDelay-MinDelay)))
@@ -54,6 +57,8 @@ func Printer(ch chan string, done chan bool) {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+	var wg sync.WaitGroup
 
 	// Kanał do komunikacji z Printerem
 	ch := make(chan string)
@@ -64,6 +69,8 @@ func main() {
 
 	// Tworzenie podróżników
 	for i := 0; i < NrOfTravelers; i++ {
+		wg.Add(i)
+
 		traveler := Traveler{
 			ID:     i,
 			X:      rand.Intn(BoardWidth),
@@ -71,7 +78,7 @@ func main() {
 			Symbol: fmt.Sprintf("T%d", i),
 		}
 		steps := MinSteps + rand.Intn(MaxSteps-MinSteps+1)
-		go traveler.Move(steps, ch) // Uruchomienie podróżnika jako goroutine
+		go traveler.Move(steps, ch, &wg) // Uruchomienie podróżnika jako goroutine
 	}
 
 	// Oczekiwanie na zakończenie wszystkich podróżników

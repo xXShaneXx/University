@@ -1,50 +1,34 @@
 #include <iostream>
-#include <random>
-#include <string>
 #include <vector>
 #include <algorithm>
+#include "insertion-sort.hpp"
+#include "SortUtility.hpp"
+#include "comperer.hpp"
 
-void insertionSort(std::vector<int>& arr) {
-    for(auto it = arr.begin() + 1; it != arr.end(); ++it)
-    {
-        auto key = *it;
-        auto j = it - 1;
-        while(j >= arr.begin() && *j > key)
-        {
-            *(j + 1) = *j;
-            --j;
-        }
-        *(j + 1) = key;
-    }
-}
+int main() {
+    int n;
 
-int main(int argc, char* argv[]){
-    if(argc != 2){
-        std::cerr << "Usage: " << argv[0] << " array size\n";
+    // Read the size of the array from standard input
+    if (!(std::cin >> n)) {
+        std::cerr << "Error: Failed to read array size from input.\n";
         return 1;
     }
 
-    int n = std::stoi(argv[1]);
-    std::vector<int> arr(n);
-    std::generate(arr.begin(), arr.end(), []() {
-        int x;
-        std::cin >> x;
-        return x;
-    });
-    std::vector<int> sorted_arr = arr;
-    insertionSort(sorted_arr);
+    // Read the array elements
+    std::vector<int> arr = SortUtility::readInput(n);
 
-    std::cout << "Original array: ";
-    for(const auto& num : arr) {
-        std::cout << num << " ";
+    if (n < 40) {
+        SortUtility::displayArray(arr, "Original array:");
     }
-    std::cout << "\nSorted array: ";
-    for(const auto& num : sorted_arr) {
-        std::cout << num << " ";
+
+    Comperer<int>::resetCounters();
+    insertionSort(arr);
+
+    if (n < 40) {
+        SortUtility::displayArray(arr, "Sorted array:");
     }
-    std::cout << std::endl;
 
-
+    SortUtility::displayStatistics();
 
     return 0;
 }
