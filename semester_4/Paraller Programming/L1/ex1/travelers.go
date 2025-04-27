@@ -50,6 +50,9 @@ func (t *Traveler) Move(steps int, ch chan string, wg *sync.WaitGroup) {
 }
 
 func Printer(ch chan string, done chan bool) {
+	// Print the first required line
+	fmt.Printf("-1 %d %d %d\n", NrOfTravelers, BoardWidth, BoardHeight)
+
 	for msg := range ch { // Pętla działa, dopóki kanał jest otwarty
 		fmt.Println(msg) // Wypisanie komunikatu
 	}
@@ -69,20 +72,20 @@ func main() {
 
 	// Tworzenie podróżników
 	for i := 0; i < NrOfTravelers; i++ {
-		wg.Add(i)
+		wg.Add(1) // Fixed: Add 1 for each traveler
 
 		traveler := Traveler{
 			ID:     i,
 			X:      rand.Intn(BoardWidth),
 			Y:      rand.Intn(BoardHeight),
-			Symbol: fmt.Sprintf("T%d", i),
+			Symbol: fmt.Sprintf("%c", 'A'+(i%26)),
 		}
 		steps := MinSteps + rand.Intn(MaxSteps-MinSteps+1)
 		go traveler.Move(steps, ch, &wg) // Uruchomienie podróżnika jako goroutine
 	}
 
 	// Oczekiwanie na zakończenie wszystkich podróżników
-	time.Sleep(5 * time.Second) // Przykładowe opóźnienie
-	close(ch)                   // Zamknięcie kanału
-	<-done                      // Oczekiwanie na zakończenie pracy Printera
+	wg.Wait() // Wait for all travelers to finish
+	close(ch) // Zamknięcie kanału
+	<-done    // Oczekiwanie na zakończenie pracy Printera
 }
