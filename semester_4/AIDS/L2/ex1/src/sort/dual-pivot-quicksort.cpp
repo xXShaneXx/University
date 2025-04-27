@@ -13,18 +13,20 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     std::vector<int> arr = SortUtility::readInput(n);
+    std::vector<int> sorted_arr = arr;
 
     if (n < 40) {
         SortUtility::displayArray(arr, "Original array:");
     }
 
     Comperer<int>::resetCounters();
-    DualPivotQuickSort(arr.begin(), arr.end());
+    DualPivotQuickSort(sorted_arr.begin(), sorted_arr.end());
 
     if (n < 40) {
-        SortUtility::displayArray(arr, "Sorted array:");
+        SortUtility::displayArray(sorted_arr, "Sorted array:");
     }
 
+    Comperer<int>::check(arr, sorted_arr);
     SortUtility::displayStatistics();
 
     return 0;

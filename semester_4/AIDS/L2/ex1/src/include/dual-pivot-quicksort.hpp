@@ -9,8 +9,8 @@ std::pair<RandomIt, RandomIt> partition(RandomIt left, RandomIt right) {
 
     // Ensure pivotLeft <= pivotRight
     if (Comperer<typename RandomIt::value_type>::compare(pivotLeft, pivotRight) == std::strong_ordering::greater) {
-        std::iter_swap(left, right - 1);
-        std::swap(pivotLeft, pivotRight);
+        Comperer<typename RandomIt::value_type>::move(&*left, &*(right - 1));
+        Comperer<typename RandomIt::value_type>::move(&pivotLeft, &pivotRight);
     }
 
     auto i = left + 1; // Pointer for elements less than pivotLeft
@@ -19,11 +19,11 @@ std::pair<RandomIt, RandomIt> partition(RandomIt left, RandomIt right) {
 
     while (j <= k) {
         if (Comperer<typename RandomIt::value_type>::compare(*j, pivotLeft) == std::strong_ordering::less) {
-            std::iter_swap(i, j);
+            Comperer<typename RandomIt::value_type>::move(&*i, &*j);
             ++i;
             ++j;
         } else if (Comperer<typename RandomIt::value_type>::compare(*j, pivotRight) == std::strong_ordering::greater) {
-            std::iter_swap(j, k);
+            Comperer<typename RandomIt::value_type>::move(&*j, &*k);
             --k;
         } else {
             ++j;
@@ -31,10 +31,8 @@ std::pair<RandomIt, RandomIt> partition(RandomIt left, RandomIt right) {
     }
 
     // Place pivots in their correct positions
-    Comperer<typename RandomIt::value_type>::move(&*(left), i - 1);
-    Comperer<typename RandomIt::value_type>::move(&*(right - 1), k + 1);
-    //std::iter_swap(left, i - 1);
-    //std::iter_swap(right - 1, k + 1);
+    Comperer<typename RandomIt::value_type>::move(&*(left), &*(i - 1));
+    Comperer<typename RandomIt::value_type>::move(&*(right - 1), &*(k + 1));
 
     return {i - 1, k + 1}; // Return the positions of the pivots
 }

@@ -16,18 +16,20 @@ int main() {
 
     // Read the array elements
     std::vector<int> arr = SortUtility::readInput(n);
+    std::vector<int> sorted_arr = arr;
 
     if (n < 40) {
         SortUtility::displayArray(arr, "Original array:");
     }
 
     Comperer<int>::resetCounters();
-    insertionSort(arr);
+    insertionSort(sorted_arr);
 
     if (n < 40) {
-        SortUtility::displayArray(arr, "Sorted array:");
+        SortUtility::displayArray(sorted_arr, "Sorted array:");
     }
 
+    Comperer<int>::check(arr, sorted_arr);
     SortUtility::displayStatistics();
 
     return 0;

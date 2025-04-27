@@ -38,10 +38,19 @@ target_link_libraries(
   gtest_main
 )
 
+add_executable(
+  merge_sorts_test
+  merge_sorts_test.cpp
+)
 
+target_link_libraries(
+  merge_sorts_test
+  gtest_main
+)
 
 include(GoogleTest)
 gtest_discover_tests(quick_sort_test)
 gtest_discover_tests(insertion_sort_test)
 gtest_discover_tests(hybrid_sort_test)
 gtest_discover_tests(dual_pivot_quicksort_test)
+gtest_discover_tests(merge_sorts_test)

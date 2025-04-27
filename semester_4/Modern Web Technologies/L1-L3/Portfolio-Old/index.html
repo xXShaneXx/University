@@ -6,7 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio PG</title>
     <link rel="stylesheet" href="PortfolioSaS.css">
-  </head>
+    <script src="/scripts/hamburgerMenu.js"></script>
+    <script src="/scripts/loadImg.js"></script>
+
+      <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <!-- Prism.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <!-- Prism.js Python language support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    </head>
   <body>
     <!-- Header with introduction and navigation -->
     <header>
@@ -14,6 +23,24 @@
         <p class="p1">
           Jestem studentem Informatyki na Politechnice Wrocławskiej, pasjonującym się machine learningiem, algorytmami oraz tworzeniem gier. W wolnym czasie rozwijam umiejętności w Blenderze, a także aktywnie gram w siatkówkę.
         </p>
+
+        <div class="burger">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
+        <noscript>
+          <nav class="noscript-menu">
+            <ul>
+              <li><a href="#section-blender">Blender</a></li>
+              <li><a href="#section-unity">Unity</a></li>
+              <li><a href="#section-c++">C++</a></li>
+              <li><a href="#section-algorithm">Algorytmy</a></li>
+            </ul>
+          </nav>
+        </noscript>
+
       <nav class="selection">
         <ul>
           <li><a class="soption" href="#section-blender">Blender</a></li>
@@ -67,11 +94,7 @@
 
         <article>
           <h3>Projekt Węża</h3>
-          <div class="main3">
-            <img class="impython" src="/Unity/wazb1.JPG" alt="waz1">
-            <img class="impython" src="/Unity/wazb2.JPG" alt="waz2">
-            <img class="impython" src="/Unity/wazb3.JPG" alt="waz3">
-            <img class="impython" src="/Unity/wazb4.JPG" alt="waz4">
+          <div id="waz-images" class="main3 impython" data-urls="/Unity/wazb1.JPG,/Unity/wazb2.JPG,/Unity/wazb3.JPG,/Unity/wazb4.JPG">
           </div>
         </article>
 
@@ -217,14 +240,14 @@
             Funkcja rekurencyjna do obliczania n-tej liczby Fibonacciego.
           </p>
           <pre class="code-snippet">
-      <code>
-      def fibonacci(n):
-          if n <= 1:
-              return n
-          return fibonacci(n-1) + fibonacci(n-2)
-      
-      print(fibonacci(10))  # Wynik: 55
-      </code>
+            <code class="language-python">
+              def fibonacci(n):
+                  if n <= 1:
+                      return n
+                  return fibonacci(n-1) + fibonacci(n-2)
+              
+              print(fibonacci(10))  # Wynik: 55
+            </code>
           </pre>
         </article>
       
@@ -234,11 +257,11 @@
             Sortowanie listy liczb za pomocą wbudowanej funkcji `sorted`.
           </p>
           <pre class="code-snippet">
-      <code>
-      numbers = [5, 2, 9, 1, 5, 6]
-      sorted_numbers = sorted(numbers)
-      print(sorted_numbers)  # Wynik: [1, 2, 5, 5, 6, 9]
-      </code>
+            <code class="language-python">
+              numbers = [5, 2, 9, 1, 5, 6]
+              sorted_numbers = sorted(numbers)
+              print(sorted_numbers)  # Wynik: [1, 2, 5, 5, 6, 9]
+            </code>
           </pre>
         </article>
       
@@ -248,14 +271,14 @@
             Program liczący wystąpienia słów w podanym tekście.
           </p>
           <pre class="code-snippet">
-      <code>
-      from collections import Counter
-      
-      text = "To jest przykład tekstu. To jest test."
-      words = text.lower().split()
-      word_count = Counter(words)
-      print(word_count)  # Wynik: Counter({'to': 2, 'jest': 2, 'przykład': 1, 'tekstu.': 1, 'test.': 1})
-      </code>
+            <code class="language-python">
+              from collections import Counter
+              
+              text = "To jest przykład tekstu. To jest test."
+              words = text.lower().split()
+              word_count = Counter(words)
+              print(word_count)  # Wynik: Counter({'to': 2, 'jest': 2, 'przykład': 1, 'tekstu.': 1, 'test.': 1})
+            </code>
           </pre>
         </article>
 
@@ -265,7 +288,7 @@
             Algorytm Dijkstry do znajdowania najkrótszej ścieżki w grafie ważonym.
           </p>
           <pre class="code-snippet">
-        <code>
+        <code class="language-python">
         import heapq
         
         def dijkstra(graph, start):

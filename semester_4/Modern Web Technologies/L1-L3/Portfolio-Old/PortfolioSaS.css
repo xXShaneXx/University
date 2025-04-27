@@ -45,6 +45,52 @@ header {
       header nav ul li a:hover {
         background-color: #ff3b2f; }
 
+
+/* Default styles for the navigation menu */
+header nav ul {
+  display: none; /* Hide the menu by default */
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;
+  gap: 10px;
+  background-color: #2c3e50;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+header nav ul.active {
+  display: flex; /* Show the menu when active */
+}
+
+/* Fallback menu for browsers without JavaScript */
+.noscript-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: #2c3e50;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.noscript-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.noscript-menu ul li a {
+  font-size: 1rem;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background-color: #ff6f61;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.noscript-menu ul li a:hover {
+  background-color: #ff3b2f;
+}
+
 main {
   padding: 10px; }
   main section {
@@ -112,14 +158,45 @@ pre.code-snippet {
     display: block;
     white-space: pre-wrap; }
 
+/* Default styles for the navigation menu */
+header nav ul {
+  display: none; /* Hide the menu by default */
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;
+  gap: 10px;
+  background-color: #2c3e50;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+header nav ul.active {
+  display: flex; /* Show the menu when active */
+}
+
+/* Hamburger menu styles */
+.burger {
+  display: flex; /* Show the burger icon */
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+  margin: 10px;
+}
+
+.burger div {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
 @media (min-width: 768px) {
   header h1 {
     font-size: 3rem; }
   header p {
     font-size: 1.5rem;
     max-width: 800px; }
-  header nav ul {
-    font-size: 1.3rem;
+  header nav ul li a{
+    font-size: 1.5rem;
     gap: 20px; }
 
   .main3 {
@@ -133,6 +210,21 @@ pre.code-snippet {
     font-size: 2rem !important; }
 
   article p {
-    font-size: 1.5rem !important; } }
+    font-size: 1.5rem !important; }
+
+    .burger {
+      display: none; /* Hide the burger icon on larger screens */
+    }
+  
+    header nav ul {
+      display: flex; /* Show the menu by default on larger screens */
+      flex-direction: row; /* Arrange items horizontally */
+      justify-content: center;
+      gap: 20px;
+      background-color: transparent; /* Remove background for larger screens */
+      padding: 0;
+      margin-top: 0;
+    }
+}
 
 /*# sourceMappingURL=PortfolioSaS.css.map */

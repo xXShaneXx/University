@@ -28,10 +28,9 @@ def run_sorting_algorithm(algorithm, n, k):
     return np.mean(comparisons), np.mean(swaps)
 
 # Experiment parameters
-algorithms = ['insertion-sort', 'quick-sort', 'dual-pivot-quicksort', 'hybrid-sort']
-n_values_small = range(10, 51, 10)
-n_values_large = range(1000, 50001, 1000)
-k_values = [1, 10, 100]
+algorithms = ['merge-sort', 'smart-merge-sort']
+n_values = range(100, 10001, 100)
+k_values = [100]
 
 # Results dictionary
 results = {
@@ -47,7 +46,6 @@ results = {
 
 # Run experiments
 for algorithm in algorithms:
-    n_values = list(n_values_small) + (list(n_values_large) if algorithm != 'insertion-sort' else [])
     for n in n_values:
         for k in k_values:
             print(f'Running {algorithm} with n={n} and k={k}')
@@ -58,23 +56,6 @@ for algorithm in algorithms:
             results[algorithm][k]['comparisons_per_n'].append(mean_comparisons / n)
             results[algorithm][k]['swaps_per_n'].append(mean_swaps / n)
             print(f'→ Done: comparisons={mean_comparisons}, swaps={mean_swaps}')
-
-def save_results_to_file(filename='sorting_results.txt'):
-    with open(filename, 'w') as file:
-        for algorithm in results:
-            for k in results[algorithm]:
-                file.write(f'Algorithm: {algorithm}, k: {k}\n')
-                file.write('n, Comparisons, Swaps, Comparisons per n, Swaps per n\n')
-                for i in range(len(results[algorithm][k]['n'])):
-                    n = results[algorithm][k]['n'][i]
-                    comparisons = results[algorithm][k]['comparisons'][i]
-                    swaps = results[algorithm][k]['swaps'][i]
-                    comparisons_per_n = results[algorithm][k]['comparisons_per_n'][i]
-                    swaps_per_n = results[algorithm][k]['swaps_per_n'][i]
-                    file.write(f'{n}, {comparisons}, {swaps}, {comparisons_per_n}, {swaps_per_n}\n')
-                file.write('\n')
-
-save_results_to_file()
 
 # Generic plot function
 def plot_results(title, y_key, ylabel, algorithms_to_plot, n_filter=lambda n: True):
@@ -105,12 +86,3 @@ plot_results("Total Swaps", "swaps", "Swaps", algorithms)
 plot_results("Comparisons per n", "comparisons_per_n", "Comparisons / n", algorithms)
 plot_results("Swaps per n", "swaps_per_n", "Swaps / n", algorithms)
 
-# Small n (<= 50)
-n_small_filter = lambda n: n <= 50
-plot_results("Comparisons per n (n ≤ 50)", "comparisons_per_n", "Comparisons / n", algorithms, n_small_filter)
-plot_results("Swaps per n (n ≤ 50)", "swaps_per_n", "Swaps / n", algorithms, n_small_filter)
-
-# Quicksort family only
-qs_algos = ['quick-sort', 'dual-pivot-quicksort']
-plot_results("Quick Sort Variants: Comparisons per n", "comparisons_per_n", "Comparisons / n", qs_algos)
-plot_results("Quick Sort Variants: Swaps per n", "swaps_per_n", "Swaps / n", qs_algos)
