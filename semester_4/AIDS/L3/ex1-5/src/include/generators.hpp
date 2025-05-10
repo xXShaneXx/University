@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <random>
+#include <algorithm>
 
-inline std::vector<int> generateInput(int n) {
+inline std::vector<int> generateRandomInput(int n) {
     std::vector<int> data(n);
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -12,6 +13,13 @@ inline std::vector<int> generateInput(int n) {
     for (int& x : data) {
         x = dist(gen);
     }
+    return data;
+}
+
+// Generuje niemalejący ciąg liczb z zakresu [0, 2n - 1]
+inline std::vector<int> generateNonDecreasingInput(int n) {
+    std::vector<int> data = generateRandomInput(n);
+    std::sort(data.begin(), data.end());
     return data;
 }
 

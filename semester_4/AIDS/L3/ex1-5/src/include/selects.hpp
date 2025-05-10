@@ -92,7 +92,7 @@ namespace selects {
     
         std::vector<ValueType> medians;
         for (Iterator it = p; it < q; it += part_size) {
-            Iterator group_end = (it + 5 < q) ? it + part_size : q;
+            Iterator group_end = (it + part_size < q) ? it + part_size : q;
             std::sort(it, group_end, [](const ValueType& a, const ValueType& b) {
                 return OperationCounter::compare(a, b);
             });

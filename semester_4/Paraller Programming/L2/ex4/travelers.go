@@ -10,6 +10,7 @@ import (
 const (
 	NrOfTravelers     = 15
 	NrOfWildTravelers = 10
+	NrOfTraps         = 10
 	MinSteps          = 10
 	MaxSteps          = 100
 	MinDelay          = 10 * time.Millisecond
@@ -92,6 +93,13 @@ func (p *Printer) Start() {
 		}
 
 		p.Done <- true
+
+		for i := 0; i < NrOfTraps; i++ {
+			traces := <-p.TraceChannel
+			Print_Traces(traces)
+		}
+
+		p.Done <- true
 	}()
 }
 
@@ -106,6 +114,7 @@ type Response int
 const (
 	Success Response = iota
 	Fail
+	Trapped
 	Deadlock
 )
 
@@ -134,6 +143,18 @@ type Wild struct {
 
 	timeAppear    time.Duration
 	timeDisappear time.Duration
+}
+
+type TrapRequest struct {
+	Traveler        GeneralTraveler
+	ResponseChannel chan Response
+}
+type Trap struct {
+	Traveler
+	TrapChannel chan TrapRequest
+	Done        chan bool
+
+	traveler GeneralTraveler
 }
 
 type EnterRequest struct {
@@ -192,15 +213,20 @@ func (n *Node) Start() {
 						}
 
 						if nodeResponse != Fail {
-							wild.RelocateChannel <- RelocateRequest{newPosition, Success}
+							if nodeResponse != Trapped {
+								wild.RelocateChannel <- RelocateRequest{newPosition, Success}
+							}
 							n.traveler = Request.Traveler
 							Request.ResponseChannel <- Success
 						} else {
 							Request.ResponseChannel <- Fail
 						}
-					} else { // if not legal trying to get in - refuse
+					} else { // if wild's trying to get in - refuse
 						Request.ResponseChannel <- Fail
 					}
+				} else if trap, ok := n.traveler.(*Trap); ok {
+					// if trap pass the baton to the trap
+					trap.TrapChannel <- TrapRequest{Request.Traveler, Request.ResponseChannel}
 				} else {
 					Request.ResponseChannel <- Fail
 				}
@@ -237,6 +263,13 @@ func (t *Legal) Init(id int, symbol rune) {
 		t.response = <-request.ResponseChannel
 	}
 
+	if t.response == Trapped {
+		t.Position = Position{
+			X: BoardWidth,
+			Y: BoardHeight,
+		}
+	}
+
 	t.timeStamp = time.Since(StartTime)
 	t.Store_Trace()
 }
@@ -244,7 +277,7 @@ func (t *Legal) Init(id int, symbol rune) {
 func (t *Legal) Start() {
 	go func() {
 		for i := 0; i < t.steps; i++ {
-			if t.response == Deadlock {
+			if t.response == Trapped || t.response == Deadlock {
 				break
 			}
 			time.Sleep(MinDelay + time.Duration(rand.Int63n(int64(MaxDelay-MinDelay))))
@@ -268,6 +301,7 @@ func (t *Legal) Start() {
 						} else {
 							time.Sleep(time.Millisecond)
 						}
+
 					case <-deadlockChannel:
 						t.response = Deadlock
 					}
@@ -285,6 +319,14 @@ func (t *Legal) Start() {
 			case Success:
 				Board[t.Position.X][t.Position.Y].LeaveChannel <- true
 				t.Position = newPosition
+
+			case Trapped:
+				Board[t.Position.X][t.Position.Y].LeaveChannel <- true
+				t.Position = Position{
+					X: BoardWidth,
+					Y: BoardHeight,
+				}
+
 			case Deadlock:
 				t.Symbol = unicode.ToLower(t.Symbol)
 			}
@@ -327,9 +369,9 @@ func (t *Wild) Start() {
 		t.Store_Trace()
 
 		// main loop
-		t.RelocateChannel = make(chan RelocateRequest) // clear out init tries
+		t.RelocateChannel = make(chan RelocateRequest)
 		for true {
-			if time.Since(StartTime) > t.timeDisappear {
+			if t.response == Trapped || time.Since(StartTime) > t.timeDisappear {
 				break
 			}
 
@@ -339,29 +381,107 @@ func (t *Wild) Start() {
 				t.Position = Request.Position
 				t.timeStamp = time.Since(StartTime)
 				t.Store_Trace()
+
 			case <-time.After(t.timeDisappear - time.Since(StartTime)):
 			}
 		}
 
 		// free the board
-		Board[t.Position.X][t.Position.Y].LeaveChannel <- true
-		t.Position = Position{
-			X: BoardWidth,
-			Y: BoardHeight,
+		if t.response != Trapped {
+			Board[t.Position.X][t.Position.Y].LeaveChannel <- true
+			t.Position = Position{
+				X: BoardWidth,
+				Y: BoardHeight,
+			}
+			t.timeStamp = time.Since(StartTime)
+			t.Store_Trace()
 		}
-		t.timeStamp = time.Since(StartTime)
-		t.Store_Trace()
+
+		printer.TraceChannel <- t.traces
+	}()
+}
+
+func (t *Trap) Init(id int, symbol rune) {
+	t.TrapChannel = make(chan TrapRequest, 4)
+	t.Done = make(chan bool)
+	t.Id = id
+	t.Symbol = '#'
+	t.traveler = nil
+
+	// try to move in
+	t.response = Fail
+	for t.response == Fail {
+		t.Position = Position{
+			X: rand.Intn(BoardWidth),
+			Y: rand.Intn(BoardHeight),
+		}
+
+		request := EnterRequest{t, make(chan Response, 1)}
+		Board[t.Position.X][t.Position.Y].EnterChannel <- request
+		t.response = <-request.ResponseChannel
+	}
+
+	t.timeStamp = time.Since(StartTime)
+	t.Store_Trace()
+
+	t.Start()
+}
+
+func (t *Trap) Start() {
+	go func() {
+		// main loop
+		for true {
+			if t.response == Deadlock {
+				break
+			}
+
+			select {
+			case Request := <-t.TrapChannel:
+				switch v := Request.Traveler.(type) {
+				case *Legal:
+					t.response = Trapped
+					t.Symbol = unicode.ToLower(v.Symbol)
+				case *Wild:
+					select {
+					case v.RelocateChannel <- RelocateRequest{Position{BoardWidth, BoardHeight}, Trapped}:
+						t.response = Trapped
+						t.Symbol = '*'
+
+					case <-time.After(100 * time.Millisecond):
+						t.response = Fail
+					}
+				default:
+					t.response = Fail
+				}
+
+				Request.ResponseChannel <- t.response
+
+				// if traveller caught
+				if t.response == Trapped {
+					t.timeStamp = time.Since(StartTime)
+					t.Store_Trace()
+
+					time.Sleep(2 * MaxDelay)
+
+					t.Symbol = '#'
+					t.timeStamp = time.Since(StartTime)
+					t.Store_Trace()
+				}
+			case <-t.Done:
+				t.response = Deadlock // to exit loop
+			}
+		}
 
 		printer.TraceChannel <- t.traces
 	}()
 }
 
 func main() {
-	var travelers [NrOfTravelers + NrOfWildTravelers]GeneralTraveler
+	var travelers [NrOfTraps + NrOfTravelers + NrOfWildTravelers]GeneralTraveler
 
 	fmt.Printf(
 		"-1 %d %d %d\n",
-		NrOfTravelers+NrOfWildTravelers,
+		NrOfTraps+NrOfTravelers+NrOfWildTravelers,
 		BoardWidth,
 		BoardHeight,
 	)
@@ -375,6 +495,12 @@ func main() {
 	}
 
 	id := 0
+	for i := 0; i < NrOfTraps; i++ {
+		travelers[id] = &Trap{}
+		travelers[id].Init(id, '#')
+		id++
+	}
+
 	symbol := 'A'
 	for i := 0; i < NrOfTravelers; i++ {
 		travelers[id] = &Legal{}
@@ -391,7 +517,7 @@ func main() {
 		symbol++
 	}
 
-	id = 0
+	id = NrOfTraps
 	for i := 0; i < NrOfTravelers; i++ {
 		travelers[id].Start()
 		id++
@@ -400,6 +526,13 @@ func main() {
 	for i := 0; i < NrOfWildTravelers; i++ {
 		travelers[id].Start()
 		id++
+	}
+
+	<-printer.Done
+
+	for i := 0; i < NrOfTraps; i++ {
+		trap, _ := travelers[i].(*Trap)
+		trap.Done <- true
 	}
 
 	<-printer.Done

@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include "functions.hpp"
+#include "selects.hpp"
 #include "operationCounter.hpp"
-#include "generator.hpp"
+#include "generators.hpp"
 
 using namespace std;
 using namespace selects;
@@ -25,11 +25,15 @@ int main(int argc, char* argv[]) {
     int n = stoi(argv[1]);
     int k = stoi(argv[2]);
 
-    vector<int> input = generateInput(n);
+    vector<int> input(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> input[i];
+    }
+
     vector<int> original = input;
 
     OperationCounter::reset();
-    int result = selects::Select(input.begin(), input.end(), k);
+    int result = selects::RandomSelect(input.begin(), input.end(), k);
 
     if (n <= 30) {
         printArray(original, "Początkowy stan tablicy");
@@ -41,7 +45,7 @@ int main(int argc, char* argv[]) {
         cout << "Spodziewana statystyka pozycyjna (k=" << k << "): " << sorted[k - 1] << "\n";
     }
 
-    cout << "\n[Select] Porównania: " << OperationCounter::comparisons
+    cout << "\n[RandomSelect] Porównania: " << OperationCounter::comparisons
          << ", Przestawienia: " << OperationCounter::swaps << "\n";
 
     return 0;
