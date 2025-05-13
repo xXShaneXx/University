@@ -12,14 +12,15 @@ NPuzzle::NPuzzle(size_t size, const std::vector<uint8_t>& tiles)
     }
 }
 
+NPuzzle::NPuzzle(size_t size)
+{
+    generate(size);
+}
+
 NPuzzle::NPuzzle(const NPuzzle& other)
     : size_(other.size_), board_(other.board_),
     empty_pos_(other.empty_pos_), g(other.g) 
-{
-    if (other.heuristic_) {
-        heuristic_ = std::make_unique<Heuristic>(*other.heuristic_);
-    }
-}
+{}
 
 void NPuzzle::generate(size_t size) {
     size_ = size;

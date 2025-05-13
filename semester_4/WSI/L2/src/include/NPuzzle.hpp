@@ -17,7 +17,8 @@ class NPuzzle {
 
     public:
         NPuzzle(size_t size, const std::vector<uint8_t>& tiles);
-        NPuzzle::NPuzzle(const NPuzzle& other);
+        NPuzzle(size_t size);
+        NPuzzle(const NPuzzle& other);
         void set_heuristic(std::unique_ptr<Heuristic> heuristic);
         void generate(size_t size);
         

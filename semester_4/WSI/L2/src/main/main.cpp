@@ -39,6 +39,7 @@ std::tuple<bool, std::vector<NPuzzle>, size_t> solve_bfs(const NPuzzle& initial)
     return {false, {}, visited.size()};
 }
 
+
 void print_board(const NPuzzle& puzzle) {
     size_t size = puzzle.get_size();
     const auto& board = puzzle.get_board();
@@ -82,9 +83,9 @@ int main() {
     }
 
     std::cout << "Visited states: " << visited_count << std::endl;
-
-    std::cout << "\nSolving 2x2 puzzle:" << std::endl;
-    NPuzzle puzzle2(2, {1, 0, 2, 3});
+    
+    std::cout << "Solving 3x3 puzzle:" << std::endl;
+    NPuzzle puzzle2(3);
     
     auto [solvable2, solution2, visited_count2] = solve_bfs(puzzle2);
     std::cout << "Solvable: " << std::boolalpha << solvable2 << std::endl;
