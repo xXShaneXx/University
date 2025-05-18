@@ -1,0 +1,139 @@
+### log in to obtain token
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test2",
+  "password": "12345"
+}
+
+### Add a new product (user or admin)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk1ODYxLCJleHAiOjE3NDc1OTk0NjF9.KHplVJRlQGFApLApyVOubKJW6h7dkWLCXzgXAV-RTfc
+
+{  
+  "name": "To delete",
+  "description": "Delete Object",
+  "price": 0.99
+}
+
+###
+
+### Get all products
+GET http://localhost:5000/api/products
+
+###
+
+### Get product by ID
+GET http://localhost:5000/api/products/<PRODUCT_ID>
+
+###
+
+### Get product by name
+GET http://localhost:5000/api/products/search/Test%20Product
+
+###
+
+### Update product (owner or admin)     /productID
+PUT http://localhost:5000/api/products/6829f31c4f87ca2f82a53abe
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MDAwLCJleHAiOjE3NDc1OTk2MDB9.EohDjsSkq1CdvhcTfZfW7xxObQAvkXvvD1UkH0hwu5A
+
+{
+  "name": "Updated Product",
+  "description": "Updated description",
+  "price": 149.99
+}
+
+###
+
+### Delete product (owner or admin)
+DELETE http://localhost:5000/api/products/682a3283c33058ffeb1ba975
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MDAwLCJleHAiOjE3NDc1OTk2MDB9.EohDjsSkq1CdvhcTfZfW7xxObQAvkXvvD1UkH0hwu5A
+### default sort
+GET http://localhost:5000/api/products/filter/price
+
+### sort asc
+GET http://localhost:5000/api/products/filter/price?sort=asc
+
+###  sort desc
+GET http://localhost:5000/api/products/filter/price?sort=desc
+
+###  sort with minPrice=100 and desc
+GET http://localhost:5000/api/products/filter/price?minPrice=100&sort=desc
+
+### Add product without token (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+
+{
+  "name": "NoToken",
+  "description": "Should fail",
+  "price": 1.23
+}
+
+###
+
+### Add product with missing name (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <YOUR_TOKEN>
+
+{
+  "description": "No name",
+  "price": 1.23
+}
+
+### Ege cases
+
+### Add product with negative price (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk4NTEzLCJleHAiOjE3NDc2MDIxMTN9.CMx8WfeJKatyL753oyUu2IYv7tDbK7X6GfaDcO9fi-o
+
+{
+  "name": "NegativePrice",
+  "description": "Should fail",
+  "price": -10
+}
+
+###
+
+### Get product by invalid ID (should fail)
+GET http://localhost:5000/api/products/invalidid
+
+###
+
+### Update product with wrong user (should fail)
+PUT http://localhost:5000/api/products/<PRODUCT_ID>
+Content-Type: application/json
+Authorization: Bearer <NOT_OWNER_TOKEN>
+
+{
+  "name": "Should not update",
+  "description": "Not owner",
+  "price": 10
+}
+
+###
+
+### Delete product with wrong user (should fail)
+DELETE http://localhost:5000/api/products/<PRODUCT_ID>
+Authorization: Bearer <NOT_OWNER_TOKEN>
+
+###
+
+### Update product with missing fields (should succeed if allowed, or fail if required)
+PUT http://localhost:5000/api/products/<PRODUCT_ID>
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "OnlyName"
+}
+
+###
+
+### Get product by name that does not exist (should return empty array)
+GET http://localhost:5000/api/products/search/NoSuchProduct

@@ -1,0 +1,106 @@
+### Test1 is admin Test2/Test3 are users
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test2",
+  "password": "12345"
+}
+
+### Get all users (admin only)
+GET http://localhost:5000/api/users/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTc5ZjY4MDJlYzQ5ODA0MTkyMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NzU5MDI4NiwiZXhwIjoxNzQ3NTkzODg2fQ.dqpz8xrr7KDselQorbS-4hUYk0SwlALaoPggKxekcSw
+
+###
+
+### Delete user (admin or owner)
+DELETE http://localhost:5000/api/users/<USER_ID>
+Authorization: Bearer <YOUR_TOKEN>
+
+###
+
+### Update user (admin or owner)
+PUT http://localhost:5000/api/users/6828e58df6802ec498041923
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTc5ZjY4MDJlYzQ5ODA0MTkyMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NzU5MDI4NiwiZXhwIjoxNzQ3NTkzODg2fQ.dqpz8xrr7KDselQorbS-4hUYk0SwlALaoPggKxekcSw
+
+{
+  "username": "Test2",
+  "password": "12345"
+}
+
+### Edge cases
+
+### Get all users without token (should fail)
+GET http://localhost:5000/api/users/all
+
+###
+
+### Get all users with user token (should fail)
+GET http://localhost:5000/api/users/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk4OTUwLCJleHAiOjE3NDc2MDI1NTB9.hj6gLlGj1hOC5snYq9nNGBIi-aA6HDPOtSxSoLxWwtI
+
+###
+
+### Delete user with invalid ID (should fail)
+DELETE http://localhost:5000/api/users/invalidid
+Authorization: Bearer <ADMIN_TOKEN>
+
+###
+
+### Delete user without token (should fail)
+DELETE http://localhost:5000/api/users/<USER_ID>
+
+###
+
+### Update user with invalid ID (should fail)
+PUT http://localhost:5000/api/users/invalidid
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "username": "ShouldNotWork"
+}
+
+###
+
+### Update user with missing username (should fail or update only password)
+PUT http://localhost:5000/api/users/<USER_ID>
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "password": "newpass"
+}
+
+###
+
+### Update user with user token for another user (should fail)
+PUT http://localhost:5000/api/users/<OTHER_USER_ID>
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "username": "Hacker"
+}
+
+###
+
+### Delete user with user token for another user (should fail)
+DELETE http://localhost:5000/api/users/<OTHER_USER_ID>
+Authorization: Bearer <USER_TOKEN>
+
+###
+
+### Update user with empty body (should fail or do nothing)
+PUT http://localhost:5000/api/users/<USER_ID>
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{}
+
+###
+
+### Get all users with admin token (should succeed)
+GET http://localhost:5000/api/users/all
+Authorization: Bearer <ADMIN_TOKEN>

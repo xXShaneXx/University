@@ -1,0 +1,176 @@
+### Register a new user
+POST http://localhost:5000/api/auth/register-user
+Content-Type: application/json
+
+{
+  "username": "Test5",
+  "password": "12345"
+}
+
+###
+
+### Login as user
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "password": "12345"
+}
+
+###
+
+### Register a new admin (must be logged in as admin)
+POST http://localhost:5000/api/auth/register-admin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTc5ZjY4MDJlYzQ5ODA0MTkyMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NzU5NzY4NiwiZXhwIjoxNzQ3NjAxMjg2fQ.7HKqlNKCpyzHv9L1SAt0eQkfua9an_EvneVm4JGimkE
+
+{
+  "username": "TestAdmin",
+  "password": "12345"
+}
+
+###
+
+### Login as admin
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "TestAdmin",
+  "password": "12345"
+}
+
+###
+
+### Access protected route (replace with your actual protected endpoint)
+GET http://localhost:5000/api/users/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTc5ZjY4MDJlYzQ5ODA0MTkyMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NzU5NzY4NiwiZXhwIjoxNzQ3NjAxMjg2fQ.7HKqlNKCpyzHv9L1SAt0eQkfua9an_EvneVm4JGimkE
+
+###
+
+### Access user route (user or admin)
+GET http://localhost:5000/api/users/user
+Authorization: Bearer <USER_TOKEN>
+
+
+###Edge cases
+
+### Register a new user (should succeed)
+POST http://localhost:5000/api/auth/register-user
+Content-Type: application/json
+
+{
+  "username": "TestEdge1",
+  "password": "12345"
+}
+
+###
+
+### Register with existing username (should fail)
+POST http://localhost:5000/api/auth/register-user
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "password": "anotherpass"
+}
+
+###
+
+### Register user with missing password (should fail)
+POST http://localhost:5000/api/auth/register-user
+Content-Type: application/json
+
+{
+  "username": "TestEdge2"
+}
+
+###
+
+### Register user with missing username (should fail)
+POST http://localhost:5000/api/auth/register-user
+Content-Type: application/json
+
+{
+  "password": "12345"
+}
+
+###
+
+### Login with correct credentials (should succeed)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "TestEdge1",
+  "password": "12345"
+}
+
+###
+
+### Login with wrong password (should fail)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "password": "wrongpass"
+}
+
+###
+
+### Login with non-existent user (should fail)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "NonExistentUser",
+  "password": "whatever"
+}
+
+###
+
+### Register admin without token (should fail)
+POST http://localhost:5000/api/auth/register-admin
+Content-Type: application/json
+
+{
+  "username": "EdgeAdmin",
+  "password": "adminpass"
+}
+
+###
+
+### Register admin with user token (should fail)
+POST http://localhost:5000/api/auth/register-admin
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "username": "EdgeAdmin2",
+  "password": "adminpass"
+}
+
+###
+
+### Register admin with admin token (should succeed)
+POST http://localhost:5000/api/auth/register-admin
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "username": "EdgeAdmin3",
+  "password": "adminpass"
+}
+
+###
+
+### Login as new admin (should succeed)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "EdgeAdmin3",
+  "password": "adminpass"
+}

@@ -1,0 +1,86 @@
+### log in to obtain token
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test3",
+  "password": "12345"
+}
+
+### Get all products
+GET http://localhost:5000/api/products
+
+### Add a review to a product (user must be logged in)
+POST http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTk4ZjY4MDJlYzQ5ODA0MTkyNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MzQwLCJleHAiOjE3NDc1OTk5NDB9.pYmDOmjqAUzZ4qIeyoN03gg6hM2z2iL2QllMdTIs1Lk
+
+{
+  "rating": 5,
+  "comment": "Review to delete!"
+}
+
+###
+
+### Get all reviews for a product
+GET http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+
+###
+
+### Delete a review (owner or admin)
+DELETE http://localhost:5000/api/products/reviews/682a34e1c33058ffeb1ba989
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTk4ZjY4MDJlYzQ5ODA0MTkyNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MzQwLCJleHAiOjE3NDc1OTk5NDB9.pYmDOmjqAUzZ4qIeyoN03gg6hM2z2iL2QllMdTIs1Lk
+
+### Add review without token (should fail)
+POST http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+Content-Type: application/json
+
+{
+  "rating": 4,
+  "comment": "Should fail, no token"
+}
+
+###
+
+### Add review with missing rating (should fail)
+POST http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "comment": "No rating"
+}
+
+###
+
+### Add review with invalid productId (should fail)
+POST http://localhost:5000/api/products/invalidid/reviews
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "rating": 5,
+  "comment": "Invalid productId"
+}
+
+###
+
+### Get reviews for non-existent product (should return empty or 404)
+GET http://localhost:5000/api/products/000000000000000000000000/reviews
+
+###
+
+### Delete review without token (should fail)
+DELETE http://localhost:5000/api/products/reviews/682a34e1c33058ffeb1ba989
+
+###
+
+### Delete review as not owner and not admin (should fail)
+DELETE http://localhost:5000/api/products/reviews/682a34e1c33058ffeb1ba989
+Authorization: Bearer <NOT_OWNER_TOKEN>
+
+###
+
+### Delete review with invalid reviewId (should fail)
+DELETE http://localhost:5000/api/products/reviews/invalidid
+Authorization: Bearer <USER_TOKEN>
