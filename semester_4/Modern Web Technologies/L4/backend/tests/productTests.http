@@ -7,12 +7,14 @@ Content-Type: application/json
   "password": "12345"
 }
 
+###
+
 ### Add a new product (user or admin)
 POST http://localhost:5000/api/products
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NjU5OTcyLCJleHAiOjE3NDc2NjM1NzJ9.LqPuDaGKGkObbSaMTonUeUn6eKw_v_j5YDoyUpGtYSU
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
 
-{  
+{
   "name": "To delete",
   "description": "Delete Object",
   "price": 0.99
@@ -26,7 +28,7 @@ GET http://localhost:5000/api/products
 ###
 
 ### Get product by ID
-GET http://localhost:5000/api/products/682b2ceb92d7c9f69c76d29a
+GET http://localhost:5000/api/products/<PRODUCT_ID>
 
 ###
 
@@ -35,10 +37,10 @@ GET http://localhost:5000/api/products/search/Test%20Product
 
 ###
 
-### Update product (owner or admin)     /productID
-PUT http://localhost:5000/api/products/6829f31c4f87ca2f82a53abe
+### Update product (owner or admin)
+PUT http://localhost:5000/api/products/<PRODUCT_ID>
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MDAwLCJleHAiOjE3NDc1OTk2MDB9.EohDjsSkq1CdvhcTfZfW7xxObQAvkXvvD1UkH0hwu5A
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
 
 {
   "name": "Updated Product",
@@ -49,20 +51,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZ
 ###
 
 ### Delete product (owner or admin)
-DELETE http://localhost:5000/api/products/682b30fb30ab6b1b8f1ed53e
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NjYwNTk4LCJleHAiOjE3NDc2NjQxOTh9.ktClp5d-WvmBz1abIsNsNzjSco_Aed-3iWmzY_X-toI
+DELETE http://localhost:5000/api/products/<PRODUCT_ID>
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
 
 ###
+
+### Filter products by price (default)
 GET http://localhost:5000/api/products/filter/price
 
-### sort asc
+### Filter products by price (asc)
 GET http://localhost:5000/api/products/filter/price?sort=asc
 
-###  sort desc
+### Filter products by price (desc)
 GET http://localhost:5000/api/products/filter/price?sort=desc
 
-###  sort with minPrice=100 and desc
+### Filter products by price with minPrice=100 and desc
 GET http://localhost:5000/api/products/filter/price?minPrice=100&sort=desc
+
+###
 
 ### Add product without token (should fail)
 POST http://localhost:5000/api/products
@@ -79,24 +85,62 @@ Content-Type: application/json
 ### Add product with missing name (should fail)
 POST http://localhost:5000/api/products
 Content-Type: application/json
-Authorization: Bearer <YOUR_TOKEN>
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
 
 {
   "description": "No name",
   "price": 1.23
 }
 
-### Ege cases
+###
+
+### Add product with missing price (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "NoPrice",
+  "description": "No price"
+}
+
+###
 
 ### Add product with negative price (should fail)
 POST http://localhost:5000/api/products
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk4NTEzLCJleHAiOjE3NDc2MDIxMTN9.CMx8WfeJKatyL753oyUu2IYv7tDbK7X6GfaDcO9fi-o
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
 
 {
   "name": "NegativePrice",
   "description": "Should fail",
   "price": -10
+}
+
+###
+
+### Add product with non-numeric price (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "BadPrice",
+  "description": "Should fail",
+  "price": "notANumber"
+}
+
+###
+
+### Add product with too long name (should fail if validation exists)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "ThisIsAReallyReallyReallyReallyReallyReallyLongProductNameThatShouldFailIfThereIsValidation",
+  "description": "Too long name",
+  "price": 10
 }
 
 ###

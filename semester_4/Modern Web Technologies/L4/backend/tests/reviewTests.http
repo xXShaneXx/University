@@ -7,13 +7,17 @@ Content-Type: application/json
   "password": "12345"
 }
 
+###
+
 ### Get all products
 GET http://localhost:5000/api/products
 
+###
+
 ### Add a review to a product (user must be logged in)
-POST http://localhost:5000/api/products/682b30fb30ab6b1b8f1ed53e/reviews
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NjYwNTA2LCJleHAiOjE3NDc2NjQxMDZ9.azWlOvYi4cdT3gy243T5AKPFFg2VvlkgcURM3pQJmS4
+Authorization: Bearer <USER_TOKEN>
 
 {
   "rating": 5,
@@ -22,17 +26,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZ
 
 ###
 
-### Get all reviews for a product
-GET http://localhost:5000/api/products/682b2ceb92d7c9f69c76d29a/reviews
+### Add a second review for the same product by the same user (should fail if only one review per user allowed)
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "rating": 4,
+  "comment": "Second review - should fail if not allowed"
+}
 
 ###
 
-### Delete a review (owner or admin)
-DELETE http://localhost:5000/api/products/reviews/682a34e1c33058ffeb1ba989
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTk4ZjY4MDJlYzQ5ODA0MTkyNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MzQwLCJleHAiOjE3NDc1OTk5NDB9.pYmDOmjqAUzZ4qIeyoN03gg6hM2z2iL2QllMdTIs1Lk
-
 ### Add review without token (should fail)
-POST http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
 Content-Type: application/json
 
 {
@@ -43,12 +50,47 @@ Content-Type: application/json
 ###
 
 ### Add review with missing rating (should fail)
-POST http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
 Content-Type: application/json
 Authorization: Bearer <USER_TOKEN>
 
 {
   "comment": "No rating"
+}
+
+###
+
+### Add review with missing comment (should succeed if comment is optional, or fail if required)
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "rating": 3
+}
+
+###
+
+### Add review with invalid rating (should fail)
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "rating": 10,
+  "comment": "Invalid rating"
+}
+
+###
+
+### Add review with non-numeric rating (should fail)
+POST http://localhost:5000/api/products/<PRODUCT_ID>/reviews
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "rating": "bad",
+  "comment": "Non-numeric rating"
 }
 
 ###
@@ -65,18 +107,29 @@ Authorization: Bearer <USER_TOKEN>
 
 ###
 
+### Get all reviews for a product
+GET http://localhost:5000/api/products/<PRODUCT_ID>/reviews
+
+###
+
 ### Get reviews for non-existent product (should return empty or 404)
 GET http://localhost:5000/api/products/000000000000000000000000/reviews
 
 ###
 
+### Delete a review (owner or admin)
+DELETE http://localhost:5000/api/products/reviews/<REVIEW_ID>
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+###
+
 ### Delete review without token (should fail)
-DELETE http://localhost:5000/api/products/reviews/682a34e1c33058ffeb1ba989
+DELETE http://localhost:5000/api/products/reviews/<REVIEW_ID>
 
 ###
 
 ### Delete review as not owner and not admin (should fail)
-DELETE http://localhost:5000/api/products/reviews/682a34e1c33058ffeb1ba989
+DELETE http://localhost:5000/api/products/reviews/<REVIEW_ID>
 Authorization: Bearer <NOT_OWNER_TOKEN>
 
 ###
