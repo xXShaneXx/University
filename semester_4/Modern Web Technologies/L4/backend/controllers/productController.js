@@ -1,4 +1,5 @@
 import Product from "../models/productModel.js";
+import Review from "../models/reviewModel.js";
 
 export const addProduct = async (req, res) => {
     try {
@@ -24,6 +25,10 @@ export const deleteProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: `Product not found` });
         }
+                
+        // Delete all reviews for product
+        await Review.deleteMany({ product: product._id });
+
         res.status(200).json({ message: `Product deleted successfully` });
     } catch (err) {
         console.error(err);

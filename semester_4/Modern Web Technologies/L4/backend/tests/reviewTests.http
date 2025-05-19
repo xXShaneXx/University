@@ -3,7 +3,7 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "Test3",
+  "username": "Test2",
   "password": "12345"
 }
 
@@ -11,19 +11,19 @@ Content-Type: application/json
 GET http://localhost:5000/api/products
 
 ### Add a review to a product (user must be logged in)
-POST http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+POST http://localhost:5000/api/products/682b30fb30ab6b1b8f1ed53e/reviews
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNTk4ZjY4MDJlYzQ5ODA0MTkyNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NTk2MzQwLCJleHAiOjE3NDc1OTk5NDB9.pYmDOmjqAUzZ4qIeyoN03gg6hM2z2iL2QllMdTIs1Lk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjhlNThkZjY4MDJlYzQ5ODA0MTkyMyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NjYwNTA2LCJleHAiOjE3NDc2NjQxMDZ9.azWlOvYi4cdT3gy243T5AKPFFg2VvlkgcURM3pQJmS4
 
 {
   "rating": 5,
-  "comment": "Review to delete!"
+  "comment": "Review to delete2!"
 }
 
 ###
 
 ### Get all reviews for a product
-GET http://localhost:5000/api/products/682a321ec33058ffeb1ba972/reviews
+GET http://localhost:5000/api/products/682b2ceb92d7c9f69c76d29a/reviews
 
 ###
 
