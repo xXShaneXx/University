@@ -26,17 +26,47 @@ void NPuzzle::generate(size_t size) {
     size_ = size;
     board_.resize(size * size);
 
-    // Wypełnij wartości od 1 do n*n - 1
+    // Fill values from 1 to n*n - 1
     for (size_t i = 0; i < board_.size() - 1; ++i) {
         board_[i] = i + 1;
     }
-    board_.back() = 0; // pusty kafelek na końcu
+    board_.back() = 0; // empty tile at the end
+    empty_pos_ = board_.size() - 1;
 
     std::random_device rd;
     std::mt19937 g(rd());
-    std::shuffle(board_.begin(), board_.end() - 1, g); // mieszamy bez 0
 
-    empty_pos_ = board_.size() - 1; // 0 zawsze na końcu
+    do {
+        // Shuffle all tiles except the last one (empty tile)
+        std::shuffle(board_.begin(), board_.end() - 1, g);
+    } while (!isSolvable()); // Keep shuffling until we get a solvable puzzle
+}
+
+bool NPuzzle::isSolvable() const {
+    size_t inversionCount = 0;
+    size_t puzzleSize = board_.size();
+    
+    // Count inversions
+    for (size_t i = 0; i < puzzleSize - 1; ++i) {
+        if (board_[i] == 0) continue;
+        for (size_t j = i + 1; j < puzzleSize; ++j) {
+            if (board_[j] == 0) continue;
+            if (board_[i] > board_[j]) {
+                inversionCount++;
+            }
+        }
+    }
+
+    // For odd-sized puzzles, the inversion count must be even
+    if (size_ % 2 == 1) {
+        return inversionCount % 2 == 0;
+    }
+    // For even-sized puzzles
+    else {
+        size_t emptyRow = empty_pos_ / size_;
+        // Inversion count + row of empty tile must be odd
+        return (inversionCount + emptyRow) % 2 == 1;
+    }
 }
 
 void NPuzzle::set_heuristic(std::unique_ptr<Heuristic> heuristic) {
@@ -60,10 +90,33 @@ std::vector<NPuzzle> NPuzzle::generate_moves() const {
     const size_t row = empty_pos_ / size_;
     const size_t col = empty_pos_ % size_;
     
-    if (row > 0) moves.push_back(create_swapped(empty_pos_ - size_)); // Up
-    if (row < size_ - 1) moves.push_back(create_swapped(empty_pos_ + size_)); // Down
-    if (col > 0) moves.push_back(create_swapped(empty_pos_ - 1)); // Left
-    if (col < size_ - 1) moves.push_back(create_swapped(empty_pos_ + 1)); // Right
+    auto set_heuristic_if_exists = [this](NPuzzle& neighbor) {
+        if (heuristic_) {
+            // Copy the heuristic pointer (clone pattern is better, but this works for stateless heuristics)
+            neighbor.set_heuristic(std::unique_ptr<Heuristic>(heuristic_->clone()));
+        }
+    };
+
+    if (row > 0) {
+        auto up = create_swapped(empty_pos_ - size_);
+        set_heuristic_if_exists(up);
+        moves.push_back(std::move(up));
+    }
+    if (row < size_ - 1) {
+        auto down = create_swapped(empty_pos_ + size_);
+        set_heuristic_if_exists(down);
+        moves.push_back(std::move(down));
+    }
+    if (col > 0) {
+        auto left = create_swapped(empty_pos_ - 1);
+        set_heuristic_if_exists(left);
+        moves.push_back(std::move(left));
+    }
+    if (col < size_ - 1) {
+        auto right = create_swapped(empty_pos_ + 1);
+        set_heuristic_if_exists(right);
+        moves.push_back(std::move(right));
+    }
     
     return moves;
 }
@@ -83,11 +136,11 @@ void NPuzzle::increase_moves() {
     g++;
 }
 
-int NPuzzle::total_cost() {
-    if(heuristic_)
-    {
+int NPuzzle::total_cost() const {
+    if (heuristic_) {
         return g + (*heuristic_)(board_);
     }
+    return g; // fallback if no heuristic
 }
 
 namespace std {

@@ -10,6 +10,7 @@ class Heuristic
     public:
         virtual ~Heuristic() = default;
         virtual int operator()(const std::vector<uint8_t>& board) const = 0;
+        virtual Heuristic* clone() const = 0;
 };
 
 class ManhattanHeuristic : public Heuristic {
@@ -30,6 +31,7 @@ class ManhattanHeuristic : public Heuristic {
             }
             return heuristic_value;
         }
+        Heuristic* clone() const override { return new ManhattanHeuristic(*this); }
 };
 
 class MisplacedHeuristic : public Heuristic {
@@ -49,6 +51,7 @@ public:
         }
         return heuristic_value;
     }
+    Heuristic* clone() const override { return new MisplacedHeuristic(*this); }
 };
 
 #endif // HEURISTICS_HPP

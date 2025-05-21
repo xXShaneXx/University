@@ -5,38 +5,33 @@
 #include <vector>
 #include <utility>
 
-std::tuple<bool, std::vector<NPuzzle>, size_t> solve_bfs(const NPuzzle& initial) {
-    std::queue<std::vector<NPuzzle>> q; // Przechowuje ścieżki
+void A_star(const NPuzzle& initial) {
+    std::priority_queue<NPuzzle> q;
     std::unordered_set<NPuzzle> visited;
-    
+
     if (initial.is_solution()) {
-        return {true, {initial}, visited.size()};
+        return;
     }
-    
-    q.push({initial});
-    visited.insert(initial);
-    
-    while (!q.empty()) {
-        auto current_path = q.front();
-        auto current = current_path.back();
+
+    q.push(initial);
+    visited.emplace(initial);
+
+    while(!q.empty()) {
+        auto current = q.top();
         q.pop();
-        
-        for (NPuzzle& neighbor : current.generate_moves()) {
-            if (neighbor.is_solution()) {
-                current_path.push_back(neighbor);
-                return {true, current_path, visited.size()};
+        for(NPuzzle& neighbor : current.generate_moves()) {
+            neighbor.increase_moves();
+
+            if(neighbor.is_solution()) {
+                return;
             }
-            
-            if (visited.find(neighbor) == visited.end()) {
-                visited.insert(neighbor);
-                auto new_path = current_path;
-                new_path.push_back(neighbor);
-                q.push(new_path);
+
+            if(visited.find(neighbor) == visited.end()) {
+                visited.emplace(neighbor);
+                q.push(neighbor);
             }
         }
     }
-    
-    return {false, {}, visited.size()};
 }
 
 
@@ -75,7 +70,7 @@ int main() {
     std::cout << "Solving 3x3 puzzle:" << std::endl;
     NPuzzle puzzle(3, {1, 2, 3, 4, 5, 6, 0, 7, 8});
     
-    auto [solvable, solution, visited_count] = solve_bfs(puzzle);
+    auto [solvable, solution, visited_count] = A_star(puzzle);
     std::cout << "Solvable: " << std::boolalpha << solvable << std::endl;
     
     if (solvable) {
@@ -87,7 +82,7 @@ int main() {
     std::cout << "Solving 3x3 puzzle:" << std::endl;
     NPuzzle puzzle2(3);
     
-    auto [solvable2, solution2, visited_count2] = solve_bfs(puzzle2);
+    auto [solvable2, solution2, visited_count2] = A_star(puzzle2);
     std::cout << "Solvable: " << std::boolalpha << solvable2 << std::endl;
     
     if (solvable2) {
