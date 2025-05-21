@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <compare>
+#include <stdexcept>
 
 template <typename T>
 class Comperer {
@@ -26,7 +27,16 @@ public:
         std::swap(*x1, *x2);
     }
 
-    static void check(const std::vector<T>& original_vec, const std::vector<T>& sorted_vec);
+    static void check(const std::vector<T>& original_vec, const std::vector<T>& sorted_vec)
+    {
+        // Check if sorted_vec is a sorted version of original_vec
+        std::vector<T> temp = original_vec;
+        std::sort(temp.begin(), temp.end());
+
+        if (temp != sorted_vec) {
+            throw std::logic_error("The sorted vector is not a correctly sorted version of the original vector.");
+        }
+    }
 
     static int getMoves() { return moves; }
     static int getComparsion() { return comparsion; }

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include <algorithm>
+#include "quick-sort.hpp"
 
 TEST(QuickSortTest, HandlesEmptyVector) {
     std::vector<int> vec;

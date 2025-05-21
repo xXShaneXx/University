@@ -1,0 +1,161 @@
+### Log in as user (Test2)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test2",
+  "password": "12345"
+}
+
+###
+
+### Log in as admin (Test1)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test1",
+  "password": "adminpass"
+}
+
+###
+
+### Get all users (admin only, should succeed)
+GET http://localhost:5000/api/users/all
+Authorization: Bearer <ADMIN_TOKEN>
+
+###
+
+### Get all users without token (should fail)
+GET http://localhost:5000/api/users/all
+
+###
+
+### Get all users with user token (should fail)
+GET http://localhost:5000/api/users/all
+Authorization: Bearer <USER_TOKEN>
+
+###
+
+### Delete user (admin or owner)
+DELETE http://localhost:5000/api/users/<USER_ID>
+Authorization: Bearer <ADMIN_TOKEN>
+
+###
+
+### Delete user as user (should succeed only for own account)
+DELETE http://localhost:5000/api/users/<USER_ID>
+Authorization: Bearer <USER_TOKEN>
+
+###
+
+### Delete user with invalid ID (should fail)
+DELETE http://localhost:5000/api/users/invalidid
+Authorization: Bearer <ADMIN_TOKEN>
+
+###
+
+### Delete user without token (should fail)
+DELETE http://localhost:5000/api/users/<USER_ID>
+
+###
+
+### Delete user with user token for another user (should fail)
+DELETE http://localhost:5000/api/users/<OTHER_USER_ID>
+Authorization: Bearer <USER_TOKEN>
+
+###
+
+### Update user (admin or owner)
+PUT http://localhost:5000/api/users/<USER_ID>
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "username": "Test2",
+  "password": "12345"
+}
+
+###
+
+### Update user with invalid ID (should fail)
+PUT http://localhost:5000/api/users/invalidid
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "username": "ShouldNotWork"
+}
+
+###
+
+### Update user with missing username (should fail or update only password)
+PUT http://localhost:5000/api/users/<USER_ID>
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "password": "newpass"
+}
+
+###
+
+### Update user with empty body (should fail or do nothing)
+PUT http://localhost:5000/api/users/<USER_ID>
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{}
+
+###
+
+### Update user with user token for another user (should fail)
+PUT http://localhost:5000/api/users/<OTHER_USER_ID>
+Content-Type: application/json
+Authorization: Bearer <USER_TOKEN>
+
+{
+  "username": "Hacker"
+}
+
+###
+
+### Update user with too short password (should fail if validation exists)
+PUT http://localhost:5000/api/users/<USER_ID>
+Content-Type: application/json
+Authorization: Bearer <ADMIN_TOKEN>
+
+{
+  "password": "12"
+}
+
+###
+
+### Register user with existing username (should fail)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "Test2",
+  "password": "anypass"
+}
+
+###
+
+### Register user with missing password (should fail)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "NewUser"
+}
+
+###
+
+### Register user with missing username (should fail)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "password": "newpass"
+}

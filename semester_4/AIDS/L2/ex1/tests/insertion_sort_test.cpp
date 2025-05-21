@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include <algorithm>
+#include "insertion-sort.hpp"
 
 TEST(InsertionSortTest, HandlesEmptyVector) {
     std::vector<int> vec;
@@ -10,7 +11,7 @@ TEST(InsertionSortTest, HandlesEmptyVector) {
 
 TEST(QuickSortTest, HandlesSingleElement) {
     std::vector<int> vec = {1};
-    quickSort(vec);
+    insertionSort(vec);
     EXPECT_EQ(vec[0], 1);
 }
 

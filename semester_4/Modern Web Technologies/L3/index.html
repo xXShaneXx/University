@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Wisielec - Gra w zgadywanie słów</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+  <script src="wisielec.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="game-container">
+    <h1>Wisielec</h1>
+    <div class="game-area">
+      <div id="word-container"></div>
+      <canvas id="canvas" width="300" height="200"></canvas>
+      <div id="letters-con"></div>
+      <div class="button-group">
+        <button id="reset-btn" class="game-button">Nowa gra</button>
+        <button id="cancel-btn" class="game-button secondary">Zakończ</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
