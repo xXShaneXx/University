@@ -39,7 +39,7 @@ struct PuzzleStats {
 // Funkcja rozwiązująca układankę z daną heurystyką
 SimulationResult solve_with_heuristic(const std::vector<uint8_t>& board, 
                                      const std::shared_ptr<Heuristic>& heuristic,
-                                     double time_limit_sec = 50.0) {
+                                     double time_limit_sec = 30.0) {
     auto start = std::chrono::high_resolution_clock::now();
     
     std::priority_queue<Node*, std::vector<Node*>, Node::Compare> open_set;
@@ -238,7 +238,7 @@ void run_simulation() {
         //{4, 5, 6}, // Drugi wiersz
         //{7, 8}     // Dwie ostatnie komórki (bez 0)
     //};
-    auto pdb_heuristic = load_pdbs({"pdb_15_1.bin", "pdb_15_2.bin", "pdb_15_3.bin", "pdb_15_4.bin"});
+    auto pdb_heuristic = load_pdbs({"pdb_15_21.bin", "pdb_15_22.bin", "pdb_15_23.bin"});
     
     std::vector<std::shared_ptr<Heuristic>> heuristics = {
         //manhattan,
