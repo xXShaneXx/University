@@ -111,7 +111,6 @@ void RBTree::insertFixup(Node* z) {
         Node* gp = p->parent; // Grandparent of z
 
         // If parent is red, grandparent must exist and be black.
-        // This check is mainly for robustness against corrupted trees or edge cases not handled.
         if (!gp) break;
 
         if (p == gp->left.get()) { // Parent is left child of grandparent
@@ -129,12 +128,12 @@ void RBTree::insertFixup(Node* z) {
                     // After this rotation, 'z' is still the same node, but its parent and children relationships have changed.
                     // 'z' is now the root of the subtree that was just rotated, and its new parent is the original 'gp'.
                     // So, 'p' needs to be updated to 'z->parent' for the next step, which is original 'gp'.
-                    p = z->parent; // Update p to reflect current parent of z (which is original gp)
+                    p = z->parent;
                 }
                 // Case 3 (Z is a left child, or became one after Case 2)
-                p->color = Color::BLACK; // original parent (or updated p) becomes black
-                gp->color = Color::RED; // original grandparent becomes red
-                rightRotate(gp); // Rotate around original grandparent
+                p->color = Color::BLACK; 
+                gp->color = Color::RED; 
+                rightRotate(gp);
             }
         } else { // Parent is right child of grandparent (Mirror Cases)
             Node* u = gp->left.get(); // Uncle (mirror)
@@ -146,8 +145,8 @@ void RBTree::insertFixup(Node* z) {
                 z = gp; // Move z up to grandparent, continue loop
             } else { // Uncle is BLACK (Case 2 or 3 Mirror)
                 if (z == p->left.get()) { // Case 2 (Mirror): Z is a left child (Zag-Zig)
-                    z = p; // Move z up to parent
-                    rightRotate(z); // Rotate around this new 'z'
+                    z = p;
+                    rightRotate(z);
                     // Similar to above, update 'p' to reflect current parent of 'z'
                     p = z->parent;
                 }
@@ -159,7 +158,7 @@ void RBTree::insertFixup(Node* z) {
         }
     }
     if (root)
-        root->color = Color::BLACK; // Ensure root is always BLACK
+        root->color = Color::BLACK;
 }
 
 void RBTree::transplant(Node* u, std::unique_ptr<Node> v) {
@@ -231,7 +230,6 @@ void RBTree::remove(int value) {
             // Remove y from its position
             transplant(y, std::move(y->right));
             
-            // We've already moved y's value to z, so no need to continue
             if (y_original_color == Color::BLACK) {
                 deleteFixup(x, xParent);
             }
@@ -273,27 +271,27 @@ void RBTree::deleteFixup(Node* x, Node* xParent) {
                     if (w->left) w->left->color = Color::BLACK;
                     w->color = Color::RED;
                     rightRotate(w); // Perform right rotation on w
-                    w = xParent->right.get(); // Update w after rotation
+                    w = xParent->right.get(); 
                 }
                 // Case 4: Sibling w is BLACK, and w's right child is RED
-                if (w) { // w must not be null here
+                if (w) { 
                     w->color = xParent->color;
                     xParent->color = Color::BLACK;
                     if (w->right) w->right->color = Color::BLACK;
                     leftRotate(xParent); // Perform left rotation on xParent
                 }
                 x = root.get(); // Set x to root to terminate loop (tree is balanced)
-                xParent = nullptr; // Clear xParent
+                xParent = nullptr; 
             }
         } else { // Symmetric case: x is right child
-            Node* w = xParent->left.get(); // w is x's sibling
+            Node* w = xParent->left.get(); 
 
             // Case 1 mirror: Sibling w is RED
             if (w && w->color == Color::RED) {
                 w->color = Color::BLACK;
                 xParent->color = Color::RED;
                 rightRotate(xParent);
-                w = xParent->left.get(); // Update w after rotation
+                w = xParent->left.get(); 
             }
 
             // Case 2 mirror: Sibling w is BLACK, and both of w's children are BLACK
@@ -307,22 +305,22 @@ void RBTree::deleteFixup(Node* x, Node* xParent) {
                 if (w && (!w->left || w->left->color == Color::BLACK)) {
                     if (w->right) w->right->color = Color::BLACK;
                     w->color = Color::RED;
-                    leftRotate(w); // Perform left rotation on w
+                    leftRotate(w); 
                     w = xParent->left.get(); // Update w after rotation
                 }
                 // Case 4 mirror: Sibling w is BLACK, and w's left child is RED
-                if (w) { // w must not be null here
+                if (w) { 
                     w->color = xParent->color;
                     xParent->color = Color::BLACK;
                     if (w->left) w->left->color = Color::BLACK;
                     rightRotate(xParent); // Perform right rotation on xParent
                 }
                 x = root.get(); // Set x to root to terminate loop
-                xParent = nullptr; // Clear xParent
+                xParent = nullptr; 
             }
         }
     }
-    if (x) { // If x is not nullptr (e.g., if x was red originally), set its color to BLACK
+    if (x) {
         x->color = Color::BLACK;
     }
 }

@@ -14,8 +14,6 @@ std::unique_ptr<Node> insert(std::unique_ptr<Node> node, int value) {
         return std::move(node);
     
     // Otherwise, recur down the tree/ If the value
-    // to be inserted is greater than the node's value,
-    // insert it in the right subtree
     if (node->value < value) 
         node->right = insert(std::move(node->right), value);
     

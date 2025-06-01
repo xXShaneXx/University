@@ -1,4 +1,4 @@
-#include "SplayTree.hpp"
+#include "RBTree.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -9,13 +9,13 @@ void demonstrateScenario1(int n) {
     std::cout << "\n=== SCENARIUSZ 1 ===" << std::endl;
     std::cout << "Wstawianie rosnącego ciągu 1.." << n << ", następnie usuwanie losowej permutacji\n" << std::endl;
     
-    SplayTree tree;
+    RBTree tree;
     
     // Wstawianie rosnącego ciągu
     for (int i = 1; i <= n; ++i) {
         std::cout << "insert " << i << std::endl;
         tree.insert(i);
-        printTree(tree.root);
+        tree.printTree();
         std::cout << "\nWysokość drzewa: " << tree.height() << "\n" << std::endl;
     }
     
@@ -29,12 +29,8 @@ void demonstrateScenario1(int n) {
     for (int val : permutation) {
         std::cout << "delete " << val << std::endl;
         tree.remove(val);
-        printTree(tree.root);
-        if (tree.root) {
-            std::cout << "\nWysokość drzewa: " << tree.height() << "\n" << std::endl;
-        } else {
-            std::cout << "\nDrzewo jest puste\n" << std::endl;
-        }
+        tree.printTree();
+        std::cout << "\nWysokość drzewa: " << tree.height() << "\n" << std::endl;
     }
 }
 
@@ -42,7 +38,7 @@ void demonstrateScenario2(int n) {
     std::cout << "\n=== SCENARIUSZ 2 ===" << std::endl;
     std::cout << "Wstawianie losowej permutacji 1.." << n << ", następnie usuwanie losowej permutacji\n" << std::endl;
     
-    SplayTree tree;
+    RBTree tree;
     
     // Generowanie losowej permutacji do wstawiania
     std::vector<int> insertPermutation(n);
@@ -54,7 +50,7 @@ void demonstrateScenario2(int n) {
     for (int val : insertPermutation) {
         std::cout << "insert " << val << std::endl;
         tree.insert(val);
-        printTree(tree.root);
+        tree.printTree();
         std::cout << "\nWysokość drzewa: " << tree.height() << "\n" << std::endl;
     }
     
@@ -68,17 +64,13 @@ void demonstrateScenario2(int n) {
     for (int val : deletePermutation) {
         std::cout << "delete " << val << std::endl;
         tree.remove(val);
-        printTree(tree.root);
-        if (tree.root) {
-            std::cout << "\nWysokość drzewa: " << tree.height() << "\n" << std::endl;
-        } else {
-            std::cout << "\nDrzewo jest puste\n" << std::endl;
-        }
+        tree.printTree();
+        std::cout << "\nWysokość drzewa: " << tree.height() << "\n" << std::endl;
     }
 }
 
 int main() {
-    const int n = 30;
+    const int n = 15;  // Reduced from 30 to make output more manageable
     
     // Demonstracja scenariusza 1
     demonstrateScenario1(n);

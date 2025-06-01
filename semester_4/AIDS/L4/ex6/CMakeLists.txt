@@ -20,4 +20,4 @@ add_subdirectory(matplotplusplus)
 add_executable(ex1 ${SOURCES})
 
 # Link libraries to the executable
-target_link_libraries(ex2 PRIVATE matplot)
+target_link_libraries(ex6 PRIVATE matplot)
