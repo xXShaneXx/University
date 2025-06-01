@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(${CMAKE_SOURCE_DIR}/src/include)
 
 # Add source files
-file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/cpp/*.cpp ${CMAKE_SOURCE_DIR}/src/main/*.cpp)
 
 # Add the executable
-add_executable(AIDS_L4 ${SOURCES})
+add_executable(ex2 ${SOURCES})
