@@ -171,8 +171,8 @@ int Bot::HeuristicEval(const std::array<char, 25>& board, int depth) {
     // Center Control
     const std::vector<int> center_indices = {6, 7, 8, 11, 12, 13, 16, 17, 18};
     for (int i : center_indices) {
-        if (board[i] == 'X') score += 30;
-        if (board[i] == 'O') score -= 30;
+        if (board[i] == 'X') score += 100;
+        if (board[i] == 'O') score -= 100;
     }
 
     return score;
