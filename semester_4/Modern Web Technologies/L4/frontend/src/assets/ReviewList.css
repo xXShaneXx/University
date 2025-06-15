@@ -1,0 +1,8 @@
+.review-list {
+    margin-top: 1em;
+  }
+  .no-reviews {
+    color: #888;
+    font-style: italic;
+    margin-top: 1em;
+  }
