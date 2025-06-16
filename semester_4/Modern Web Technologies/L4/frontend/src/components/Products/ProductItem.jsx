@@ -17,12 +17,18 @@ const ProductItem = ({ product, onDelete }) => {
     navigate(`/products/edit/${product._id}`);
   };
 
-  const handleDelete = async () => {
+ const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       setIsDeleting(true);
       try {
         await deleteProduct(product._id);
-        onDelete(product._id); // Notify parent component
+        // Call onDelete only if it exists
+        if (typeof onDelete === 'function') {
+          onDelete(product._id);
+        } else {
+          // Refresh the page or update UI some other way
+          window.location.reload();
+        }
       } catch (error) {
         console.error('Failed to delete product:', error);
       } finally {

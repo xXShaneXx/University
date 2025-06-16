@@ -46,9 +46,9 @@ const ReviewList = ({ productId }) => {
       </div>
 
       <div className="review-list">
-        {productReviews.map(review => (
+        {productReviews.map((review, index) => (
           <ReviewItem 
-            key={review._id} 
+            key={review._id || `review-${index}`} 
             review={review} 
             canDelete={canDeleteReview(review)}
             productId={productId}

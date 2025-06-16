@@ -1,3 +1,177 @@
+/* Product List Layout & Container */
+.product-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Header Section */
+.product-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.product-list-header h2 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #333;
+}
+
+.product-list-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Button Styling */
+.filter-toggle-btn, 
+.add-product-btn {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+  border: none;
+}
+
+.filter-toggle-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.filter-toggle-btn:hover {
+  background-color: #e4e4e4;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-product-btn {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.add-product-btn:hover {
+  background-color: #246428;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Filter Section Styling */
+.filter-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 180px;
+}
+
+.filter-group label {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border 0.2s ease;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #2196F3;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.filter-buttons button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.filter-buttons button:first-child {
+  background-color: #1976d2;
+  color: white;
+}
+
+.filter-buttons button:first-child:hover {
+  background-color: #1565c0;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.filter-buttons button:last-child {
+  background-color: #757575;
+  color: white;
+}
+
+.filter-buttons button:last-child:hover {
+  background-color: #616161;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* No Products Message */
+.no-products {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #666;
+  font-size: 1.1rem;
+  border: 1px dashed #ddd;
+  margin: 2rem 0;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Review Components */
 .review-list-container {
   margin-top: 1.5rem;
 }
@@ -25,11 +199,13 @@
 .rating-out-of {
   font-size: 1rem;
   color: #666;
+  margin-left: 2px;
 }
 
 .rating-stars {
   color: #ffc107;
   font-size: 1.5rem;
+  letter-spacing: 2px;
 }
 
 .star-filled {
@@ -53,4 +229,48 @@
   background-color: #f8f9fa;
   border-radius: 8px;
   margin-top: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .product-list-actions {
+    width: 100%;
+  }
+  
+  .filter-toggle-btn, 
+  .add-product-btn {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .filter-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .filter-buttons {
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .filter-buttons button {
+    flex: 1;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
 }

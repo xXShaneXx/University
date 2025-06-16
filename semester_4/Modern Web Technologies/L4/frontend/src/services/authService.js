@@ -34,11 +34,15 @@ export const registerUser = async (userData) => {
 
 export const registerAdmin = async (userData, token) => {
   try {
+    console.log('Registering admin with token:', token);
+    console.log('User data:', userData);
+    
     const response = await axios.post(`${API_URL}/register-admin`, userData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
   } catch (error) {
+    console.error('Admin registration error:', error.response?.data || error.message);
     if (error.response) {
       throw new Error(error.response.data.message || 'Admin registration failed');
     } else {

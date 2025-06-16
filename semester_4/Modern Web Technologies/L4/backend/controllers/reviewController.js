@@ -42,7 +42,7 @@ export const deleteReview = async (req, res) => {
 
 export const getReviewsByProduct = async (req, res) => {
   try {
-    const reviews = await Review.find({ product: req.params.productId }).populate("user", "name");
+    const reviews = await Review.find({ product: req.params.productId }).populate("user", "username");
     res.status(200).json(reviews);
   } catch (err) {
     console.error(err);

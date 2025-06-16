@@ -12,7 +12,7 @@ const AdminPanel = () => {
   const [newAdminData, setNewAdminData] = useState({
     username: '',
     password: '',
-    email: ''
+    // email field removed
   });
 
   useEffect(() => {
@@ -51,17 +51,27 @@ const AdminPanel = () => {
     }
   };
 
-  const handleAdminRegister = async (e) => {
-    e.preventDefault();
-    try {
-      await registerAdmin(newAdminData, user.token);
-      setNewAdminData({ username: '', password: '', email: '' });
-      setError('');
-      alert('New admin registered successfully!');
-    } catch (err) {
-      setError(err.message || 'Failed to register admin');
-    }
-  };
+const handleAdminRegister = async (e) => {
+  e.preventDefault();
+  
+  if (!user || !user.token) {
+    setError('Authentication token not found. Please log in again.');
+    return;
+  }
+  
+  try {
+    await registerAdmin(newAdminData, user.token);
+    setNewAdminData({ username: '', password: '' });
+    setError('');
+    alert('New admin registered successfully!');
+    
+    // Refresh the user list to show the new admin
+    const data = await getAllUsers();
+    setUsers(data.users);
+  } catch (err) {
+    setError(err.message || 'Failed to register admin');
+  }
+};
 
   if (loading) return <div className="loading">Loading...</div>;
 
@@ -79,7 +89,7 @@ const AdminPanel = () => {
               <div key={userItem._id} className="user-card">
                 <div className="user-info">
                   <span className="username">{userItem.username}</span>
-                  <span className="email">{userItem.email}</span>
+                  {/* Email display removed */}
                   <span className={`role ${userItem.role}`}>{userItem.role}</span>
                 </div>
                 <div className="user-actions">
@@ -117,15 +127,7 @@ const AdminPanel = () => {
                 minLength="3"
               />
             </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                value={newAdminData.email}
-                onChange={(e) => setNewAdminData({...newAdminData, email: e.target.value})}
-                required
-              />
-            </div>
+            {/* Email form group removed */}
             <div className="form-group">
               <label>Password</label>
               <input
