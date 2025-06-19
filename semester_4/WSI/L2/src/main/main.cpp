@@ -1,95 +1,128 @@
-#include <iostream>
-#include "NPuzzle.hpp"
 #include <queue>
 #include <unordered_set>
 #include <vector>
-#include <utility>
+#include <iostream>
+#include <algorithm>
+#include "Node.hpp"
+#include "Heuristics.hpp"
+#include "DisjointPatternDB.hpp"
 
-void A_star(const NPuzzle& initial) {
-    std::priority_queue<NPuzzle> q;
-    std::unordered_set<NPuzzle> visited;
-
-    if (initial.is_solution()) {
-        return;
+// Hash function for board state
+struct BoardHash {
+    std::size_t operator()(const std::vector<uint8_t>& board) const {
+        std::size_t hash = 0;
+        for (auto v : board) {
+            hash = hash * 31 + std::hash<uint8_t>()(v);
+        }
+        return hash;
     }
+};
 
-    q.push(initial);
-    visited.emplace(initial);
+struct AStarResult {
+    Node* solution;
+    size_t visited;
+    size_t generated;
+};
 
-    while(!q.empty()) {
-        auto current = q.top();
-        q.pop();
-        for(NPuzzle& neighbor : current.generate_moves()) {
-            neighbor.increase_moves();
+AStarResult astar(const std::vector<uint8_t>& start_board, std::shared_ptr<Heuristic> heuristic) {
+    auto cmp = Node::Compare();
+    std::priority_queue<Node*, std::vector<Node*>, Node::Compare> open;
+    std::unordered_set<std::vector<uint8_t>, BoardHash> closed;
 
-            if(neighbor.is_solution()) {
-                return;
-            }
+    Node* start = new Node(start_board, 0, heuristic, nullptr);
+    open.push(start);
 
-            if(visited.find(neighbor) == visited.end()) {
-                visited.emplace(neighbor);
-                q.push(neighbor);
+    size_t visited = 0;
+    size_t generated = 1;
+
+    while (!open.empty()) {
+        Node* current = open.top();
+        open.pop();
+
+        if (closed.count(current->board_)) {
+            delete current;
+            continue;
+        }
+        closed.insert(current->board_);
+        visited++;
+
+        if (is_solution(current->board_)) {
+            return {current, visited, generated};
+        }
+
+        for (auto& neighbour : current->get_neighbours()) {
+            if (!closed.count(neighbour->board_)) {
+                open.push(neighbour.get());
+                neighbour.release(); // Ownership to open queue
+                generated++;
             }
         }
     }
+    return {nullptr, visited, generated};
 }
 
-
-void print_board(const NPuzzle& puzzle) {
-    size_t size = puzzle.get_size();
-    const auto& board = puzzle.get_board();
-    
-    for (size_t i = 0; i < size; ++i) {
-        for (size_t j = 0; j < size; ++j) {
-            size_t pos = i * size + j;
-            if (board[pos] == 0) {
-                std::cout << "  ";
-            } else {
-                std::cout << static_cast<int>(board[pos]) << " ";
-            }
-        }
-        std::cout << std::endl;
+// Print solution steps from goal node
+inline void print_solution_steps(Node* goal) {
+    std::vector<Node*> path;
+    for (Node* n = goal; n != nullptr; n = n->from) {
+        path.push_back(n);
     }
-}
-
-void print_solution(const std::vector<NPuzzle>& solution) {
-    if (solution.empty()) return;
-    
-    std::cout << "Initial state:" << std::endl;
-    print_board(solution[0]);
-    
-    std::cout << "\nSolution steps (" << solution.size() - 1 << " moves):" << std::endl;
-    for (size_t i = 1; i < solution.size(); ++i) {
-        std::cout << "Move " << i << ":" << std::endl;
-        print_board(solution[i]);
-        std::cout << std::endl;
+    std::cout << "Number of steps: " << (path.size() - 1) << "\n";
+    std::reverse(path.begin(), path.end());
+    for (auto* n : path) {
+        size_t size = static_cast<size_t>(std::sqrt(n->board_.size()));
+        for (size_t i = 0; i < n->board_.size(); ++i) {
+            std::cout << (int)n->board_[i] << " ";
+            if ((i + 1) % size == 0) std::cout << "\n";
+        }
+        std::cout << "g=" << n->g_ << " f=" << (int)n->f() << "\n\n";
     }
 }
 
 int main() {
-    std::cout << "Solving 3x3 puzzle:" << std::endl;
-    NPuzzle puzzle(3, {1, 2, 3, 4, 5, 6, 0, 7, 8});
-    
-    auto [solvable, solution, visited_count] = A_star(puzzle);
-    std::cout << "Solvable: " << std::boolalpha << solvable << std::endl;
-    
-    if (solvable) {
-        print_solution(solution);
+    std::vector<std::pair<std::vector<uint8_t>, std::string>> cases = {
+        //{{1,2,3,4,5,6,7,0,8}, "Trivial (one move)"},
+        //{{1,2,3,4,5,6,0,7,8}, "Easy"},
+        //{{1,2,0,4,5,3,7,8,6}, "Medium"},
+        //{{0,8,7,6,5,4,3,2,1}, "Hard (reversed)"},
+        //{{8,6,7,2,5,4,3,0,1}, "Very Hard"},
+        // 15-puzzle cases (4x4)
+        {{ 1, 2, 3, 4,
+           5, 6, 7, 8,
+           9,10,11,12,
+           13,14,15, 0 }, "15-puzzle Solved"},
+        {{ 1, 2, 3, 4,
+           5, 6, 7, 8,
+           9,10,11,12,
+           0,13,14,15 }, "15-puzzle Easy"},
+        {{ 2, 3, 4, 8,
+           1, 6, 7,12,
+           5,10,11,15,
+           9,13,14, 0 }, "15-puzzle Hard"},
+        {{ 5, 1, 2, 4,
+           9, 6, 3, 8,
+           13,10,7,12,
+           0,14,11,15 }, "15-puzzle Very Hard"},
+        // Randomly generated cases
+        {Node::generate(4), "Random 15-puzzle"}
+    };
+
+    auto heuristic = std::shared_ptr<Heuristic>(std::move(load_pdbs({"pdb_15_21.bin", "pdb_15_22.bin", "pdb_15_23.bin"})));
+
+    for (const auto& [start, desc] : cases) {
+        std::cout << "==== " << desc << " ====\n";
+        auto result = astar(start, heuristic);
+
+        std::cout << "Visited: " << result.visited << "\n";
+        std::cout << "Generated: " << result.generated << "\n";
+
+        if (result.solution) {
+            std::cout << "Solution steps:\n";
+            print_solution_steps(result.solution);
+        } else {
+            std::cout << "No solution found.\n";
+        }
+        std::cout << "====================\n\n";
     }
-
-    std::cout << "Visited states: " << visited_count << std::endl;
-    
-    std::cout << "Solving 3x3 puzzle:" << std::endl;
-    NPuzzle puzzle2(3);
-    
-    auto [solvable2, solution2, visited_count2] = A_star(puzzle2);
-    std::cout << "Solvable: " << std::boolalpha << solvable2 << std::endl;
-    
-    if (solvable2) {
-        print_solution(solution2);
-    }
-
-    std::cout << "Visited states: " << visited_count2 << std::endl;
-
     return 0;
 }

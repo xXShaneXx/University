@@ -22,6 +22,9 @@ NPuzzle::NPuzzle(const NPuzzle& other)
     empty_pos_(other.empty_pos_), g(other.g) 
 {}
 
+NPuzzle::NPuzzle()
+    : size_(0), board_(), empty_pos_(0), g(0), heuristic_(nullptr) {}
+
 void NPuzzle::generate(size_t size) {
     size_ = size;
     board_.resize(size * size);
@@ -69,7 +72,7 @@ bool NPuzzle::isSolvable() const {
     }
 }
 
-void NPuzzle::set_heuristic(std::unique_ptr<Heuristic> heuristic) {
+void NPuzzle::set_heuristic(std::shared_ptr<Heuristic> heuristic) {
     heuristic_ = std::move(heuristic);
 }
 
@@ -85,44 +88,44 @@ bool NPuzzle::is_solution() const {
     return board_.back() == 0;
 }
 
-std::vector<NPuzzle> NPuzzle::generate_moves() const {
-    std::vector<NPuzzle> moves;
+std::vector<std::shared_ptr<NPuzzle>> NPuzzle::generate_moves() const {
+    std::vector<std::shared_ptr<NPuzzle>> moves;
     const size_t row = empty_pos_ / size_;
     const size_t col = empty_pos_ % size_;
-    
-    auto set_heuristic_if_exists = [this](NPuzzle& neighbor) {
-        if (heuristic_) {
-            // Copy the heuristic pointer (clone pattern is better, but this works for stateless heuristics)
-            neighbor.set_heuristic(std::unique_ptr<Heuristic>(heuristic_->clone()));
-        }
+
+    auto make_shared_swapped = [this](size_t new_pos) {
+        auto np = std::make_shared<NPuzzle>(this->create_swapped(new_pos));
+        np->set_heuristic(this->heuristic_);
+        return np;
     };
 
-    if (row > 0) {
-        auto up = create_swapped(empty_pos_ - size_);
-        set_heuristic_if_exists(up);
-        moves.push_back(std::move(up));
-    }
-    if (row < size_ - 1) {
-        auto down = create_swapped(empty_pos_ + size_);
-        set_heuristic_if_exists(down);
-        moves.push_back(std::move(down));
-    }
-    if (col > 0) {
-        auto left = create_swapped(empty_pos_ - 1);
-        set_heuristic_if_exists(left);
-        moves.push_back(std::move(left));
-    }
-    if (col < size_ - 1) {
-        auto right = create_swapped(empty_pos_ + 1);
-        set_heuristic_if_exists(right);
-        moves.push_back(std::move(right));
-    }
-    
+    if (row > 0) moves.push_back(make_shared_swapped(empty_pos_ - size_));
+    if (row < size_ - 1) moves.push_back(make_shared_swapped(empty_pos_ + size_));
+    if (col > 0) moves.push_back(make_shared_swapped(empty_pos_ - 1));
+    if (col < size_ - 1) moves.push_back(make_shared_swapped(empty_pos_ + 1));
+
     return moves;
 }
 
 bool NPuzzle::operator==(const NPuzzle& other) const {
     return board_ == other.board_;
+}
+
+bool NPuzzle::operator!=(const NPuzzle& other) const { return !(*this == other); }
+
+NPuzzle& NPuzzle::operator=(const NPuzzle& other) {
+    if (this != &other) {
+        size_ = other.size_;
+        board_ = other.board_;
+        empty_pos_ = other.empty_pos_;
+        g = other.g;
+        if (other.heuristic_) {
+            heuristic_ = std::unique_ptr<Heuristic>(other.heuristic_->clone());
+        } else {
+            heuristic_.reset();
+        }
+    }
+    return *this;
 }
 
 NPuzzle NPuzzle::create_swapped(size_t new_pos) const {
@@ -141,14 +144,4 @@ int NPuzzle::total_cost() const {
         return g + (*heuristic_)(board_);
     }
     return g; // fallback if no heuristic
-}
-
-namespace std {
-    size_t hash<NPuzzle>::operator()(const NPuzzle& puzzle) const {
-        size_t hash = 0;
-        for (auto tile : puzzle.get_board()) {
-            hash = hash * 31 + tile;
-        }
-        return hash;
-    }
 }

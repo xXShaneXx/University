@@ -1,0 +1,32 @@
+.review-item {
+    background: #fffde7;
+    border-radius: 5px;
+    padding: 0.8em 1em;
+    margin-bottom: 0.7em;
+    box-shadow: 0 1px 4px rgba(255, 193, 7, 0.07);
+  }
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .review-author {
+    font-weight: 600;
+    color: #1976d2;
+  }
+  .review-rating .star-filled {
+    color: #ffb300;
+  }
+  .review-rating .star-empty {
+    color: #bdbdbd;
+  }
+  .review-comment {
+    margin: 0.5em 0 0.2em 0;
+  }
+  .delete-review-btn {
+    background: #c62828;
+    color: #fff;
+    padding: 0.3em 0.8em;
+    border-radius: 4px;
+    margin-top: 0.5em;
+  }
