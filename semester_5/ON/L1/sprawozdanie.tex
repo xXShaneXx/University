@@ -1,0 +1,58 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Sprawozdanie z Laboratorium \\ Obliczenia Numeryczne}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+ 
+\subsection{Wyznaczanie epsilona maszynowego}
+
+Celem zadania jest iteracyjne wyznaczenie epsilona maszynowego (macheps).
+
+Epsilonem maszynowym (macheps) nazywamy najmniejszą dodatnią liczbę $\epsilon$ taką, że $\mathrm{fl}(1+\epsilon)>1$, gdzie $\mathrm{fl}$ oznacza operację zaokrąglenia w arytmetyce zmiennoprzecinkowej. Innymi słowy, macheps to odległość 1.0 od następnej reprezentowalnej liczby większej od 1.
+
+Wyniki uzyskane w języku Julia:
+
+\begin{center}
+\begin{tabular}{l c c c}
+\hline
+Typ danych & Obliczony epsilon & \texttt{eps()} z Julii & Różnica \\
+\hline
+\texttt{Float16} & 9.765625000000000e-04 & 9.765625000000000e-04 & 0.000000000000000e+00 \\
+\texttt{Float32} & 1.192092895507812e-07 & 1.192092895507812e-07 & 0.000000000000000e+00 \\
+\texttt{Float64} & 2.220446049250313e-16 & 2.220446049250313e-16 & 0.000000000000000e+00 \\
+\hline
+\end{tabular}
+\end{center}
+
+Dane zawarte w plku nagłówkowym float.h
+
+\begin{flushleft}
+\begin{tabular}{@{}l c@{}}
+\hline
+Typ danych & Epsilon \\
+\hline
+\texttt{float} & 1.192093e-07 \\
+\texttt{double} & 2.220446e-16 \\
+\texttt{long double} & 1.084202e-19 \\
+\hline
+\end{tabular}
+\end{flushleft}
+
+
+\section{Cel ćwiczenia}
+Celem ćwiczenia było porównanie wartości epsilona maszynowego obliczonego iteracyjnie z wartością zwracaną przez funkcję \texttt{eps()} w Julii.
+
+\end{document}

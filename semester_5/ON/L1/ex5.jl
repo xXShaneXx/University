@@ -59,3 +59,5 @@ function main()
     println("(d) Od najmniejszego: ", dot_sorted(x_f64, y_f64, rev=false))
     println()
 end
+
+main()
