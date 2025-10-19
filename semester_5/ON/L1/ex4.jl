@@ -20,5 +20,5 @@ end
 
 println("Znajdowanie liczby x, dla której x * (1/x) != 1")
 
-print_result("[1,2]:", findx(1.0, 2.0))
+print_result("[1,2]:", findx(nextfloat(1.0), 2.0))
 print_result("Najmniejszy x:", findx(nextfloat(0.0), 1.0))

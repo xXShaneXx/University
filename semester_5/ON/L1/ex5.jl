@@ -15,7 +15,7 @@ function dot_backward(x::Vector{T}, y::Vector{T}) where T<:AbstractFloat
 end
 
 function dot_sorted(x::Vector{T}, y::Vector{T}; rev::Bool) where T<:AbstractFloat
-    products = x .* y
+    products = x .* y # Element-wise multiplication
     positives = filter(p -> p >= 0, products)
     negatives = filter(p -> p < 0, products)
 

@@ -25,3 +25,11 @@ for T in float_types
     println("Wartość z funkcji floatmax:          $(floatmax(T))")
     println("-"^60)
 end
+
+println("Najmniejsze liczby maszynowe dla poszczególnych typów danych:")
+
+for T in float_types
+    println("Typ: $T")
+    println("Wartość z funkcji floatmin:          $(floatmin(T))")
+    println("-"^60)
+end
