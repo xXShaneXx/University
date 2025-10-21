@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <optional>
+#include <chrono>
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
@@ -76,7 +77,11 @@ int main(int argc, char* argv[]) {
             GraphData graph_data = read_graph_from_file(file_path);
 
             if (graph_data.type == 'D') {
+                auto start = std::chrono::high_resolution_clock::now();
                 auto sorted_nodes_opt = topSort(graph_data.adj_list);
+                auto end = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+                std::cout << "Time taken by topSort: " << duration.count() << " microseconds" << std::endl;
 
                 if (!sorted_nodes_opt) {
                     std::cout << "Graph contains a directed cycle." << std::endl;

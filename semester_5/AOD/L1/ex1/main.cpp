@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <chrono>
 
 class Graph {
 private:
@@ -139,9 +140,19 @@ void run_test(const std::string& test_name, int num_vertices, const std::vector<
     for (const auto& edge : edges) {
         g_dir.addEdge(edge.first, edge.second);
     }
+
+    auto start = std::chrono::high_resolution_clock::now();
     g_dir.BFS(0, print_tree, directed_name);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> bfs_dir_time = end - start;
+    std::cout << "BFS (Directed) time: " << bfs_dir_time.count() << " ms" << std::endl;
     std::cout << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
     g_dir.DFS(0, print_tree, directed_name);
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> dfs_dir_time = end - start;
+    std::cout << "DFS (Directed) time: " << dfs_dir_time.count() << " ms" << std::endl;
     std::cout << std::endl;
 
     // Undirected
@@ -151,9 +162,19 @@ void run_test(const std::string& test_name, int num_vertices, const std::vector<
     for (const auto& edge : edges) {
         g_undir.addEdge(edge.first, edge.second);
     }
+
+    start = std::chrono::high_resolution_clock::now();
     g_undir.BFS(0, print_tree, undirected_name);
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> bfs_undir_time = end - start;
+    std::cout << "BFS (Undirected) time: " << bfs_undir_time.count() << " ms" << std::endl;
     std::cout << std::endl;
+
+    start = std::chrono::high_resolution_clock::now();
     g_undir.DFS(0, print_tree, undirected_name);
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> dfs_undir_time = end - start;
+    std::cout << "DFS (Undirected) time: " << dfs_undir_time.count() << " ms" << std::endl;
     std::cout << "------------------------" << std::endl << std::endl;
 }
 

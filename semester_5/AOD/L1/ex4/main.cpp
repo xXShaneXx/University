@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <chrono>
 #include "reader.hpp"
 
 #define STRINGIFY(x) #x
@@ -146,7 +147,14 @@ int main(int argc, char* argv[]) {
             }
 
 
-            if (isBipartite(graph)) {
+            auto start = std::chrono::high_resolution_clock::now();
+            bool is_bipartite = isBipartite(graph);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> diff = end - start;
+
+            std::cout << "Time taken: " << diff.count() << " ms" << std::endl;
+
+            if (is_bipartite) {
                 std::cout << "Graph is bipartite." << std::endl;
                 if (graph.getV() <= 200) {
                     std::vector<int> set_red, set_black;

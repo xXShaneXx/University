@@ -3,6 +3,7 @@
 #include <functional>
 #include <algorithm>
 #include <stack>
+#include <chrono>
 
 #include "reader.hpp"
 
@@ -113,7 +114,12 @@ int main(int argc, char* argv[]) {
             std::cout << "Processing file: " << file_path << std::endl;
             GraphData graph_data = read_graph_from_file(file_path);
 
+            auto start = std::chrono::high_resolution_clock::now();
             auto sccs = stronglyConnectedComponents(graph_data.adj_list);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> diff = end - start;
+
+            std::cout << "Time taken: " << diff.count() << " ms" << std::endl;
 
             std::cout << "Liczba silnie spójnych składowych: " << sccs.size() << std::endl;
 
