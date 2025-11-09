@@ -1,0 +1,428 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs} 
+\usepackage{longtable} 
+\usepackage{caption}   
+\usepackage{subcaption} 
+\usepackage{float}    
+
+\geometry{a4paper, margin=1in}
+
+\title{Sprawozdanie z  Laboratorium Obliczenia Naukowe}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1: Wrażliwość na niewielkie zmiany danych}
+\subsection{Opis problemu}
+Zadanie polega na zbadaniu, jak niewielkie zmiany w danych wejściowych (w wektorze $x$) wpływają na wynik iloczynu skalarnego $x \cdot y$.
+
+\subsection{Rozwiązanie}
+W języku Julia zdefiniowano wektory $x_1$, $x_2$ oraz $y$, gdzie $x_2$ jest lekko zmodyfikowaną wersją $x_1$.
+\begin{verbatim}
+x1 = [2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957]
+x2 = [2.718281828, -3.141592654, 1.414213562, 0.577215664, 0.301029995]
+y  = [1486.2497, 878366.9879, -22.37492, 4773714.647, 0.000185049]
+\end{verbatim}
+Następnie obliczono iloczyny skalarne $x_1 \cdot y$ oraz $x_2 \cdot y$ przy użyciu różnych kolejności sumowania składników, aby zbadać wpływ tych zmian na wynik końcowy. Obliczenia wykonano dla typów Float32 i Float64.
+
+\subsection{Wyniki}
+Poniższe tabele przedstawiają wyniki sumowania szeregów dla różnych typów danych i kolejności operacji.
+
+\begin{table}[H]
+\centering
+\caption{Wyniki dla Float32}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metoda} & \textbf{Wynik (x1)} & \textbf{Wynik (x2)} \\
+\midrule
+(a) W przód & -0.4999443 & -0.4999443 \\
+(b) W tył & -0.4543457 & -0.4543457 \\
+(c) Od największego & -0.5 & -0.5 \\
+(d) Od najmniejszego & -0.5 & -0.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Wyniki dla Float64}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metoda} & \textbf{Wynik (x1)} & \textbf{Wynik (x2)} \\
+\midrule
+(a) W przód & 1.0252e-10 & -0.0042963427 \\
+(b) W tył & -1.5643e-10 & -0.0042963430 \\
+(c) Od największego & 0.0 & -0.0042963428 \\
+(d) Od najmniejszego & 0.0 & -0.0042963428 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interpretacja wyników oraz Wnioski}
+Obserwacje potwierdzają, że problem obliczania tego iloczynu skalarnego jest \textbf{źle uwarunkowany}.
+\begin{enumerate}
+    \item Dla typu \textbf{Float32}, o niższej precyzji, niewielka modyfikacja danych wejściowych (rzędu $10^{-10}$) jest mniejsza niż błąd reprezentacji liczb. W efekcie, z perspektywy tej arytmetyki, oba wektory wejściowe są identyczne, co prowadzi do identycznych wyników.
+    \item Dla typu \textbf{Float64}, który ma znacznie wyższą precyzję, różnica między wektorami jest zauważalna. Jednakże, w trakcie obliczeń dochodzi do \textbf{redukcji cyfr znaczących} – odejmowania dużych, niemal równych sobie wartości. Zjawisko to sprawia, że wynik jest wrażliwy na najmniejsze nawet zmiany w danych, co skutkuje drastyczną różnicą w końcowych rezultatach.
+\end{enumerate}
+Eksperyment pokazuje, że sama wysoka precyzja obliczeń (`Float64`) nie gwarantuje dokładnego wyniku.
+
+
+\section{Zadanie 2: Analiza funkcji i błędy numeryczne}
+\subsection{Opis problemu}
+Zadanie polega na analizie funkcji $f(x) = e^x \ln(1 + e^{-x})$.
+
+\subsection{Rozwiązanie}
+Granicę funkcji obliczono analitycznie, stosując regułę de l'Hospitala, uzyskując wynik równy 1. Wykresy funkcji zostały wygenerowane na podstawie wartości obliczonych w Juli i Pythonie.
+
+\subsection{Wyniki}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{wykres_python.png}
+        \caption{Wykres w Pythonie.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{wykres_julia.png}
+        \caption{Wykres w Julii.}
+    \end{subfigure}
+    \caption{Wykresy funkcji $f(x) = e^x \ln(1 + e^{-x})$}
+\end{figure}
+
+\subsection{Interpretacja wyników oraz Wnioski}
+Dla dużych wartości $x$, funkcja $f(x)$ powinna zbiegać do 1. Jednakże, jak widać na wykresach, dla $x$ w okolicach 37, wartość funkcji gwałtownie spada do zera. Zjawisko to jest wynikiem ograniczeń arytmetyki zmiennoprzecinkowej.
+Problem numeryczny wynika z obliczania wyrażenia $1 + e^{-x}$. Dla dużych wartości $x$, $e^{-x}$ staje się liczbą bardzo bliską zera. W pewnym momencie, dla $x \approx 37$, wartość $e^{-x}$ staje się mniejsza niż precyzja arytmetyki zmiennoprzecinkowej (epsilon maszynowy). W efekcie, suma $1 + e^{-x}$ jest zaokrąglana do 1.
+
+W konsekwencji dalsze obliczenia wyglądają następująco:
+$$ \ln(1 + e^{-x}) \approx \ln(1) = 0 $$
+A zatem całe wyrażenie jest zerowane:
+$$ f(x) = e^x \cdot \ln(1 + e^{-x}) \approx e^x \cdot 0 = 0 $$
+
+Oscylacje wartości obserwowane tuż przed gwałtownym spadkiem do zera są spowodowane utratą precyzji (błędami zaokrągleń). Eksperyment ten ilustruje, jak błędy zaokrągleń mogą prowadzić do całkowicie błędnych wyników, nawet przy użyciu arytmetyki o wysokiej precyzji.
+
+
+
+\section{Zadanie 3: Uwarunkowanie macierzy}
+\subsection{Opis problemu}
+Zadanie polega na rozwiązaniu układu równań $Ax=b$ dla macierzy Hilberta oraz losowych macierzy o zadanym wskaźniku uwarunkowania.
+
+\subsection{Rozwiązanie}
+W języku Julia, przy użyciu pakietu \texttt{MatrixDepot}, generowano macierze i rozwiązywano układy równań. Błąd względny $ \frac{\text{norm}(x_{\text{obliczone}} - x_{\text{dokładne}})}{\text{norm}(x_{\text{dokładne}})} $ został obliczony dla każdej macierzy i metody, aby ocenić ich stabilność numeryczną.
+
+\subsection{Wyniki}
+\begin{table}[H]
+\centering
+\caption{Eksperyment 1: Macierz Hilberta $H_n$}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccc}
+\toprule
+\textbf{n} & \textbf{cond(Hn)} & \textbf{rank} & \textbf{Błąd wzgl. (Gauss)} & \textbf{Błąd wzgl. (inv)} \\
+\midrule
+2 & 1.9281e+01 & 2 & 5.6610e-16 & 1.4043e-15 \\
+3 & 5.2406e+02 & 3 & 8.0226e-15 & 0.0000e+00 \\
+4 & 1.5514e+04 & 4 & 4.1374e-14 & 0.0000e+00 \\
+5 & 4.7661e+05 & 5 & 1.6828e-12 & 3.3544e-12 \\
+6 & 1.4951e+07 & 6 & 2.6189e-10 & 2.0164e-10 \\
+7 & 4.7537e+08 & 7 & 1.2607e-08 & 4.7133e-09 \\
+8 & 1.5258e+10 & 8 & 6.1241e-08 & 3.0775e-07 \\
+9 & 4.9315e+11 & 9 & 3.8752e-06 & 4.5413e-06 \\
+10 & 1.6024e+13 & 10 & 8.6704e-05 & 2.5015e-04 \\
+11 & 5.2227e+14 & 10 & 1.5828e-04 & 7.6183e-03 \\
+12 & 1.7516e+16 & 11 & 1.3396e-01 & 2.5899e-01 \\
+13 & 3.1884e+18 & 11 & 1.1040e-01 & 5.3313e+00 \\
+14 & 6.2008e+17 & 11 & 1.4554e+00 & 8.7150e+00 \\
+15 & 3.6757e+17 & 12 & 4.6967e+00 & 7.3446e+00 \\
+16 & 7.0464e+17 & 12 & 5.4155e+01 & 2.9849e+01 \\
+17 & 1.2490e+18 & 12 & 1.3707e+01 & 1.0517e+01 \\
+18 & 2.2478e+18 & 12 & 1.0258e+01 & 2.4762e+01 \\
+19 & 6.4727e+18 & 13 & 1.0216e+02 & 1.0995e+02 \\
+20 & 1.1484e+18 & 13 & 1.0832e+02 & 1.1434e+02 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Eksperyment 2: Losowa macierz $R_n$}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{cccccc}
+\toprule
+\textbf{n} & \textbf{c (zadane)} & \textbf{cond(Rn)} & \textbf{rank} & \textbf{Błąd wzgl. (Gauss)} & \textbf{Błąd wzgl. (inv)} \\
+\midrule
+\addlinespace
+\multicolumn{6}{c}{\textbf{Dla n = 5}} \\
+\addlinespace
+5 & 1.0e+00 & 1.0000e+00 & 5 & 1.4043e-16 & 1.1102e-16 \\
+5 & 1.0e+01 & 1.0000e+01 & 5 & 2.2204e-16 & 1.4895e-16 \\
+5 & 1.0e+03 & 1.0000e+03 & 5 & 3.6418e-15 & 1.0734e-14 \\
+5 & 1.0e+07 & 1.0000e+07 & 5 & 7.1411e-12 & 1.5942e-11 \\
+5 & 1.0e+12 & 9.9999e+11 & 5 & 4.0275e-06 & 4.6723e-06 \\
+5 & 1.0e+16 & 1.0812e+16 & 4 & 4.9138e-02 & 1.5873e-01 \\
+\addlinespace
+\multicolumn{6}{c}{\textbf{Dla n = 10}} \\
+\addlinespace
+10 & 1.0e+00 & 1.0000e+00 & 10 & 2.7420e-16 & 2.4576e-16 \\
+10 & 1.0e+01 & 1.0000e+01 & 10 & 2.7195e-16 & 5.3820e-16 \\
+10 & 1.0e+03 & 1.0000e+03 & 10 & 2.8613e-14 & 2.1669e-14 \\
+10 & 1.0e+07 & 1.0000e+07 & 10 & 1.6154e-10 & 2.0221e-10 \\
+10 & 1.0e+12 & 1.0000e+12 & 10 & 1.1398e-05 & 1.1221e-05 \\
+10 & 1.0e+16 & 1.0114e+16 & 9 & 1.3843e-01 & 7.6746e-02 \\
+\addlinespace
+\multicolumn{6}{c}{\textbf{Dla n = 20}} \\
+\addlinespace
+20 & 1.0e+00 & 1.0000e+00 & 20 & 9.0808e-16 & 5.3820e-16 \\
+20 & 1.0e+01 & 1.0000e+01 & 20 & 7.0654e-16 & 8.3304e-16 \\
+20 & 1.0e+03 & 1.0000e+03 & 20 & 2.7105e-14 & 2.8054e-14 \\
+20 & 1.0e+07 & 1.0000e+07 & 20 & 5.1682e-11 & 7.0063e-11 \\
+20 & 1.0e+12 & 1.0000e+12 & 20 & 6.1094e-06 & 5.2257e-06 \\
+20 & 1.0e+16 & 1.5223e+16 & 18 & 5.0339e-02 & 6.8674e-02 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{Interpretacja wyników oraz Wnioski}
+Eksperymenty przeprowadzone na macierzach Hilberta oraz losowych macierzach o zadanym uwarunkowaniu pozwalają sformułować następujące wnioski:
+
+\begin{enumerate}
+    \item \textbf{Wpływ wskaźnika uwarunkowania na błąd:} Wyniki obu eksperymentów jednoznacznie pokazują, że błąd względny obliczonego rozwiązania rośnie wraz ze wzrostem wskaźnika uwarunkowania macierzy (\texttt{cond(A)}).
+
+    \item \textbf{Wpłwy n na wskaźnik uwarunkowania macierzy Hilberta} wskaźnik uwarunkowania macierzy Hilberta rośnie wykładniczo wraz z rozmiarem $n$. Dla $n \approx 12$, wskaźnik uwarunkowania przekracza $10^{16}$, co jest granicą precyzji dla liczb 64-bitowych.
+
+    \item \textbf{Porównanie metod (`A\textbackslash b` vs. `inv(A)*b`):}
+    \begin{itemize}
+        \item Metoda oparta na eliminacji Gaussa (\texttt{A\b}) daje dokładniejsze wartości w większej liczbie przypadków. Dla macierzy Hilberta, metoda ta niemal zawsze dawała dokładniejsze wyniki niż jawne obliczanie odwrotności.
+        \item Obliczanie macierzy odwrotnej jest operacją bardziej podatną na błędy zaokrągleń. Mnożenie przez niedokładnie obliczoną odwrotność może wzmacniać te błędy.
+        \item Co ciekawe, dla losowych macierzy, nawet tych o wysokim wskaźniku uwarunkowania, różnice w dokładności obu metod były znacznie mniej wyraźne. W kilku przypadkach metoda z użyciem `inv(A)` dała nawet nieznacznie mniejszy błąd. Sugeruje to, że oprócz samego wskaźnika uwarunkowania, również \textbf{specyficzna struktura macierzy} ma kluczowy wpływ na ostateczną dokładność rozwiązania.
+    \end{itemize}
+
+    \item \textbf{Podsumowanie:} Problem rozwiązywania układu równań $Ax=b$ staje się \textbf{źle uwarunkowany}, gdy macierz $A$ ma duży wskaźnik uwarunkowania. Eksperymenty pokazały jednak, że utrata dokładności jest silnie związana z strukturą macierzy, taką jak w przypadku macierzy Hilberta. Chociaż metoda oparta na eliminacji Gaussa jest dokładniejsza, to dla odpowiednich przypadków macierzy obie metody mogą dawać porównywalnie dokładne wyniki.
+\end{enumerate}
+
+\section{Zadanie 4: Metody iteracyjne}
+\subsection{Opis problemu}
+Zadanie demonstruje zjawisko złego uwarunkowania problemu znajdowania pierwiastków wielomianu. Analizowany jest wielomian Wilkinsona, którego zera są bardzo wrażliwe na niewielkie zaburzenia współczynników.
+
+\subsection{Rozwiązanie}
+W pierwszym eksperymencie analizowano wielomian Wilkinsona w postaci iloczynowej:
+$$ p(x) = \prod_{i=1}^{20} (x - i) $$
+oraz jego postać rozwiniętą (naturalną):
+$$ P(x) = x^{20} - 210x^{19} + \dots + 20! $$
+Za pomocą pakietu \texttt{Polynomials} w języku Julia obliczono zera wielomianu $P(x)$.
+
+W drugim eksperymencie wprowadzono niewielkie zaburzenie do współczynnika przy $x^{19}$. Współczynnik ten został zmieniony z $-210$ na $-210 - 2^{-23}$. Analizowano więc wielomian:
+$$ P_{zaburzony}(x) = P(x) - 2^{-23}x^{19} $$
+
+\subsection{Wyniki}
+\begin{table}[H]
+\centering
+\caption{Weryfikacja pierwiastków wielomianu P(x)}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccc}
+\toprule
+\textbf{k} & \textbf{zk} & \textbf{|P(zk)|} & \textbf{|p(zk)|} & \textbf{|zk - k|} \\
+\midrule
+1 & 0.9999999999996989 & 3.57e+04 & 3.66e+04 & 3.01e-13 \\
+2 & 2.0000000000283182 & 1.76e+05 & 1.81e+05 & 2.83e-11 \\
+3 & 2.9999999995920965 & 2.79e+05 & 2.90e+05 & 4.08e-10 \\
+4 & 3.9999999837375317 & 3.03e+06 & 2.04e+06 & 1.63e-08 \\
+5 & 5.000000665769791 & 2.29e+07 & 2.09e+07 & 6.66e-07 \\
+6 & 5.999989245824773 & 1.29e+08 & 1.13e+08 & 1.08e-05 \\
+7 & 7.000102002793008 & 4.81e+08 & 4.57e+08 & 1.02e-04 \\
+8 & 7.999355829607762 & 1.64e+09 & 1.56e+09 & 6.44e-04 \\
+9 & 9.002915294362053 & 4.88e+09 & 4.69e+09 & 2.92e-03 \\
+10 & 9.990413042481725 & 1.36e+10 & 1.26e+10 & 9.59e-03 \\
+11 & 11.025022932909318 & 3.59e+10 & 3.30e+10 & 2.50e-02 \\
+12 & 11.953283253846857 & 7.53e+10 & 7.39e+10 & 4.67e-02 \\
+13 & 13.07431403244734 & 1.96e+11 & 1.85e+11 & 7.43e-02 \\
+14 & 13.914755591802127 & 3.58e+11 & 3.55e+11 & 8.52e-02 \\
+15 & 15.075493799699476 & 8.22e+11 & 8.42e+11 & 7.55e-02 \\
+16 & 15.946286716607972 & 1.55e+12 & 1.57e+12 & 5.37e-02 \\
+17 & 17.025427146237412 & 3.69e+12 & 3.32e+12 & 2.54e-02 \\
+18 & 17.99092135271648 & 7.65e+12 & 6.34e+12 & 9.08e-03 \\
+19 & 19.00190981829944 & 1.14e+13 & 1.23e+13 & 1.91e-03 \\
+20 & 19.999809291236637 & 2.79e+13 & 2.32e+13 & 1.91e-04 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Weryfikacja pierwiastków zaburzonego wielomianu P(x)}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccc}
+\toprule
+\textbf{k} & \textbf{zk} & \textbf{|P(zk)|} & \textbf{|p(zk)|} & \textbf{|zk - k|} \\
+\midrule
+1 & 0.9999999999998357 & 2.09e+04 & 2.00e+04 & 1.64e-13 \\
+2 & 2.0000000000550373 & 3.46e+05 & 3.52e+05 & 5.50e-11 \\
+3 & 2.99999999660342 & 2.36e+06 & 2.42e+06 & 3.40e-09 \\
+4 & 4.000000089724362 & 1.07e+07 & 1.13e+07 & 8.97e-08 \\
+5 & 4.99999857388791 & 4.12e+07 & 4.48e+07 & 1.43e-06 \\
+6 & 6.000020476673031 & 1.28e+08 & 2.14e+08 & 2.05e-05 \\
+7 & 6.99960207042242 & 4.12e+08 & 1.78e+09 & 3.98e-04 \\
+8 & 8.007772029099446 & 1.08e+09 & 1.87e+10 & 7.77e-03 \\
+9 & 8.915816367932559 & 2.89e+09 & 1.37e+11 & 8.42e-02 \\
+10 & 10.095455630535774 & 1.31e+12 & 1.23e+11 & 9.55e-02 \\
+11 & 10.095455630535774 & 1.31e+12 & 1.23e+11 & 9.05e-01 \\
+12 & 11.793890586174369 & 2.77e+13 & 2.92e+11 & 2.06e-01 \\
+13 & 11.793890586174369 & 2.77e+13 & 2.92e+11 & 1.21e+00 \\
+14 & 13.992406684487216 & 7.05e+14 & 3.39e+10 & 7.59e-03 \\
+15 & 13.992406684487216 & 7.05e+14 & 3.39e+10 & 1.01e+00 \\
+16 & 16.73074487979267 & 2.10e+16 & 2.00e+13 & 7.31e-01 \\
+17 & 16.73074487979267 & 2.10e+16 & 2.00e+13 & 2.69e-01 \\
+18 & 19.5024423688181 & 3.95e+17 & 7.88e+15 & 1.50e+00 \\
+19 & 19.5024423688181 & 3.95e+17 & 7.88e+15 & 5.02e-01 \\
+20 & 20.84691021519479 & 8.52e+12 & 1.37e+18 & 8.47e-01 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+zk - obliczony pierwiastek P(x) \\
+Niektóre pierwiastki wielomianu zostały obcięte do części rzeczywistej w celu łatwiejszego porównania.
+
+\subsection{Interpretacja wyników oraz Wnioski}
+
+Analiza wyników dla wielomianu w postaci naturalnej $P(x)$ pozwala sformułować następujące wnioski:
+\begin{enumerate}
+    \item \textbf{Niedokładność obliczonych zer:} Kolumna $|z_k - k|$ pokazuje, że obliczone zera $z_k$ nie są dokładnie równe oczekiwanym wartościom $k=1, 2, \dots, 20$. Błędy, choć niewielkie (od $10^{-13}$ do $10^{-2}$), wynikają z błędów zaokrągleń podczas obliczania zer wielomianu w jego niestabilnej formie potęgowej.
+
+    \item \textbf{Duże wartości $|P(z_k)|$ i $|p(z_k)|$:} Chociaż $z_k$ są przybliżeniami zer, wartości wielomianów w tych punktach są bardzo duże. Wynika to z faktu, że w otoczeniu wielokrotnych lub blisko siebie położonych zer, wielomian ma bardzo duże nachylenie (stromy wykres). Nawet minimalne odchylenie od faktycznego zera na osi $x$ powoduje ogromną zmianę wartości na osi $y$. Wartości $|P(z_k)|$ i $|p(z_k)|$ są do siebie zbliżone, co potwierdza, że obie formy reprezentują ten sam wielomian, a różnice wynikają jedynie z błędów arytmetyki maszynowej.
+\end{enumerate}
+
+Eksperyment z wielomianem Wilkinsona doskonale ilustruje zjawisko \textbf{złego uwarunkowania} problemu znajdowania miejsc zerowych wielomianu.
+
+\begin{enumerate}
+    \item \textbf{Wrażliwość zer na zaburzenia współczynników:} Porównanie wyników dla wielomianu oryginalnego i zaburzonego pokazuje, że minimalna zmiana jednego współczynnika (rzędu $2^{-23}$) prowadzi do drastycznych zmian w obliczonych zerach.
+    \begin{itemize}
+        \item Zera, które pierwotnie były liczbami całkowitymi od 1 do 20, po zaburzeniu znacznie się od nich oddaliły.
+        \item Co więcej, niektóre zera stały się liczbami zespolonymi (w tabeli przedstawiono ich części rzeczywiste), mimo że wszystkie pierwotne zera były rzeczywiste. Największe zmiany obserwuje się dla zer w środku przedziału (np. 10-18).
+    \end{itemize}
+
+    \item \textbf{Różne reprezentacje, różne uwarunkowanie:} Problem znajdowania zer wielomianu jest dobrze uwarunkowany, gdy wielomian jest dany w postaci iloczynowej $p(x) = \prod (x-i)$. Jednak ten sam problem staje się ekstremalnie źle uwarunkowany, gdy wielomian jest reprezentowany w bazie naturalnej (potęgowej) $P(x) = \sum a_i x^i$. Proces rozwijania postaci iloczynowej do potęgowej jest operacją numerycznie niestabilną, która prowadzi do utraty informacji.
+
+    \item \textbf{Wnioski praktyczne:} Algorytmy do znajdowania zer wielomianów, które operują na współczynnikach w bazie naturalnej, są bardzo podatne na błędy zaokrągleń. Nawet niewielkie niedokładności w reprezentacji współczynników mogą prowadzić do całkowicie błędnych wyników. Dlatego należy unikać, pracy z wielomianami w postaci potęgowej, preferując stabilniejsze reprezentacje (np. postać iloczynową).
+\end{enumerate}
+
+\section{Zadanie 5: Model logistyczny}
+\subsection{Opis problemu}
+Badane jest równanie rekurencyjne $p_{n+1} = p_n + r p_n (1 - p_n)$, które modeluje wzrost populacji. Analizowana jest wrażliwość modelu na zaburzenia (obcięcie wyniku) oraz na precyzję obliczeń (Float32 vs Float64).
+
+\subsection{Rozwiązanie}
+W języku Julia zaimplementowano iteracje modelu logistycznego. Przeprowadzono dwa eksperymenty: jeden porównujący wyniki z zaburzeniem i bez, a drugi porównujący obliczenia w pojedynczej i podwójnej precyzji.
+
+\subsection{Wyniki}
+\begin{longtable}{cccc}
+\caption{Porównanie iteracji normalnej i zmodyfikowanej (Float32)} \label{tab:log_mod} \\
+\toprule
+\textbf{Iter} & \textbf{Normalna} & \textbf{Zmodyfikowana} & \textbf{Różnica} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- ciąg dalszy}} \\
+\toprule
+\textbf{Iter} & \textbf{Normalna} & \textbf{Zmodyfikowana} & \textbf{Różnica} \\
+\midrule
+\endhead
+0 & 0.0100 & 0.0100 & 0.00e+00 \\
+5 & 0.1715 & 0.1715 & 0.00e+00 \\
+10 & 0.7229 & 0.7229 & 0.00e+00 \\
+11 & 1.3238 & 1.3241 & 3.11e-04 \\
+12 & 0.0377 & 0.0365 & 1.23e-03 \\
+15 & 1.2705 & 1.2572 & 1.33e-02 \\
+20 & 0.5799 & 1.3097 & 7.30e-01 \\
+25 & 1.0071 & 1.0929 & 8.58e-02 \\
+30 & 0.7529 & 1.3192 & 5.66e-01 \\
+35 & 1.0211 & 0.0342 & 9.87e-01 \\
+40 & 0.2586 & 1.0936 & 8.35e-01 \\
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{cccc}
+\caption{Porównanie arytmetyki Float32 i Float64} \label{tab:log_prec} \\
+\toprule
+\textbf{Iter} & \textbf{Float32} & \textbf{Float64} & \textbf{Różnica} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}%
+{{\bfseries \tablename\ \thetable{} -- ciąg dalszy}} \\
+\toprule
+\textbf{Iter} & \textbf{Float32} & \textbf{Float64} & \textbf{Różnica} \\
+\midrule
+\endhead
+0 & 0.010000 & 0.010000 & 2.24e-10 \\
+5 & 0.171519 & 0.171519 & 3.39e-07 \\
+10 & 0.722931 & 0.722914 & 1.63e-05 \\
+15 & 1.270484 & 1.270262 & 2.22e-04 \\
+20 & 0.579904 & 0.596529 & 1.66e-02 \\
+25 & 1.007081 & 1.315588 & 3.09e-01 \\
+30 & 0.752921 & 0.374146 & 3.79e-01 \\
+35 & 1.021099 & 0.925382 & 9.57e-02 \\
+40 & 0.258605 & 0.011611 & 2.47e-01 \\
+\bottomrule
+\end{longtable}
+
+\subsection{Interpretacja wyników oraz Wnioski}
+Eksperymenty z modelem logistycznym ilustrują jego \textbf{wrażliwość na warunki początkowe} oraz na \textbf{precyzję arytmetyki}.
+
+\begin{enumerate}
+    \item \textbf{Wrażliwość na zaburzenia (Tabela 7):} Porównanie iteracji normalnej i zmodyfikowanej (z obcinaniem wyniku do 3 miejsc po przecinku) pokazuje, że nawet niewielkie zaburzenie wprowadzone w jednym kroku prowadzi do lawinowego narastania błędu. Już po kilku iteracjach (ok. 11) trajektorie obu ciągów zaczynają się gwałtownie różnić. Po 20 iteracjach różnica jest już rzędu 0.73, co pokazuje, że systemy są różne. To klasyczny przykład \textbf{efektu motyla} – minimalna zmiana w teraźniejszości prowadzi odmiennej przyszłości.
+
+    \item \textbf{Wrażliwość na precyzję obliczeń (Tabela 8):} Drugi eksperyment, porównujący obliczenia na typach \texttt{Float32} i \texttt{Float64}, prowadzi do podobnych wniosków. Mimo że na początku różnice są na poziomie błędów maszynowych, szybko narastają. Po 25 iteracjach różnica między wynikami wynosi już ok. 0.31. Oznacza to, że nawet subtelne błędy zaokrągleń, nieodłączne dla arytmetyki zmiennoprzecinkowej, są wzmacniane w kolejnych krokach iteracji, prowadząc do zupełnie różnych wyników.
+
+    \item \textbf{Wnioski ogólne:} Proces obliczania kolejnych wartości modelu jest \textbf{numerycznie niestabilny}, długoterminowe zachowanie modelu logistycznego jest niemożliwe do przewidzenia bez absolutnej precyzji zarówno w znajomości stanu początkowego, jak i w samych obliczeniach. Każde, nawet najmniejsze zaokrąglenie czy zaburzenie, jest wzmacniane, co sprawia, że numeryczna symulacja takiego systemu jest wiarygodna tylko w krótkim horyzoncie czasowym.
+\end{enumerate}
+
+\section{Zadanie 6: Równanie rekurencyjne}
+\subsection{Opis problemu}
+Zadanie polega na obserwacji zachowania ciągów generowanych przez równanie $x_{n+1} = x_n^2 + c$ dla różnych wartości stałej $c$ oraz różnych punktów startowych $x_0$.
+
+\subsection{Rozwiązanie}
+Dla każdego z podanych zestawów parametrów $(c, x_0)$ wykonano w języku Julia 40 iteracji. Wyniki zostały przedstawione na wykresie.
+
+\subsection{Wyniki}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{ex6.png}
+\end{figure}
+
+\subsection{Interpretacja wyników oraz Wnioski}
+Analiza wykresu pozwala zaobserwować różne typy zachowań dynamicznych w zależności od wartości parametru $c$ oraz punktu startowego $x_0$.
+
+\begin{enumerate}
+    \item \textbf{Dla $c = -1$ (cyklu):}
+    \begin{itemize}
+        \item Niezależnie od wybranego punktu startowego ($x_0 \in \{1, -1, 0.75, 0.25\}$), wszystkie ciągi po pewnej liczbie iteracji wpadają w \textbf{cykl o okresie 2}, oscylując między wartościami 0 i -1.
+    \end{itemize}
+
+    \item \textbf{Dla $c = -2$ (Wrażliwość na warunki początkowe):}
+    \begin{itemize}
+        \item Dla $x_0 = 2$, ciąg jest stały i wynosi 2, co oznacza, że $x=2$ jest \textbf{punktem stałym} ($2^2 - 2 = 2$).
+        \item Jednak dla $x_0 = 1.99999999999999$, czyli wartości bardzo bliskiej 2, ciąg gwałtownie zmienia swoją wartość, oddalając się od punktu stałego. Oznacza to, że punkt stały $x=2$ jest \textbf{niestabilny} (odpychający). Nawet minimalne zaburzenie w jego otoczeniu prowadzi do zupełnie innego zachowania.
+        \item Dla $x_0 = 1$, ciąg po jednej iteracji osiąga wartość -1, która również jest punktem stałym ($(-1)^2 - 2 = -1$).
+    \end{itemize}
+
+    \item \textbf{Wnioski ogólne:} Równanie $x_{n+1} = x_n^2 + c$ jest prostym modelem, który potrafi generować bardzo złożone zachowania.
+    \begin{itemize}
+        \item System może zbiegać do stabilnego punktu stałego, stabilnego cyklu, albo oscylować pomiędzy kilkoma wartościami
+    \end{itemize}
+\end{enumerate}
+
+\end{document}
