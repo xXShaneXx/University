@@ -33,8 +33,10 @@ destination = 10
 model = Model(HiGHS.Optimizer)
 @variable(model, x[arcs] >= 0, Bin)
 
+# Objective: minimize total cost of the path
 @objective(model, Min, sum(c[(i,j)] * x[(i,j)] for (i,j) in arcs))
 
+# Time constraint
 @constraint(model, sum(t[(i,j)] * x[(i,j)] for (i,j) in arcs) <= T_limit)
 
 # Flow conservation constraints
@@ -68,7 +70,7 @@ end
 
 println("\n=== Zadanie 4(b) ===")
 
-# Own instance
+# Own example
 N2 = 1:10
 T_limit2 = 5
 
