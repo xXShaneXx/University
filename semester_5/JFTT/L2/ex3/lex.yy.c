@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -466,8 +466,8 @@ char *yytext;
 #include <stdio.h>   
 #include <string.h> 
 int docs_enabled = 0;
-#line 469 "lex.yy.c"
 #line 470 "lex.yy.c"
+#line 471 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -686,7 +686,7 @@ YY_DECL
 	{
 #line 17 "ex3.l"
 
-#line 689 "lex.yy.c"
+#line 690 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -797,7 +797,7 @@ YY_RULE_SETUP
 #line 27 "ex3.l"
 ECHO;
 	YY_BREAK
-#line 800 "lex.yy.c"
+#line 801 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -522,8 +522,8 @@ void oper(char op) {
     push(r);
 }
 
-#line 525 "lex.yy.c"
 #line 526 "lex.yy.c"
+#line 527 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -743,7 +743,7 @@ YY_DECL
 #line 81 "ex4.l"
 
 
-#line 746 "lex.yy.c"
+#line 747 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -847,7 +847,7 @@ YY_RULE_SETUP
 #line 106 "ex4.l"
 ECHO;
 	YY_BREAK
-#line 850 "lex.yy.c"
+#line 851 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
