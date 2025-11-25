@@ -95,8 +95,6 @@ std::vector<std::vector<int>> stronglyConnectedComponents(const std::vector<std:
 int main(int argc, char* argv[]) {
     const std::string test_dir = TOSTRING(TEST_DIR);
     std::vector<std::string> files_to_process = {
-        //"my_scc_1.txt", // Własny przykład grafu silnie spójnego
-        //"my_scc_multi.txt", // Własny przykład grafu z >1 SCC
         test_dir + "/3/g3-1.txt",
         test_dir + "/3/g3-2.txt",
         test_dir + "/3/g3-3.txt",
