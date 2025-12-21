@@ -1,0 +1,197 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\geometry{a4paper, margin=1in}
+
+\title{Sprawozdanie: Obliczenia Naukowe Lista 3}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Oznaczenia:} $r$ - przybliżony pierwiastek, $v$ - wartość funkcji w punkcie $r$, $it$ - liczba iteracji, $err$ - kod błędu (0 - zbieżność osiągnięta, 1 - przekroczono maksymalną liczbę iteracji, 2 - pochodna bliska zeru).
+
+\section{Zadania 1-3}
+Zaimplementowano trzy metody numeryczne rozwiązywania równań nieliniowych $f(x)=0$ w module \texttt{functions.jl}.
+
+\subsection*{Implementacja Funkcji (\texttt{functions.jl})}
+\begin{enumerate}
+    \item \textbf{Metoda Bisekcji (\texttt{bisection\_method})}
+    \begin{itemize}
+        \item Wymaga podania przedziału $[a,b]$, w którym funkcja $f(x)$ zmienia znak.
+        \item Warunek stopu opiera się na długości przedziału (\texttt{delta}) lub na wartości funkcji w środku przedziału (\texttt{epsilon}).
+        \item Zwraca kod błędu \texttt{err=1}, jeśli $f(a)\cdot f(b)\geq 0$.
+    \end{itemize}
+
+    \item \textbf{Metoda Newtona (\texttt{newton\_method})}
+    \begin{itemize}
+        \item Wymaga definicji funkcji $f(x)$ oraz jej pochodnej $f'(x)$.
+        \item Zatrzymuje się i zwraca \texttt{err=2}, jeśli wartość pochodnej w bieżącym przybliżeniu spełnia $|f'(x_k)|<10^{-12}$(jest blikska zeru), co uniemożliwia dalsze iteracje.
+        \item Iteracja: $x_{k+1}=x_k-\dfrac{f(x_k)}{f'(x_k)}$.
+    \end{itemize}
+
+    \item \textbf{Metoda Siecznych (\texttt{secant\_method})}
+    \begin{itemize}
+        \item Aproksymuje pochodną używając dwóch ostatnich przybliżeń, więc nie wymaga jawnej postaci $f'(x)$.
+        \item Zwraca \texttt{err=1}, jeśli różnica wartości funkcji w mianowniku jest blikska zeru, co uniemożliwia obliczenie siecznej.
+        \item Iteracja: $x_{k+1}=x_k - f(x_k)\dfrac{x_k-x_{k-1}}{f(x_k)-f(x_{k-1})}$.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Przeprowadzone Testy (\texttt{tests.jl})}
+\begin{itemize}
+    \item \textbf{Testy Bisekcji:} Potwierdzono zbieżność oraz poprawne zgłaszanie błędu \texttt{err=1} w przypadku braku zmiany znaku na końcach przedziału.
+    \item \textbf{Testy Newtona:} Sprawdzono zbieżność oraz poprawne zwracanie \texttt{err=2} gdy pochodna jest bliska zeru (np. dla $f(x)=x^3+1$ przy $x_0=0.0$). Przetestowano też warunek przekroczenia maksymalnej liczby iteracji (\texttt{err=1}).
+    \item \textbf{Testy Siecznych:} Potwierdzono zbieżność dla typowych przypadków oraz poprawne zgłaszanie błędu \texttt{err=1} przy problemach z obliczeniem siecznej lub przekroczeniu maksymalnej liczby iteracji.
+\end{itemize}
+\section{Zadanie 4: $\sin x - (\frac{1}{2} x)^2 = 0$}
+
+Równanie: $f(x) = \sin(x) - (0.5 x)^2$. Dokładności: $\delta = 0.5 \cdot 10^{-5}$, $\epsilon = 0.5 \cdot 10^{-5}$.
+
+\subsection*{Wyniki}
+\begin{table}[h!]
+\centering
+\begin{tabular}{@{} l l l l c c @{}}
+\hline
+Metoda & Parametry & r & v & it & err \\
+\hline
+Bisekcja & [1.5, 2] & \texttt{1.9337539672851562} & \texttt{-2.7027680138402843e-7} & 16 & 0 \\
+Newton & x0 = 1.5 & \texttt{1.933753779789742} & \texttt{-2.2423316314856834e-8} & 4 & 0 \\
+Sieczne & x0 = 1, x1 = 2 & \texttt{1.933753644474301} & \texttt{1.564525129449379e-7} & 4 & 0 \\
+\hline
+\end{tabular}
+\caption{Wyniki dla równania $\sin x - (0.5 x)^2 = 0$.}
+\label{tab:zad4}
+\end{table}
+
+\subsection*{Interpretacja oraz Wnioski}
+Wszystkie metody zbiegły do pierwiastka $r \approx 1.933754$.\textbf{Metoda Newtona} (4 iteracje) i \textbf{Metoda Siecznych} (4 iteracje) wykazały zbieżność znacznie szybszą niż \textbf{Bisekcja} (16 iteracji), co jest zgodne z teorią (zbieżność kwadratowa vs. liniowa).
+
+\section{Zadanie 5: Znalezienie punktów przecięcia \(y = 3x\) i \(y = e^x\) metodą bisekcji}
+
+Równanie: $f(x) = 3x - \exp(x)$ odpowiada punktom przecięcia wymienionych funkcji. Dokładności: $\delta = 10^{-4}$, $\epsilon = 10^{-4}$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{image.png}
+\caption{Wykres funkcji $f(x)=3x -\exp(x)$}
+\label{fig:zad5_plot}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{} l l l l c c @{}}
+\hline
+Pierwiastek & Przedział & x & f(x) & iteracje & err \\
+\hline
+Pierwszy & [0, 1] & \texttt{0.619140625} & \texttt{9.066320343276146e-5} & 9 & 0 \\
+Drugi & [1, 2] & \texttt{1.5120849609375} & \texttt{7.618578602741621e-5} & 13 & 0 \\
+\hline
+\end{tabular}
+\caption{Wyniki dla równania $3x - e^{x} = 0$.}
+\label{tab:zad5}
+\end{table}
+
+Z powodu skończonej prezycji arytmetyki zmiennopozycyjnej, otrzymane wyniki nie są dokładne, więc wartości funkcji f1 i f2 minimalnie się różnią.
+\subsection*{Interpretacja}
+     Metoda Bisekcji poprawnie znalazła oba pierwiastki.
+
+\section{Zadanie 6: Porównanie Metod dla $f_1(x) = e^{1-x} - 1$ i $f_2(x) = x e^{-x}$}
+
+Dokładności: $\delta = 10^{-5}$, $\epsilon = 10^{-5}$.
+
+\subsection*{Funkcja $f_1(x) = e^{1-x} - 1$ (Pierwiastek $r=1$)}
+
+\begin{center}
+\begin{tabular}{@{} l l l l c c @{}}
+\hline
+Metoda & Parametry & r & v & it & err \\
+\hline
+Bisekcja & [0, 2] & \texttt{1.0} & \texttt{0.0} & 1 & 0 \\
+Newton & x0 = 0.5 & \texttt{0.9999999998878352} & \texttt{1.1216494399945987e-10} & 4 & 0 \\
+Sieczne & x0 = 0, x1 = 2 & \texttt{1.0000017597132702} & \texttt{-1.7597117218937086e-6} & 6 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\medskip
+\textbf{Tabela:} Wyniki dla $f_1(x)=e^{1-x}-1$.
+
+\subsection{Interpretacja dla $f_1(x)$:}
+\begin{itemize}
+    \item \textbf{Metoda Bisekcji}: Zbiegła w 1 iteracji do dokładnego pierwiastka $r=1.0$, ponieważ środek przedziału [0, 2] jest pierwiastkiem.
+    \item \textbf{Metoda Newtona} z $x_0=0.5$: Zbiegła w 4 iteracjach.
+    \item \textbf{Metoda Siecznych} z $x_0=0$, $x_1=2$: Zbiegła w 6 iteracjach, wolniej niż Newton.
+\end{itemize}
+
+\subsection*{Funkcja $f_2(x) = x e^{-x}$ (Pierwiastek $r=0$)}
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{} l l l l c c @{}}
+\hline
+Metoda & Parametry & r & v & it & err \\
+\hline
+Bisekcja & [-1, 1] & \texttt{0.0} & \texttt{0.0} & 1 & 0 \\
+Newton & x0 = -1.0 & \texttt{-3.0642493416461764e-7} & \texttt{-3.0642502806087233e-7} & 5 & 0 \\
+Sieczne & x0 = -1.0, x1 = 1 & \texttt{-2.202990601857084e-6} & \texttt{-2.2029954550300214e-6} & 17 & 0 \\
+\hline
+\end{tabular}
+\caption{Wyniki dla $f_2(x)=x e^{-x}$.}
+\label{tab:zad6_f2}
+\end{table}
+
+\subsection{Interpretacja dla $f_2(x)$:}
+\begin{itemize}
+    \item \textbf{Metoda Bisekcji}: Zbiegła w 1 iteracji do dokładnego pierwiastka $r=0.0$.
+    \item \textbf{Metoda Newtona} z $x_0=-1.0$: Zbiegła w 5 iteracjach do wartości bliskiej zeru.
+    \item \textbf{Metoda Siecznych}: Zbiegła w 17 iteracjach, co jest wolniejsze ze względu na płaski przebieg funkcji w okolicy pierwiastka, utrudniający aproksymację pochodnej.
+\end{itemize}
+
+\subsection{Test dodatkowe dla metody Newton}
+\begin{table}[h]
+\centering
+\begin{tabular}{@{} l l l l c c @{}}
+\hline
+Test & x0 & r & v & it & err \\
+\hline
+Newton (dla $f_1$) & $2$ & \texttt{0.9999999810061002} & \texttt{1.8993900008368314e-8} & 5 & 0 \\
+Newton (dla $f_2$) & $2$ & \texttt{14.398662765680003} & \texttt{8.03641534421721e-6} & 10 & 0 \\
+Newton (dla $f_2$) & $1$ & \texttt{1.0} & \texttt{0.36787944117144233} & 0 & 2 \\
+\hline
+\end{tabular}
+\caption{Dodatkowe testy metody Newtona dla $f_1$ i $f_2$.}
+\label{tab:newton_additional}
+\end{table}
+
+\subsection*{Interpretacja Testów Dodatkowych}
+
+\begin{itemize}
+    \item \textbf{Metoda Newtona dla $f_1(x)$ z $x_0=2$}: Metoda zbiegła (5 iteracji), co oznacza, że dla tej funkcji (gdzie pochodna $f_1'(x) = -e^{1-x} \neq 0$) wybór $x_0 > 1$ nie zakłócił drastycznie zbieżności.
+    \item \textbf{Metoda Newtona dla $f_2(x)$ z $x_0=2$}: Metoda nie zbiegła do pierwiastka $r=0$, tylko do $r\approx14.4$ w 10 iteracjach.
+    \item \textbf{Metoda Newtona dla $f_2(x)$ z $x_0=1$}: W tym punkcie pochodna $f_2'(x) = e^{-x}(1-x)$ jest równa $f_2'(1)=0$. Oznacza to, że warunek metody Newtona $f'(x) \neq 0$ jest naruszony. Test wykazał, że metoda \textbf{nie zbiegła} (err=2), co potwierdza, że wybór $x_0$ w punkcie zerowania się pochodnej prowadzi do problemów ze stabilnością i zbieżnością.
+\end{itemize}
+
+\subsection{Wnioski}
+Na podstawie przeprowadzonych obliczeń i analizy wyników sformułowano następujące wnioski:
+\begin{enumerate}
+    \item \textbf{Pewność Zbieżności:} \textbf{Metoda Bisekcji} jest jedyną metodą gwarantującą zbieżność (pod warunkiem zmiany znaku) i jest najbardziej stabilna, niezależnie od zachowania pochodnej. 
+    \item \textbf{Wrażliwość na $x_0$ (Metoda Newtona i Siecznych):}
+    \begin{itemize}
+        \item Wybór $x_0$ w pobliżu punktu, gdzie pochodna $f'(x)$ jest bliska zeru (np. $x_0=1$ dla $f_2(x)$), prowadzi do utraty zbieżności lub jej braku, ponieważ mianownik wzoru iteracyjnego dąży do zera. 
+        \item Metoda Newtona może się "zapętlić" (przechodząc przez kilka punktów bez zbieżności) lub po kilku iteracjach wpaść w punkt, gdzie pochodna jest zerowa.
+        \item Złe przybliżenie początkowe (np. $x_0=2$ dla $f_2(x)$) może prowadzić do zbieżności do innego miejsca zerowego lub nawet do rozbieżności. 
+    \end{itemize}
+    \item \textbf{Problemy Metody Siecznych:} Metoda Siecznych, wywodząc się z metody Newtona, może mieć te same problemy, np. otrzymana sieczna może mieć współczynnik kierunkowy równy 0 (pochodna bliska zeru) lub dążyć do zera w nieskończoności.
+\end{enumerate}
+
+\end{document}

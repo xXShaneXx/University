@@ -1,0 +1,184 @@
+### log in to obtain token
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Test2",
+  "password": "12345"
+}
+
+###
+
+### Add a new product (user or admin)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "To delete",
+  "description": "Delete Object",
+  "price": 0.99
+}
+
+###
+
+### Get all products
+GET http://localhost:5000/api/products
+
+###
+
+### Get product by ID
+GET http://localhost:5000/api/products/<PRODUCT_ID>
+
+###
+
+### Get product by name
+GET http://localhost:5000/api/products/search/Test%20Product
+
+###
+
+### Update product (owner or admin)
+PUT http://localhost:5000/api/products/<PRODUCT_ID>
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "Updated Product",
+  "description": "Updated description",
+  "price": 149.99
+}
+
+###
+
+### Delete product (owner or admin)
+DELETE http://localhost:5000/api/products/<PRODUCT_ID>
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+###
+
+### Filter products by price (default)
+GET http://localhost:5000/api/products/filter/price
+
+### Filter products by price (asc)
+GET http://localhost:5000/api/products/filter/price?sort=asc
+
+### Filter products by price (desc)
+GET http://localhost:5000/api/products/filter/price?sort=desc
+
+### Filter products by price with minPrice=100 and desc
+GET http://localhost:5000/api/products/filter/price?minPrice=100&sort=desc
+
+###
+
+### Add product without token (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+
+{
+  "name": "NoToken",
+  "description": "Should fail",
+  "price": 1.23
+}
+
+###
+
+### Add product with missing name (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "description": "No name",
+  "price": 1.23
+}
+
+###
+
+### Add product with missing price (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "NoPrice",
+  "description": "No price"
+}
+
+###
+
+### Add product with negative price (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "NegativePrice",
+  "description": "Should fail",
+  "price": -10
+}
+
+###
+
+### Add product with non-numeric price (should fail)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "BadPrice",
+  "description": "Should fail",
+  "price": "notANumber"
+}
+
+###
+
+### Add product with too long name (should fail if validation exists)
+POST http://localhost:5000/api/products
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "ThisIsAReallyReallyReallyReallyReallyReallyLongProductNameThatShouldFailIfThereIsValidation",
+  "description": "Too long name",
+  "price": 10
+}
+
+###
+
+### Get product by invalid ID (should fail)
+GET http://localhost:5000/api/products/invalidid
+
+###
+
+### Update product with wrong user (should fail)
+PUT http://localhost:5000/api/products/<PRODUCT_ID>
+Content-Type: application/json
+Authorization: Bearer <NOT_OWNER_TOKEN>
+
+{
+  "name": "Should not update",
+  "description": "Not owner",
+  "price": 10
+}
+
+###
+
+### Delete product with wrong user (should fail)
+DELETE http://localhost:5000/api/products/<PRODUCT_ID>
+Authorization: Bearer <NOT_OWNER_TOKEN>
+
+###
+
+### Update product with missing fields (should succeed if allowed, or fail if required)
+PUT http://localhost:5000/api/products/<PRODUCT_ID>
+Content-Type: application/json
+Authorization: Bearer <OWNER_OR_ADMIN_TOKEN>
+
+{
+  "name": "OnlyName"
+}
+
+###
+
+### Get product by name that does not exist (should return empty array)
+GET http://localhost:5000/api/products/search/NoSuchProduct

@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{amssymb}
+\title{Zadanie 3 Lista 2}
+\author{Paweł Grzegory}
+\date{\today}
+\begin{document}
+\maketitle
+
+\section{Zadanie}
+Udowodnij, że język
+\[
+L = \{\,x \in \{0,1\}^* \land |x|_0 \le |x|_1 \le 2|x|_0\,\}
+\]
+nie jest regularny.
+
+\section{Rozwiązanie}
+Załóżmy nie wprost, że \(L\) jest regularny. Niech \(n\) będzie stałą z Lemmatu o pompowaniu. Weźmy słowo
+\[
+z = 0^n1^n,
+\]
+które należy do \(L\), ponieważ \(n = |z|_0 \le |z|_1 = n \le 2n = 2|z|_0\). \\
+Z lematu o pompowaniu istnieje rozkład \(z = uvw\) taki, że \(|uv| \le n\) oraz \(|v| \ge 1\), i dla każdego \(i \ge 0\) mamy \(uv^iw \in L\). \\
+\(|uv| \le n\), zatem fragment \(v\) składa się wyłącznie z zer, więc \(v = 0^k\) dla pewnego \(k \ge 1\).
+\\
+Dla \(i=2\) otrzymujemy
+\[
+uv^2w = uvvw = 0^{n+k}1^n =: a.
+\]
+W słowie \(a\) liczba zer wynosi \(|a|_0 = n+k\), a jedynek \(|a|_1 = n\). Ponieważ \(n+k > n\), zachodzi \(|a|_0 > |a|_1\), czyli nie spełniony jest warunek \(|x|_0 \le |x|_1\). Stąd \(uv^2w \notin L\), co przeczy założeniu, że wszystkie \(uv^iw\) należą do \(L\).
+\\
+Otrzymaliśmy sprzeczność, więc język \(L\) nie jest regularny. \(\square\)
+
+
+\end{document}

@@ -1,0 +1,316 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{geometry}
+\usepackage{pgfplots}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\pgfplotsset{compat=1.18}
+\geometry{a4paper, margin=2.5cm}
+
+\makeatletter
+\renewcommand{\ALG@name}{Algorytm}
+\makeatother
+
+\title{\textbf{Sprawozdanie z zadania 1: Algorytmy najkrótszych ścieżek}}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Wstęp}
+
+Celem zadania była implementacja oraz eksperymentalne porównanie trzech wariantów algorytmu wyznaczania najkrótszych ścieżek w grafie. Rozważamy problem najkrótszej ścieżki z jednym źródłem (SSSP) w grafie skierowanym $G=(V, E)$ z nieujemnymi wagami krawędzi $w: E \to \mathbb{R}_{\ge 0}$.
+
+Zaimplementowano:
+\begin{enumerate}
+    \item \textbf{Algorytm Dijkstry} – wariant standardowy z kolejką priorytetową (kopiec binarny).
+    \item \textbf{Algorytm Diala} – wariant kubełkowy dla małych wag całkowitych.
+    \item \textbf{Algorytm Radix Heap} – zaawansowana struktura danych optymalizująca operacje na priorytetach przy użyciu właściwości bitowych.
+\end{enumerate}
+
+\section{Opis implementacji i pseudokody}
+
+Poniżej przedstawiono szczegółowy opis oraz pseudokody zaimplementowanych algorytmów, bazujące na przygotowanych plikach źródłowych w języku C++.
+
+\subsection{Algorytm Dijkstry (Standardowy)}
+Zaimplementowano klasyczną wersję algorytmu z wykorzystaniem kontenera \texttt{std::priority\_queue}. Zastosowano strategię „leniwego usuwania” (ang. \textit{lazy deletion}), co pozwala uniknąć kosztownej operacji \texttt{decrease-key}.
+
+\begin{algorithm}[H]
+\caption{Algorytm Dijkstry }
+\begin{algorithmic}[1]
+\Function{Dijkstra}{$G, s$}
+    \State $n \gets G.n$
+    \State $dist[1 \dots n] \gets \infty$
+    \State $dist[s] \gets 0$
+    \State $PQ \gets$ pusta kolejka priorytetowa (min-heap)
+    \State $PQ.push(0, s)$
+    \While{$PQ$ nie jest pusta}
+        \State $(d, u) \gets PQ.top()$
+        \State $PQ.pop()$
+        \If{$d > dist[u]$} \Comment{Leniwe sprawdzenie aktualności}
+            \State \textbf{continue}
+        \EndIf
+        \For{każdego sąsiada $(v, w)$ wierzchołka $u$}
+            \If{$dist[u] + w < dist[v]$}
+                \State $dist[v] \gets dist[u] + w$
+                \State $PQ.push(dist[v], v)$
+            \EndIf
+        \EndFor
+    \EndWhile
+    \State \Return $dist$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorytm Diala (Kubełkowy)}
+Algorytm Diala wykorzystuje tablicę kubełków obsługiwaną cyklicznie. Kluczową różnicą względem standardowego Dijkstry jest brak sortowania wewnątrz kubełka – każdy element w kubełku $k$ ma dokładnie odległość $k$.
+
+\begin{algorithm}[H]
+\caption{Algorytm Diala}
+\begin{algorithmic}[1]
+\Function{Dial}{$G, s$}
+    \State $C \gets G.max\_weight$
+    \State $size \gets C + 1$
+    \State $dist[1 \dots n] \gets \infty$, $dist[s] \gets 0$
+    \State $buckets[0 \dots size-1]$ \Comment{Tablica wektorów}
+    \State $buckets[0].push(s)$
+    \State $cursor \gets 0$
+    \State $count \gets 1$ \Comment{Liczba elementów w kolejce}
+    \While{$count > 0$}
+        \While{$buckets[cursor]$ jest pusty}
+            \State $cursor \gets (cursor + 1) \pmod{size}$
+        \EndWhile
+        \While{$buckets[cursor]$ nie jest pusty}
+            \State $u \gets buckets[cursor].back()$
+            \State $buckets[cursor].pop()$
+            \State $count \gets count - 1$
+            \If{$dist[u] \pmod{size} \neq cursor$} \Comment{Ignoruj nieaktualne wierzchołki}
+                \State \textbf{continue}
+            \EndIf
+            \For{każdego sąsiada $(v, w)$ wierzchołka $u$}
+                \If{$dist[u] + w < dist[v]$}
+                    \State $dist[v] \gets dist[u] + w$
+                    \State $pos \gets dist[v] \pmod{size}$
+                    \State $buckets[pos].push(v)$
+                    \State $count \gets count + 1$
+                \EndIf
+            \EndFor
+        \EndWhile
+        \State $cursor \gets (cursor + 1) \pmod{size}$
+    \EndWhile
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorytm Radix Heap}
+Radix Heap optymalizuje zarządzanie pamięcią poprzez użycie kubełków o zakresach będących potęgami dwójki. Wykorzystano funkcję \texttt{std::bit\_width} do szybkiego wyznaczania indeksu kubełka na podstawie różnicy bitowej.
+
+\begin{algorithm}[H]
+\caption{Algorytm Radix Heap}
+\begin{algorithmic}[1]
+\Function{RadixHeapDijkstra}{$G, s$}
+    \State $dist[1 \dots n] \gets \infty$, $dist[s] \gets 0$
+    \State $RH \gets$ nowy RadixHeap, $RH.push(0, s)$
+    \State $last \gets 0$ \Comment{Ostatnio zdjęta minimalna odległość}
+    \While{$RH$ nie jest pusty}
+        \State $(d, u) \gets RH.pop\_min()$
+        \If{$d \neq dist[u]$} \textbf{continue} \EndIf
+        \For{każdego sąsiada $(v, w)$ wierzchołka $u$}
+            \If{$dist[u] + w < dist[v]$}
+                \State $dist[v] \gets dist[u] + w$
+                \State $RH.push(dist[v], v)$
+            \EndIf
+        \EndFor
+    \EndWhile
+\EndFunction
+\Statex
+\Function{RH.pop\_min}{}
+    \If{$buckets[0]$ jest pusty}
+        \State Znajdź pierwszy niepusty kubełek $b$
+        \State $min\_val \gets \min_{(k,v) \in buckets[b]} k$
+        \State $last \gets min\_val$
+        \State Przenieś elementy z $buckets[b]$ do mniejszych kubełków
+        \State \Comment{Indeks: $bit\_width(key \oplus last)$}
+    \EndIf
+    \State \Return element z $buckets[0]$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\section{Wyniki eksperymentów}
+
+Poniżej przedstawiono wyniki testów wydajnościowych. Czasy są średnią z 5 uruchomień dla losowych źródeł oraz dla źródła o indeksie 1. Limit czasu na wykonanie testu (timeout) ustalono na 3 minuty.
+
+\subsection{Rodzina Long-C (Zależność od wagi C)}
+Rodzina ta bada wpływ maksymalnej wagi krawędzi na czas działania. Grafy mają stałą strukturę, a wagi losowane są z zakresu $[0, 2^k]$.
+\textbf{Obserwacja:} Dla $k \ge 15$ algorytm Diala przekracza limit pamięci lub czasu (złożoność $O(nC)$). Algorytmy Dijkstry i Radix Heap działają w stałym czasie, niezależnie od $C$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_Long-C.png}
+\caption{Czas wykonania w zależności od parametru $C$ dla rodziny Long-C}
+\end{figure}
+
+\subsection{Rodzina Long-n (Zależność od liczby wierzchołków n)}
+Badanie skalowalności względem liczby wierzchołków ($n=2^k$).
+\textbf{Obserwacja:} Wszystkie algorytmy wykazują wzrost czasu wykonania. Radix Heap i Dijkstra osiągają zbliżone wyniki, natomiast Dial radzi sobie gorzej dla bardzo dużych grafów.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_Long-n.png}
+\caption{Czas wykonania w zależności od liczby wierzchołków $n$ dla rodziny Long-n}
+\end{figure}
+
+\subsection{Rodzina Random4-C}
+Grafy losowe z rosnącymi wagami.
+\textbf{Obserwacja:} Podobnie jak w Long-C, algorytm Diala zawodzi przy dużych wagach. Radix Heap wykazuje dużą stabilność, dorównując wydajnością algorytmowi Dijkstry.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_Random4-C.png}
+\caption{Wyniki dla rodziny Random4-C}
+\end{figure}
+
+\subsection{Rodzina Random4-n}
+Grafy losowe o rosnącej liczbie wierzchołków.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_Random4-n.png}
+\caption{Wyniki dla rodziny Random4-n}
+\end{figure}
+
+\subsection{Rodzina Square-C}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_Square-C.png}
+\caption{Wyniki dla rodziny Square-C}
+\end{figure}
+
+\subsection{Rodzina Square-n}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_Square-n.png}
+\caption{Wyniki dla rodziny Square-n}
+\end{figure}
+
+\subsection{Rodzina USA-road-d}
+Grafy reprezentujące rzeczywistą sieć drogową USA.
+\textbf{Obserwacja:} Wagi w grafach drogowych są całkowite, co teoretycznie pozwala na użycie Diala. Mimo to, ze względu na duży zakres wag, Dijkstra i Radix Heap okazują się bardziej uniwersalne.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{plots/plot_USA-road-d.png}
+\caption{Wyniki dla rodziny USA-road-d}
+\end{figure}
+
+\section{Testy poprawności (P2P)}
+
+Dla weryfikacji poprawności implementacji, dla największych instancji w każdej rodzinie porównano długości ścieżek wyznaczone przez poszczególne algorytmy. Uzyskanie identycznych wyników (kolumna Odległość) potwierdza ich poprawność.
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Rodzina - Algorytm} & \textbf{Start} & \textbf{Koniec} & \textbf{Odległość} \\
+\midrule
+Long-C - Dijkstra & 1 & 1048576 & 1308259008765 \\
+Long-C - RadixHeap & 1 & 1048576 & 1308259008765 \\
+\midrule
+Long-n - Dijkstra & 1 & 2097152 & 31336751771 \\
+Long-n - RadixHeap & 1 & 2097152 & 31336751771 \\
+\midrule
+Random4-C - Dijkstra & 1 & 1048576 & 3471241820 \\
+Random4-C - RadixHeap & 1 & 1048576 & 3471241820 \\
+\midrule
+Random4-n - Dial & 1 & 2097152 & 9051281 \\
+Random4-n - Dijkstra & 1 & 2097152 & 9051281 \\
+Random4-n - RadixHeap & 1 & 2097152 & 9051281 \\
+\midrule
+Square-C - Dijkstra & 1 & 1048576 & 122219500320 \\
+Square-C - RadixHeap & 1 & 1048576 & 122219500320 \\
+\midrule
+Square-n - Dial & 1 & 2096704 & 714640488 \\
+Square-n - Dijkstra & 1 & 2096704 & 714640488 \\
+Square-n - RadixHeap & 1 & 2096704 & 714640488 \\
+\midrule
+USA-road-d - Dial & 1 & 3598623 & 5269491 \\
+USA-road-d - Dijkstra & 1 & 3598623 & 5269491 \\
+USA-road-d - RadixHeap & 1 & 3598623 & 5269491 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Długości ścieżek (Poprawność) - Dla największej instancji w każdej rodzinie}
+\end{table}
+
+\section{Zestawienie czasów wykonania}
+Poniższa tabela przedstawia szczegółowe czasy wykonania algorytmów dla największych instancji w każdej rodzinie.
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llr}
+\toprule
+\textbf{Rodzina - Algorytm} & \textbf{Typ źródła} & \textbf{Czas (ms)} \\
+\midrule
+Long-C - Dial & Random & TIMEOUT/ERR \\
+Long-C - Dijkstra & Random & 219.41 \\
+Long-C - RadixHeap & Random & 319.29 \\
+\midrule
+Long-n - Dial & Random & TIMEOUT/ERR \\
+Long-n - Dijkstra & Random & 480.21 \\
+Long-n - RadixHeap & Random & 650.86 \\
+\midrule
+Random4-C - Dial & Random & TIMEOUT/ERR \\
+Random4-C - Dijkstra & Random & 512.59 \\
+Random4-C - RadixHeap & Random & 503.67 \\
+\midrule
+Random4-n - Dial & Random & 1295.25 \\
+Random4-n - Dijkstra & Random & 1156.79 \\
+Random4-n - RadixHeap & Random & 985.83 \\
+\midrule
+Square-C - Dial & Random & TIMEOUT/ERR \\
+Square-C - Dijkstra & Random & 322.94 \\
+Square-C - RadixHeap & Random & 381.91 \\
+\midrule
+Square-n - Dial & Random & 6083.82 \\
+Square-n - Dijkstra & Random & 673.93 \\
+Square-n - RadixHeap & Random & 779.35 \\
+\midrule
+USA-road-d - Dial & Random & 543.49 \\
+USA-road-d - Dijkstra & Random & 577.96 \\
+USA-road-d - RadixHeap & Random & 704.93 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Czas wykonania (Wydajność) - Dla największej instancji}
+\end{table}
+
+\section{Wnioski końcowe}
+
+\begin{enumerate}
+    \item \textbf{Wydajność Algorytmu Diala:} Algorytm jest bezkonkurencyjny dla grafów o małych wagach krawędzi. Jednak jego złożoność $O(m+nC)$ czyni go niepraktycznym dla dużych wag, co obrazują błędy TIMEOUT/ERR w testach rodzin z sufiksem \texttt{-C}.
+
+    \item \textbf{Uniwersalność Algorytmu Dijkstry:} Implementacja z kopcem binarnym (\texttt{std::priority\_queue}) okazała się najbardziej stabilnym rozwiązaniem. Czas działania zależy głównie od topologii grafu, a nie od wartości wag.
+
+    \item \textbf{Kompromis Radix Heap:} Algorytm Radix Heap łączy zalety obu podejść. Dzięki złożoności $O(m + n \log C)$ jest odporny na duże wagi, a w testach losowych (\texttt{Random4}) często osiągał wyniki zbliżone do Dijkstry.
+\end{enumerate}
+
+\end{document}

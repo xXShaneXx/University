@@ -1,0 +1,44 @@
+.root
+{
+    -fx-background-color: #222222; /* Dark gray background */
+}
+
+.flow-pane
+{
+    -fx-padding: 10px;
+    -fx-background-color: #333333; /* Dark gray background */
+    -fx-border-color: #444444; /* Light gray border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+.label
+{
+    -fx-font-size: 14px;
+    -fx-text-fill: #eeeeee; /* Light gray text */
+}
+
+.text-field
+{
+    -fx-font-size: 14px;
+    -fx-pref-width: 150px; /* Set preferred width */
+    -fx-control-inner-background: #555555 !important; /* Dark gray background */
+    -fx-text-fill: #ffffff !important; /* White text */
+}
+
+.button
+{
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-background-color: #007bff; /* Blue button color */
+    -fx-padding: 8px 16px; /* Padding around text */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded corners */
+}
+
+.vBox
+{
+    -fx-font-size: 14px;
+    -fx-background-color: #444444; /* Dark gray background */
+    -fx-text-fill: #eeeeee; /* Light gray text */
+}

@@ -1,0 +1,284 @@
+============================================================
+TABELA 1: Długości ścieżek (Poprawność)
+Dla największej instancji w każdej rodzinie
+============================================================
+    Rodzina - Algorytm   Start  Koniec      Odległość
+     Long-C - dijkstra  793937  951178 18933675651677
+     Long-C - dijkstra       1 1048576  1308259008765
+     Long-C - dijkstra   15437  687039 15251286310518
+     Long-C - dijkstra  114389  631565  8783851928678
+     Long-C - dijkstra  703432  426039  2833347254528
+    Long-C - radixheap   15437  687039 15251286310518
+    Long-C - radixheap  793937  951178 18933675651677
+    Long-C - radixheap  114389  631565  8783851928678
+    Long-C - radixheap  703432  426039  2833347254528
+    Long-C - radixheap       1 1048576  1308259008765
+     Long-n - dijkstra 1129560  127916     9965750411
+     Long-n - dijkstra 1962882  683857    77467282416
+     Long-n - dijkstra 2060461 1027721    57696130334
+     Long-n - dijkstra 1576683 1206028    21560474202
+     Long-n - dijkstra       1 2097152    31336751771
+    Long-n - radixheap 1576683 1206028    21560474202
+    Long-n - radixheap 1129560  127916     9965750411
+    Long-n - radixheap       1 2097152    31336751771
+    Long-n - radixheap 1962882  683857    77467282416
+    Long-n - radixheap 2060461 1027721    57696130334
+  Random4-C - dijkstra 1021281  325709     4709910580
+  Random4-C - dijkstra  444759  800207     3716010485
+  Random4-C - dijkstra       1 1048576     3471241820
+  Random4-C - dijkstra  673197   98866     4203076340
+  Random4-C - dijkstra  686626  232444     4556581467
+ Random4-C - radixheap       1 1048576     3471241820
+ Random4-C - radixheap  444759  800207     3716010485
+ Random4-C - radixheap  686626  232444     4556581467
+ Random4-C - radixheap  673197   98866     4203076340
+ Random4-C - radixheap 1021281  325709     4709910580
+      Random4-n - dial 1867172 1572287       10146894
+      Random4-n - dial 1736551 1466057        9710734
+      Random4-n - dial 1077896 1288941        9419582
+      Random4-n - dial 2034546  743850        7258019
+      Random4-n - dial       1 2097152        9051281
+  Random4-n - dijkstra       1 2097152        9051281
+  Random4-n - dijkstra 1867172 1572287       10146894
+  Random4-n - dijkstra 1736551 1466057        9710734
+  Random4-n - dijkstra 1077896 1288941        9419582
+  Random4-n - dijkstra 2034546  743850        7258019
+ Random4-n - radixheap 1736551 1466057        9710734
+ Random4-n - radixheap 1077896 1288941        9419582
+ Random4-n - radixheap 2034546  743850        7258019
+ Random4-n - radixheap       1 2097152        9051281
+ Random4-n - radixheap 1867172 1572287       10146894
+   Square-C - dijkstra  131863  241030   170759520241
+   Square-C - dijkstra  275177   97630   237429884046
+   Square-C - dijkstra  228343  927715   217323412158
+   Square-C - dijkstra  817580  171709   190833725805
+   Square-C - dijkstra       1 1048576   122219500320
+  Square-C - radixheap  228343  927715   217323412158
+  Square-C - radixheap  131863  241030   170759520241
+  Square-C - radixheap  275177   97630   237429884046
+  Square-C - radixheap  817580  171709   190833725805
+  Square-C - radixheap       1 1048576   122219500320
+       Square-n - dial       1 2096704      714640488
+       Square-n - dial 1600895  749967      557997500
+       Square-n - dial  696794 1380083      813137031
+       Square-n - dial 1177086 2005976      136988739
+       Square-n - dial 1684148  601217      805765832
+   Square-n - dijkstra 1684148  601217      805765832
+   Square-n - dijkstra 1177086 2005976      136988739
+   Square-n - dijkstra  696794 1380083      813137031
+   Square-n - dijkstra 1600895  749967      557997500
+   Square-n - dijkstra       1 2096704      714640488
+  Square-n - radixheap       1 2096704      714640488
+  Square-n - radixheap 1684148  601217      805765832
+  Square-n - radixheap 1177086 2005976      136988739
+  Square-n - radixheap  696794 1380083      813137031
+  Square-n - radixheap 1600895  749967      557997500
+     USA-road-d - dial  309191 2008169        5402590
+     USA-road-d - dial 1915763 1806313        3171451
+     USA-road-d - dial       1 3598623        5269491
+     USA-road-d - dial  453876  294466        3325609
+     USA-road-d - dial  804146 1089598        3486982
+ USA-road-d - dijkstra  453876  294466        3325609
+ USA-road-d - dijkstra  309191 2008169        5402590
+ USA-road-d - dijkstra 1915763 1806313        3171451
+ USA-road-d - dijkstra       1 3598623        5269491
+ USA-road-d - dijkstra  804146 1089598        3486982
+USA-road-d - radixheap 1915763 1806313        3171451
+USA-road-d - radixheap  309191 2008169        5402590
+USA-road-d - radixheap  453876  294466        3325609
+USA-road-d - radixheap  804146 1089598        3486982
+USA-road-d - radixheap       1 3598623        5269491
+
+--- Kod LaTeX (Tabela 1) ---
+\begin{tabular}{lrrr}
+\toprule
+Rodzina - Algorytm & Start & Koniec & Odległość \\
+\midrule
+Long-C - dijkstra & 793937 & 951178 & 18933675651677 \\
+Long-C - dijkstra & 1 & 1048576 & 1308259008765 \\
+Long-C - dijkstra & 15437 & 687039 & 15251286310518 \\
+Long-C - dijkstra & 114389 & 631565 & 8783851928678 \\
+Long-C - dijkstra & 703432 & 426039 & 2833347254528 \\
+Long-C - radixheap & 15437 & 687039 & 15251286310518 \\
+Long-C - radixheap & 793937 & 951178 & 18933675651677 \\
+Long-C - radixheap & 114389 & 631565 & 8783851928678 \\
+Long-C - radixheap & 703432 & 426039 & 2833347254528 \\
+Long-C - radixheap & 1 & 1048576 & 1308259008765 \\
+Long-n - dijkstra & 1129560 & 127916 & 9965750411 \\
+Long-n - dijkstra & 1962882 & 683857 & 77467282416 \\
+Long-n - dijkstra & 2060461 & 1027721 & 57696130334 \\
+Long-n - dijkstra & 1576683 & 1206028 & 21560474202 \\
+Long-n - dijkstra & 1 & 2097152 & 31336751771 \\
+Long-n - radixheap & 1576683 & 1206028 & 21560474202 \\
+Long-n - radixheap & 1129560 & 127916 & 9965750411 \\
+Long-n - radixheap & 1 & 2097152 & 31336751771 \\
+Long-n - radixheap & 1962882 & 683857 & 77467282416 \\
+Long-n - radixheap & 2060461 & 1027721 & 57696130334 \\
+Random4-C - dijkstra & 1021281 & 325709 & 4709910580 \\
+Random4-C - dijkstra & 444759 & 800207 & 3716010485 \\
+Random4-C - dijkstra & 1 & 1048576 & 3471241820 \\
+Random4-C - dijkstra & 673197 & 98866 & 4203076340 \\
+Random4-C - dijkstra & 686626 & 232444 & 4556581467 \\
+Random4-C - radixheap & 1 & 1048576 & 3471241820 \\
+Random4-C - radixheap & 444759 & 800207 & 3716010485 \\
+Random4-C - radixheap & 686626 & 232444 & 4556581467 \\
+Random4-C - radixheap & 673197 & 98866 & 4203076340 \\
+Random4-C - radixheap & 1021281 & 325709 & 4709910580 \\
+Random4-n - dial & 1867172 & 1572287 & 10146894 \\
+Random4-n - dial & 1736551 & 1466057 & 9710734 \\
+Random4-n - dial & 1077896 & 1288941 & 9419582 \\
+Random4-n - dial & 2034546 & 743850 & 7258019 \\
+Random4-n - dial & 1 & 2097152 & 9051281 \\
+Random4-n - dijkstra & 1 & 2097152 & 9051281 \\
+Random4-n - dijkstra & 1867172 & 1572287 & 10146894 \\
+Random4-n - dijkstra & 1736551 & 1466057 & 9710734 \\
+Random4-n - dijkstra & 1077896 & 1288941 & 9419582 \\
+Random4-n - dijkstra & 2034546 & 743850 & 7258019 \\
+Random4-n - radixheap & 1736551 & 1466057 & 9710734 \\
+Random4-n - radixheap & 1077896 & 1288941 & 9419582 \\
+Random4-n - radixheap & 2034546 & 743850 & 7258019 \\
+Random4-n - radixheap & 1 & 2097152 & 9051281 \\
+Random4-n - radixheap & 1867172 & 1572287 & 10146894 \\
+Square-C - dijkstra & 131863 & 241030 & 170759520241 \\
+Square-C - dijkstra & 275177 & 97630 & 237429884046 \\
+Square-C - dijkstra & 228343 & 927715 & 217323412158 \\
+Square-C - dijkstra & 817580 & 171709 & 190833725805 \\
+Square-C - dijkstra & 1 & 1048576 & 122219500320 \\
+Square-C - radixheap & 228343 & 927715 & 217323412158 \\
+Square-C - radixheap & 131863 & 241030 & 170759520241 \\
+Square-C - radixheap & 275177 & 97630 & 237429884046 \\
+Square-C - radixheap & 817580 & 171709 & 190833725805 \\
+Square-C - radixheap & 1 & 1048576 & 122219500320 \\
+Square-n - dial & 1 & 2096704 & 714640488 \\
+Square-n - dial & 1600895 & 749967 & 557997500 \\
+Square-n - dial & 696794 & 1380083 & 813137031 \\
+Square-n - dial & 1177086 & 2005976 & 136988739 \\
+Square-n - dial & 1684148 & 601217 & 805765832 \\
+Square-n - dijkstra & 1684148 & 601217 & 805765832 \\
+Square-n - dijkstra & 1177086 & 2005976 & 136988739 \\
+Square-n - dijkstra & 696794 & 1380083 & 813137031 \\
+Square-n - dijkstra & 1600895 & 749967 & 557997500 \\
+Square-n - dijkstra & 1 & 2096704 & 714640488 \\
+Square-n - radixheap & 1 & 2096704 & 714640488 \\
+Square-n - radixheap & 1684148 & 601217 & 805765832 \\
+Square-n - radixheap & 1177086 & 2005976 & 136988739 \\
+Square-n - radixheap & 696794 & 1380083 & 813137031 \\
+Square-n - radixheap & 1600895 & 749967 & 557997500 \\
+USA-road-d - dial & 309191 & 2008169 & 5402590 \\
+USA-road-d - dial & 1915763 & 1806313 & 3171451 \\
+USA-road-d - dial & 1 & 3598623 & 5269491 \\
+USA-road-d - dial & 453876 & 294466 & 3325609 \\
+USA-road-d - dial & 804146 & 1089598 & 3486982 \\
+USA-road-d - dijkstra & 453876 & 294466 & 3325609 \\
+USA-road-d - dijkstra & 309191 & 2008169 & 5402590 \\
+USA-road-d - dijkstra & 1915763 & 1806313 & 3171451 \\
+USA-road-d - dijkstra & 1 & 3598623 & 5269491 \\
+USA-road-d - dijkstra & 804146 & 1089598 & 3486982 \\
+USA-road-d - radixheap & 1915763 & 1806313 & 3171451 \\
+USA-road-d - radixheap & 309191 & 2008169 & 5402590 \\
+USA-road-d - radixheap & 453876 & 294466 & 3325609 \\
+USA-road-d - radixheap & 804146 & 1089598 & 3486982 \\
+USA-road-d - radixheap & 1 & 3598623 & 5269491 \\
+\bottomrule
+\end{tabular}
+
+
+
+============================================================
+TABELA 2: Czas wykonania (Wydajność)
+Dla największej instancji (dla 'Random' to 'dijkstra-random' itp.)
+============================================================
+           Rodzina - Algorytm   Czas (ms)
+         Long-C - dial-random TIMEOUT/ERR
+         Long-C - dial-single TIMEOUT/ERR
+     Long-C - dijkstra-random      219.41
+     Long-C - dijkstra-single      253.69
+    Long-C - radixheap-random      319.29
+    Long-C - radixheap-single      322.99
+         Long-n - dial-random TIMEOUT/ERR
+         Long-n - dial-single TIMEOUT/ERR
+     Long-n - dijkstra-random      480.21
+     Long-n - dijkstra-single      495.26
+    Long-n - radixheap-random      650.86
+    Long-n - radixheap-single      655.82
+      Random4-C - dial-random TIMEOUT/ERR
+      Random4-C - dial-single TIMEOUT/ERR
+  Random4-C - dijkstra-random      512.59
+  Random4-C - dijkstra-single      505.21
+ Random4-C - radixheap-random      503.67
+ Random4-C - radixheap-single      520.69
+      Random4-n - dial-random     1295.25
+      Random4-n - dial-single     1189.28
+  Random4-n - dijkstra-random     1156.79
+  Random4-n - dijkstra-single     1128.22
+ Random4-n - radixheap-random      985.83
+ Random4-n - radixheap-single     1005.86
+       Square-C - dial-random TIMEOUT/ERR
+       Square-C - dial-single TIMEOUT/ERR
+   Square-C - dijkstra-random      322.94
+   Square-C - dijkstra-single      338.62
+  Square-C - radixheap-random      381.91
+  Square-C - radixheap-single      401.89
+       Square-n - dial-random     6083.82
+       Square-n - dial-single     7011.17
+   Square-n - dijkstra-random      673.93
+   Square-n - dijkstra-single      691.95
+  Square-n - radixheap-random      779.35
+  Square-n - radixheap-single      790.57
+     USA-road-d - dial-random      543.49
+     USA-road-d - dial-single      539.87
+ USA-road-d - dijkstra-random      577.96
+ USA-road-d - dijkstra-single      637.23
+USA-road-d - radixheap-random      704.93
+USA-road-d - radixheap-single      714.30
+
+--- Kod LaTeX (Tabela 2) ---
+\begin{tabular}{ll}
+\toprule
+Rodzina - Algorytm & Czas (ms) \\
+\midrule
+Long-C - dial-random & TIMEOUT/ERR \\
+Long-C - dial-single & TIMEOUT/ERR \\
+Long-C - dijkstra-random & 219.41 \\
+Long-C - dijkstra-single & 253.69 \\
+Long-C - radixheap-random & 319.29 \\
+Long-C - radixheap-single & 322.99 \\
+Long-n - dial-random & TIMEOUT/ERR \\
+Long-n - dial-single & TIMEOUT/ERR \\
+Long-n - dijkstra-random & 480.21 \\
+Long-n - dijkstra-single & 495.26 \\
+Long-n - radixheap-random & 650.86 \\
+Long-n - radixheap-single & 655.82 \\
+Random4-C - dial-random & TIMEOUT/ERR \\
+Random4-C - dial-single & TIMEOUT/ERR \\
+Random4-C - dijkstra-random & 512.59 \\
+Random4-C - dijkstra-single & 505.21 \\
+Random4-C - radixheap-random & 503.67 \\
+Random4-C - radixheap-single & 520.69 \\
+Random4-n - dial-random & 1295.25 \\
+Random4-n - dial-single & 1189.28 \\
+Random4-n - dijkstra-random & 1156.79 \\
+Random4-n - dijkstra-single & 1128.22 \\
+Random4-n - radixheap-random & 985.83 \\
+Random4-n - radixheap-single & 1005.86 \\
+Square-C - dial-random & TIMEOUT/ERR \\
+Square-C - dial-single & TIMEOUT/ERR \\
+Square-C - dijkstra-random & 322.94 \\
+Square-C - dijkstra-single & 338.62 \\
+Square-C - radixheap-random & 381.91 \\
+Square-C - radixheap-single & 401.89 \\
+Square-n - dial-random & 6083.82 \\
+Square-n - dial-single & 7011.17 \\
+Square-n - dijkstra-random & 673.93 \\
+Square-n - dijkstra-single & 691.95 \\
+Square-n - radixheap-random & 779.35 \\
+Square-n - radixheap-single & 790.57 \\
+USA-road-d - dial-random & 543.49 \\
+USA-road-d - dial-single & 539.87 \\
+USA-road-d - dijkstra-random & 577.96 \\
+USA-road-d - dijkstra-single & 637.23 \\
+USA-road-d - radixheap-random & 704.93 \\
+USA-road-d - radixheap-single & 714.30 \\
+\bottomrule
+\end{tabular}
+

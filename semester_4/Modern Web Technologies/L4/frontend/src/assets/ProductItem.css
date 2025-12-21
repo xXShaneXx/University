@@ -1,0 +1,179 @@
+.product-item {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 1.5em 1.8em;
+  margin-bottom: 1.5em;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #edf0f5;
+}
+
+.product-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8em;
+  padding-bottom: 0.8em;
+  border-bottom: 1px solid #eef1f5;
+}
+
+.product-header h3 {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.price {
+  font-weight: 700;
+  color: #1976d2;
+  font-size: 1.25rem;
+  background-color: #e3f2fd;
+  padding: 0.3em 0.8em;
+  border-radius: 20px;
+}
+
+.description {
+  margin: 0.8em 0 1.2em;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Button Container */
+.product-actions {
+  margin-top: 1.2em;
+  display: flex;
+  gap: 0.8em;
+  flex-wrap: wrap;
+}
+
+/* Base Button Styles */
+.product-actions button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* Review Button - Primary */
+.product-actions button:nth-child(1) {
+  background-color: #4a6cf7;
+  color: white;
+}
+
+.product-actions button:nth-child(1):hover {
+  background-color: #3558e6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 108, 247, 0.25);
+}
+
+/* Add Review Button - Secondary */
+.product-actions button:nth-child(2) {
+  background-color: #5e35b1;
+  color: white;
+}
+
+.product-actions button:nth-child(2):hover {
+  background-color: #4527a0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(94, 53, 177, 0.25);
+}
+
+/* Edit Button - Success */
+.product-actions button:nth-child(3) {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.product-actions button:nth-child(3):hover {
+  background-color: #246428;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.25);
+}
+
+/* Delete Button - Danger */
+.product-actions button:nth-child(4) {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.product-actions button:nth-child(4):hover {
+  background-color: #b71c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.25);
+}
+
+/* Disabled state */
+.product-actions button:disabled {
+  background-color: #bdbdbd;
+  color: #f5f5f5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Reviews styling */
+.review-list-container {
+  margin-top: 1.5em;
+  padding-top: 1.2em;
+  border-top: 1px dashed #e0e0e0;
+}
+
+/* Review form */
+.review-form {
+  margin-top: 1.5em;
+  padding: 1.2em;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  border: 1px solid #eaeef2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product-item {
+    padding: 1.2em 1.4em;
+  }
+  
+  .product-actions {
+    justify-content: center;
+  }
+  
+  .product-actions button {
+    flex-grow: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .price {
+    align-self: flex-start;
+  }
+  
+  .product-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .product-actions button {
+    width: 100%;
+  }
+}

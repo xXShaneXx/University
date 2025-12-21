@@ -1,0 +1,424 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Sprawozdanie z AOD -- Lista 2}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+\section*{Zadanie 1}
+\subsection*{Model matematyczny}
+
+\textbf{Zmienne decyzyjne:}
+\begin{itemize}
+\item $x_{ij}$ -- liczba galonów paliwa dostarczonych z firmy $j$ na lotnisko $i$ ($x_{ij} \geq 0$)
+\end{itemize}
+
+\textbf{Parametry:}
+\begin{itemize}
+\item $D_i$ -- popyt na lotnisku $i$ (w galonach)
+\item $F_j$ -- zdolność dostaw firmy $j$ (w galonach)
+\end{itemize}
+
+\textbf{Ograniczenia:}
+\begin{align*}
+\sum_{j=1}^{3} x_{ij} = D_i \quad &\forall i=1,2,3,4 \\
+\sum_{i=1}^{4} x_{ij} \leq F_j \quad &\forall j=1,2,3
+\end{align*}
+
+\textbf{Funkcja celu:}
+\begin{align*}
+\min \sum_{i=1}^{4} \sum_{j=1}^{3} c_{ij} x_{ij}
+\end{align*}
+
+\subsection*{Opis egzemplarza i wyniki}
+
+\textbf{Dane:}
+\begin{itemize}
+\item Zdolności dostawców: F1 -- 275 000 gal, F2 -- 550 000 gal, F3 -- 660 000 gal
+\item Popyt na lotniskach: L1 -- 110 000 gal, L2 -- 220 000 gal, L3 -- 330 000 gal, L4 -- 440 000 gal
+\item Koszty - za jenden galon paliwa $c_{ij}$:
+\begin{center}
+\begin{tabular}{c|ccc}
+& F1 & F2 & F3 \\
+\hline
+L1 & 10 & 7 & 8 \\
+L2 & 10 & 11 & 14 \\
+L3 & 9 & 12 & 4 \\
+L4 & 11 & 13 & 9 \\
+\end{tabular}
+\end{center}
+\end{itemize}
+
+\textbf{Wyniki:}
+\begin{itemize}
+\item Minimalny koszt: $8{,}525{,}000$
+\item Optymalny plan:
+\begin{itemize}
+\item L1: 110 000 gal z F2
+\item L2: 165 000 gal z F1, 55 000 gal z F2
+\item L3: 330 000 gal z F3
+\item L4: 110 000 gal z F1, 330 000 gal z F3
+\end{itemize}
+\item (a) Minimalny łączny koszt dostaw wymaganych ilości paliwa na wszystkie lotniska wynosi 8 525 000 \$ .
+\item (b) Tak, wszystkie firmy dostarczają paliwo.
+\item (c) Mozliwości dostaw paliwa przez firmy 1 i 3 są wyczerpane, natomiast firma 2 nie wykorzystuje pełnej dostępnej ilości.
+\end{itemize}
+
+\textbf{Interpretacja:} Łączny koszt rozwiązania wynosi 8 525 000 \$. Wszystkie firmy dostarczają paliwo, ale możliwości dostaw nie są w pełni wykorzystane. Firmy 1 i 3 dostarczają maksymalne ilości, podczas gdy firma 2 ma jeszcze dostępną pojemność, co pozwala na optymalne rozdysponowanie zasobów przy pełnym zaspokojeniu popytu.
+
+%--------------------------------------
+\section*{Zadanie 2}
+\subsection*{Model matematyczny}
+
+\textbf{Zmienne decyzyjne:}
+\begin{itemize}
+\item $x_{ij}$ -- liczba godzin pracy maszyny $j$ przy produkcji wyrobu $i$ ($x_{ij} \geq 0$)
+\end{itemize}
+
+\textbf{Parametry:}
+\begin{itemize}
+\item $t_{ij}$ -- czas obróbki jednego kilograma wyrobu $i$ na maszynie $j$ (w minutach)
+\item $D_i$ -- maksymalny tygodniowy popyt na wyrób $i$ (w kilogramach)
+\item $p_i$ -- cena sprzedaży wyrobu $i$ (w \$ na kilogram)
+\item $c_i$ -- koszt materiałowy wyrobu $i$ (w \$ na kilogram)
+\item $k_j$ -- koszt pracy maszyny $j$ (w \$ na godzinę)
+\end{itemize}
+
+\textbf{Ograniczenia:}
+\begin{align*}
+\sum_{i=1}^{4} x_{ij} \leq 60 \quad &\forall j=1,2,3 \\
+\sum_{j=1}^{3} \frac{x_{ij}}{t_{ij}} \leq D_i \quad &\forall i=1,2,3,4
+\end{align*}
+
+Pierwsze ograniczenie zapewnia, że całkowity czas pracy każdej maszyny nie przekracza 60 godzin. Drugie ograniczenie zapewnia, że produkcja każdego wyrobu nie przekracza maksymalnego popytu $D_i$.
+
+\textbf{Funkcja celu:}
+\begin{align*}
+\max \left( \sum_{i=1}^{4} \sum_{j=1}^{3} \frac{x_{ij}}{t_{ij}} (p_i - c_i) - \sum_{j=1}^{3} k_j \sum_{i=1}^{4} x_{ij} \right)
+\end{align*}
+
+Funkcja celu maksymalizuje zysk, który jest różnicą między przychodami ze sprzedaży wyprodukowanych wyrobów a kosztami produkcji (materiałowymi i pracy maszyn). Przychody ze sprzedaży wynoszą $\sum_{i=1}^{4} \sum_{j=1}^{3} \frac{x_{ij}}{t_{ij}} p_i$, gdzie $\frac{x_{ij}}{t_{ij}}$ to ilość wyprodukowanego wyrobu $i$ na maszynie $j$ (w kilogramach). Koszty materiałowe wynoszą $\sum_{i=1}^{4} \sum_{j=1}^{3} \frac{x_{ij}}{t_{ij}} c_i$. Koszty pracy maszyn wynoszą $\sum_{j=1}^{3} k_j \sum_{i=1}^{4} x_{ij}$.
+
+\subsection*{Opis egzemplarza i wyniki}
+
+\textbf{Dane:}
+\begin{itemize}
+\item Czasy obróbki (w minutach na kilogram):
+\begin{center}
+\begin{tabular}{c|ccc}
+Produkt & M1 & M2 & M3 \\
+\hline
+P1 & 5 & 10 & 6 \\
+P2 & 3 & 6 & 4 \\
+P3 & 4 & 5 & 3 \\
+P4 & 4 & 2 & 1 \\
+\end{tabular}
+\end{center}
+\item Maksymalny tygodniowy popyt: P1 -- 400 kg, P2 -- 100 kg, P3 -- 150 kg, P4 -- 500 kg
+\item Ceny sprzedaży: P1 -- 9 \$/kg, P2 -- 7 \$/kg, P3 -- 6 \$/kg, P4 -- 5 \$/kg
+\item Koszty materiałowe: P1 -- 4 \$/kg, P2, P3, P4 -- 1 \$/kg
+\item Koszty pracy maszyn: M1 i M2 -- 2 \$/h, M3 -- 3 \$/h
+\item Dostępność maszyn: 60 godzin na maszynę tygodniowo
+\end{itemize}
+
+\textbf{Wyniki:}
+\begin{itemize}
+\item Maksymalny zysk: $5,228.33$
+\item Optymalny plan produkcji:
+\begin{itemize}
+\item P1: 33.33 h na M1
+\item P2: 5 h na M1
+\item P3: 10 h na M1
+\item P4: 8.33 h na M3
+\end{itemize}
+\end{itemize}
+
+\textbf{Interpretacja:} Plan wykorzystuje najtańsze maszyny i najbardziej opłacalne produkty.
+
+%--------------------------------------
+\section*{Zadanie 3}
+\subsection*{Model matematyczny}
+
+\textbf{Zmienne decyzyjne:}
+\begin{itemize}
+\item $x_j$ -- ilość jednostek wyprodukowanych w trybie normalnym w okresie $j$ ($0 \leq x_j \leq 100$)
+\item $y_j$ -- ilość jednostek wyprodukowanych w trybie ponadwymiarowym w okresie $j$ ($0 \leq y_j \leq a_j$)
+\item $s_j$ -- ilość jednostek na zapasie na koniec okresu $j$ ($0 \leq s_j \leq 70$)
+\end{itemize}
+
+\textbf{Parametry:}
+\begin{itemize}
+\item $c_j$ -- koszt produkcji normalnej jednostki w okresie $j$ (\$)
+\item $a_j$ -- maksymalna ilość jednostek w trybie ponadwymiarowym w okresie $j$
+\item $o_j$ -- koszt produkcji ponadwymiarowej jednostki w okresie $j$ (\$)
+\item $d_j$ -- zapotrzebowanie na towar w okresie $j$ (jednostki)
+\end{itemize}
+
+\textbf{Ograniczenia:}
+\begin{align*}
+s_{j-1} + x_j + y_j - d_j &= s_j \\
+s_0 &= 15
+\end{align*}
+
+\textbf{Funkcja celu:}
+\begin{align*}
+\min \sum_{j=1}^{4} (c_j x_j + o_j y_j + 1500 s_j)
+\end{align*}
+
+\subsection*{Opis egzemplarza i wyniki}
+
+\textbf{Dane:}
+\begin{itemize}
+\item Parametry dla okresów:
+\begin{center}
+\begin{tabular}{c|cccc}
+j & $c_j$ & $a_j$ & $o_j$ & $d_j$ \\
+\hline
+1 & 6000 & 60 & 8000 & 130 \\
+2 & 4000 & 65 & 6000 & 80 \\
+3 & 8000 & 70 & 10000 & 125 \\
+4 & 9000 & 60 & 11000 & 195 \\
+\end{tabular}
+\end{center}
+\item Maksymalna produkcja normalna: 100 jednostek na okres
+\item Maksymalna pojemność magazynu: 70 jednostek
+\item Koszt magazynowania: 1500 \$ za jednostkę na okres
+\item Początkowy zapas: 15 jednostek
+\end{itemize}
+
+\textbf{Wyniki:}
+\begin{itemize}
+\item Minimalny koszt: $3{,}842{,}500$
+\item Optymalny plan:
+\begin{itemize}
+\item Okres 1: $x=100$, $y=15$, $s=0$
+\item Okres 2: $x=100$, $y=50$, $s=70$
+\item Okres 3: $x=100$, $y=0$, $s=45$
+\item Okres 4: $x=100$, $y=50$, $s=0$
+\end{itemize}
+\item (a) Minimalny łączny koszt produkcji i magazynowania towaru wynosi 3 842 500 \$ .
+\item (b) Firma musi zaplanować produkcję ponadwymiarową w okresach 1, 2 i 4.
+\item (c) Możliwości magazynowania towaru są wyczerpane w okresie 2.
+\end{itemize}
+
+\textbf{Interpretacja:} W każdym okresie produkujemy maksymalne 100 jednostek towaru. Produkcja ponadwymiarowa występuje w okresach 1, 2 i 4. W okresie 2, przy najniższych kosztach produkcji, magazynujemy maksymalną ilość towaru (70 jednostek). W okresie 3, dzięki niskiemu zapotrzebowaniu, przechowujemy 45 jednostek na ostatni okres bez produkcji ponadwymiarowej.
+
+%--------------------------------------
+\section*{Zadanie 4}
+
+\textbf{Problem:} Dana jest sieć połączeń między miastami reprezentowana za pomocą skierowanego grafu $G = (N, A)$, gdzie $N$ jest zbiorem miast (wierzchołków), a $A$ jest zbiorem połączeń między miastami (łuków). Dla każdego połączenia z miasta $i$ do miasta $j$, $(i, j) \in A$, dane są koszt przejazdu $c_{ij}$ oraz czas przejazdu $t_{ij}$. Dane są również dwa miasta $i^\circ$, $j^\circ \in N$. Celem jest znalezienie połączenia (ścieżki) od miasta $i^\circ$ do miasta $j^\circ$, którego całkowity koszt jest najmniejszy i całkowity czas przejazdu nie przekracza z góry zadanego czasu $T$.
+
+\subsection*{Model matematyczny}
+
+\textbf{Zmienne decyzyjne:} $x_{ij} \in \{0,1\}$, gdzie $x_{ij} = 1$ oznacza, że łuk $(i,j)$ należy do ścieżki.
+
+\textbf{Parametry:}
+\begin{itemize}
+\item $c_{ij}$ -- koszt przejazdu łukiem $(i,j)$
+\item $t_{ij}$ -- czas przejazdu łukiem $(i,j)$
+\item $T$ -- maksymalny dopuszczalny czas przejazdu
+\item $i^\circ$ -- miasto startowe
+\item $j^\circ$ -- miasto docelowe
+\end{itemize}
+
+\textbf{Ograniczenia:}
+\begin{align*}
+\sum_{j:(i,j)\in A} x_{ij} - \sum_{k:(k,i)\in A} x_{ki} &=
+\begin{cases}
+1 & i = i^\circ \\
+-1 & i = j^\circ \\
+0 & \text{w p.p.}
+\end{cases} \\
+\sum_{(i,j)\in A} t_{ij} x_{ij} &\leq T
+\end{align*}
+
+\textbf{Funkcja celu:}
+\begin{align*}
+\min \sum_{(i,j)\in A} c_{ij} x_{ij}
+\end{align*}
+
+\subsection*{Opis egzemplarzy i wyniki}
+
+\subsubsection*{(a) Dany egzemplarz}
+
+\textbf{Dane:} Graf z 10 wierzchołkami, $i^\circ = 1$, $j^\circ = 10$, $T = 15$. Lista krawędzi przedstawiona w tabeli:
+
+\begin{center}
+\begin{tabular}{cccc}
+$i$ & $j$ & $c_{ij}$ & $t_{ij}$ \\
+\hline
+1 & 2 & 3 & 4 \\
+1 & 3 & 4 & 9 \\
+1 & 4 & 7 & 10 \\
+1 & 5 & 8 & 12 \\
+2 & 3 & 2 & 3 \\
+3 & 4 & 4 & 6 \\
+3 & 5 & 2 & 2 \\
+3 & 10 & 6 & 11 \\
+4 & 5 & 1 & 1 \\
+4 & 7 & 3 & 5 \\
+5 & 6 & 5 & 6 \\
+5 & 7 & 3 & 3 \\
+5 & 10 & 5 & 8 \\
+6 & 1 & 5 & 8 \\
+6 & 7 & 2 & 2 \\
+6 & 10 & 7 & 11 \\
+7 & 3 & 4 & 6 \\
+7 & 8 & 3 & 5 \\
+7 & 9 & 1 & 1 \\
+8 & 9 & 1 & 2 \\
+9 & 10 & 2 & 2 \\
+\end{tabular}
+\end{center}
+
+\textbf{Wyniki:} Minimalny koszt: 13, ścieżka: $1 \to 2 \to 3 \to 5 \to 7 \to 9 \to 10$, całkowity czas: 15.
+
+\subsubsection*{(b) Własny egzemplarz}
+
+\textbf{Dane:} Graf z 10 wierzchołkami, $i^\circ = 1$, $j^\circ = 10$, $T = 5$. Lista krawędzi:
+
+\begin{center}
+\begin{tabular}{cccc}
+$i$ & $j$ & $c_{ij}$ & $t_{ij}$ \\
+\hline
+1 & 2 & 1 & 1 \\
+1 & 6 & 2 & 1 \\
+1 & 10 & 6 & 10 \\
+2 & 10 & 4 & 5 \\
+6 & 7 & 2 & 1 \\
+7 & 10 & 2 & 1 \\
+\end{tabular}
+\end{center}
+
+\textbf{Wyniki:} Najtańsza ścieżka bez ograniczeń: $1 \to 2 \to 10$, koszt 5, 2 krawędzie. Najtańsza ścieżka z ograniczeniem czasu: $1 \to 6 \to 7 \to 10$, koszt 6, czas 3, 3 krawędzie.
+
+\subsubsection*{(c) Ograniczenie na całkowitoliczbowość zmiennych decyzyjnych}
+
+Tak, jest potrzebne. Kontrprzykład: graf z wierzchołkami 1, 2, 3, 4, łukami (1,2,5,5), (1,3,5,5), (2,4,0,0), (3,4,0,0), $i^\circ=1$, $j^\circ=4$, $T=5$. Opuszczenie całkowitoliczbowości może dać rozwiązanie $x_{12}=0.5$, $x_{13}=0.5$, $x_{24}=0.5$, $x_{34}=0.5$, koszt 5, czas 5, które nie jest ścieżką.
+
+\subsubsection*{(d) Usunięcie ograniczenia na czasy przejazdu}
+
+Tak, otrzymana ścieżka zawsze jest akceptowalna, ponieważ model bez ograniczenia na czas jest problemem najkrótszej ścieżki, którego relaksacja LP daje ścieżkę.
+
+\textbf{Interpretacja:} Model pozwala na znalezienie optymalnej ścieżki pod względem kosztu przy uwzględnieniu ograniczenia czasowego. W egzemplarzu (a) ścieżka unika bezpośrednich, ale drogich połączeń, wybierając dłuższą trasę o niższym koszcie całkowitym. W egzemplarzu (b) ograniczenie czasowe wymusza wybór dłuższej ścieżki o wyższym koszcie niż najkrótsza bez ograniczeń. Ograniczenie całkowitoliczbowości jest konieczne, aby zapewnić, że rozwiązanie jest ścieżką, a nie ułamkowym przepływem. Usunięcie ograniczenia czasowego upraszcza problem do standardowej najkrótszej ścieżki, zawsze dając akceptowalne rozwiązanie.
+
+%--------------------------------------
+\section*{Zadanie 5}
+\subsection*{Model matematyczny}
+
+\textbf{Zmienne decyzyjne:}
+\begin{itemize}
+\item $x_{ij}$ -- liczba radiowozów przypisanych do dzielnicy $i$ podczas zmiany $j$ ($x_{ij} \in \mathbb{Z}_{\geq 0}$)
+\end{itemize}
+
+\textbf{Parametry:}
+\begin{itemize}
+\item $\min_{ij}$ -- minimalna liczba radiowozów dla dzielnicy $i$ i zmiany $j$
+\item $\max_{ij}$ -- maksymalna liczba radiowozów dla dzielnicy $i$ i zmiany $j$
+\item $m_j$ -- minimalna całkowita liczba radiowozów dla zmiany $j$
+\item $n_i$ -- minimalna całkowita liczba radiowozów dla dzielnicy $i$
+\end{itemize}
+
+\textbf{Ograniczenia:}
+\begin{align*}
+\min_{ij} \leq x_{ij} \leq \max_{ij} \quad &\forall i,j \\
+\sum_{i=1}^{3} x_{ij} \geq m_j \quad &\forall j=1,2,3 \\
+\sum_{j=1}^{3} x_{ij} \geq n_i \quad &\forall i=1,2,3
+\end{align*}
+
+\textbf{Funkcja celu:} $\min \sum_{i=1}^{3} \sum_{j=1}^{3} x_{ij}$.
+
+\subsection*{Opis egzemplarza i wyniki}
+
+\textbf{Dane:}
+\begin{itemize}
+\item Minimalne liczby radiowozów:
+\begin{center}
+\begin{tabular}{c|ccc}
+& Zmiana 1 & Zmiana 2 & Zmiana 3 \\
+\hline
+Dzielnica 1 & 2 & 4 & 3 \\
+Dzielnica 2 & 3 & 6 & 5 \\
+Dzielnica 3 & 5 & 7 & 6 \\
+\end{tabular}
+\end{center}
+\item Maksymalne liczby radiowozów:
+\begin{center}
+\begin{tabular}{c|ccc}
+& Zmiana 1 & Zmiana 2 & Zmiana 3 \\
+\hline
+Dzielnica 1 & 3 & 7 & 5 \\
+Dzielnica 2 & 5 & 7 & 10 \\
+Dzielnica 3 & 8 & 12 & 10 \\
+\end{tabular}
+\end{center}
+\item Minimalne wymagania dla zmian: 10, 20, 18
+\item Minimalne wymagania dla dzielnic: 10, 14, 13
+\end{itemize}
+
+\subsection*{Wyniki}
+\begin{itemize}
+\item Całkowita liczba radiowozów: 48
+\item Optymalny przydział:
+\begin{center}
+\begin{tabular}{c|ccc}
+& Zmiana 1 & Zmiana 2 & Zmiana 3 \\
+\hline
+Dzielnica 1 & 2 & 7 & 5 \\
+Dzielnica 2 & 3 & 6 & 5 \\
+Dzielnica 3 & 5 & 7 & 8 \\
+\end{tabular}
+\end{center}
+\end{itemize}
+
+%--------------------------------------
+\section*{Zadanie 6}
+\subsection*{Model matematyczny}
+
+\textbf{Zmienne decyzyjne:}
+\begin{itemize}
+\item $x_{ij} \in \{0,1\}$ -- czy kamera jest umieszczona w kwadracie $(i,j)$ (1 -- tak, 0 -- nie)
+\end{itemize}
+
+\textbf{Ograniczenia:}
+\begin{itemize}
+\item Każdego kontenera w pozycji $(r,c)$ musi być monitorowanego przez co najmniej jedną kamerę. Ograniczenie to zapewnia, że istnieje kamera w kolumnie $c$ w wierszach od $\max(1, r-k)$ do $\min(m, r+k)$, lub w wierszu $r$ w kolumnach od $\max(1, c-k)$ do $\min(n, c+k)$, z wykluczeniem pozycji samego kontenera: \\
+  \begin{align*}
+  \sum_{i=\max(1,r-k)}^{\min(m,r+k)} x_{i,c} + \sum_{j=\max(1,c-k)}^{\min(n,c+k)} x_{r,j} \geq 1
+  \end{align*}
+\item Kamery nie mogą być umieszczone w kwadratach zajmowanych przez kontenery: \\
+  $x_{r,c} = 0$ dla każdego kontenera w pozycji $(r,c)$
+\end{itemize}
+
+\textbf{Funkcja celu:}
+\begin{align*}
+\min \sum_{i=1}^{m} \sum_{j=1}^{n} x_{ij}
+\end{align*}
+
+\subsection*{Opis egzemplarza i wyniki}
+
+\textbf{Dane:}
+\begin{itemize}
+\item Wymiary terenu: $m = 5$, $n = 5$
+\item Pozycje kontenerów: $(2,3)$, $(4,1)$, $(5,5)$
+\end{itemize}
+
+\textbf{Wyniki:}
+\begin{itemize}
+\item Dla $k=1$: potrzeba 3 kamer, rozmieszczonych w $(2,4)$, $(4,2)$, $(4,5)$
+\item Dla $k=2$: potrzeba 2 kamer, rozmieszczonych w $(4,3)$, $(4,5)$
+\end{itemize}
+
+\textbf{Interpretacja:} Jak można się spodziewać, wraz ze wzrostem zasięgu $k$ liczba potrzebnych kamer maleje. W tym przykładzie zmiana zasięgu spowodowała całkowitą zmianę rozmieszczenia kamer — żadna z nich nie pozostała w pierwotnej pozycji, co oznacza, że optymalne rozwiązanie dla jednej wartości $k$ nie pozwala w prosty sposób wyprowadzić rozwiązania optymalnego dla innej wartości $k$.
+
+\end{document}

@@ -1,0 +1,389 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> statement
+Rule 1     statement -> expr
+Rule 2     expr -> expr PLUS expr
+Rule 3     expr -> expr MINES expr
+Rule 4     expr -> expr TIMES expr
+Rule 5     expr -> expr DIV expr
+Rule 6     expr -> expr POW expr
+Rule 7     expr -> LPAREN expr RPAREN
+Rule 8     expr -> NUMBER
+Rule 9     expr -> MINES expr
+
+Terminals, with rules where they appear
+
+DIV                  : 5
+LPAREN               : 7
+MINES                : 3 9
+NUMBER               : 8
+PLUS                 : 2
+POW                  : 6
+RPAREN               : 7
+TIMES                : 4
+error                : 
+
+Nonterminals, with rules where they appear
+
+expr                 : 1 2 2 3 3 4 4 5 5 6 6 7 9
+statement            : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . statement
+    (1) statement -> . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    statement                      shift and go to state 1
+    expr                           shift and go to state 2
+
+state 1
+
+    (0) S' -> statement .
+
+
+
+state 2
+
+    (1) statement -> expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    $end            reduce using rule 1 (statement -> expr .)
+    PLUS            shift and go to state 6
+    MINES           shift and go to state 7
+    TIMES           shift and go to state 8
+    DIV             shift and go to state 9
+    POW             shift and go to state 10
+
+
+state 3
+
+    (9) expr -> MINES . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 11
+
+state 4
+
+    (7) expr -> LPAREN . expr RPAREN
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 12
+
+state 5
+
+    (8) expr -> NUMBER .
+
+    PLUS            reduce using rule 8 (expr -> NUMBER .)
+    MINES           reduce using rule 8 (expr -> NUMBER .)
+    TIMES           reduce using rule 8 (expr -> NUMBER .)
+    DIV             reduce using rule 8 (expr -> NUMBER .)
+    POW             reduce using rule 8 (expr -> NUMBER .)
+    $end            reduce using rule 8 (expr -> NUMBER .)
+    RPAREN          reduce using rule 8 (expr -> NUMBER .)
+
+
+state 6
+
+    (2) expr -> expr PLUS . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 13
+
+state 7
+
+    (3) expr -> expr MINES . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 14
+
+state 8
+
+    (4) expr -> expr TIMES . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 15
+
+state 9
+
+    (5) expr -> expr DIV . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 16
+
+state 10
+
+    (6) expr -> expr POW . expr
+    (2) expr -> . expr PLUS expr
+    (3) expr -> . expr MINES expr
+    (4) expr -> . expr TIMES expr
+    (5) expr -> . expr DIV expr
+    (6) expr -> . expr POW expr
+    (7) expr -> . LPAREN expr RPAREN
+    (8) expr -> . NUMBER
+    (9) expr -> . MINES expr
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    MINES           shift and go to state 3
+
+    expr                           shift and go to state 17
+
+state 11
+
+    (9) expr -> MINES expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    PLUS            reduce using rule 9 (expr -> MINES expr .)
+    MINES           reduce using rule 9 (expr -> MINES expr .)
+    TIMES           reduce using rule 9 (expr -> MINES expr .)
+    DIV             reduce using rule 9 (expr -> MINES expr .)
+    $end            reduce using rule 9 (expr -> MINES expr .)
+    RPAREN          reduce using rule 9 (expr -> MINES expr .)
+    POW             shift and go to state 10
+
+  ! POW             [ reduce using rule 9 (expr -> MINES expr .) ]
+  ! PLUS            [ shift and go to state 6 ]
+  ! MINES           [ shift and go to state 7 ]
+  ! TIMES           [ shift and go to state 8 ]
+  ! DIV             [ shift and go to state 9 ]
+
+
+state 12
+
+    (7) expr -> LPAREN expr . RPAREN
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    RPAREN          shift and go to state 18
+    PLUS            shift and go to state 6
+    MINES           shift and go to state 7
+    TIMES           shift and go to state 8
+    DIV             shift and go to state 9
+    POW             shift and go to state 10
+
+
+state 13
+
+    (2) expr -> expr PLUS expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    PLUS            reduce using rule 2 (expr -> expr PLUS expr .)
+    MINES           reduce using rule 2 (expr -> expr PLUS expr .)
+    $end            reduce using rule 2 (expr -> expr PLUS expr .)
+    RPAREN          reduce using rule 2 (expr -> expr PLUS expr .)
+    TIMES           shift and go to state 8
+    DIV             shift and go to state 9
+    POW             shift and go to state 10
+
+  ! TIMES           [ reduce using rule 2 (expr -> expr PLUS expr .) ]
+  ! DIV             [ reduce using rule 2 (expr -> expr PLUS expr .) ]
+  ! POW             [ reduce using rule 2 (expr -> expr PLUS expr .) ]
+  ! PLUS            [ shift and go to state 6 ]
+  ! MINES           [ shift and go to state 7 ]
+
+
+state 14
+
+    (3) expr -> expr MINES expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    PLUS            reduce using rule 3 (expr -> expr MINES expr .)
+    MINES           reduce using rule 3 (expr -> expr MINES expr .)
+    $end            reduce using rule 3 (expr -> expr MINES expr .)
+    RPAREN          reduce using rule 3 (expr -> expr MINES expr .)
+    TIMES           shift and go to state 8
+    DIV             shift and go to state 9
+    POW             shift and go to state 10
+
+  ! TIMES           [ reduce using rule 3 (expr -> expr MINES expr .) ]
+  ! DIV             [ reduce using rule 3 (expr -> expr MINES expr .) ]
+  ! POW             [ reduce using rule 3 (expr -> expr MINES expr .) ]
+  ! PLUS            [ shift and go to state 6 ]
+  ! MINES           [ shift and go to state 7 ]
+
+
+state 15
+
+    (4) expr -> expr TIMES expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    PLUS            reduce using rule 4 (expr -> expr TIMES expr .)
+    MINES           reduce using rule 4 (expr -> expr TIMES expr .)
+    TIMES           reduce using rule 4 (expr -> expr TIMES expr .)
+    DIV             reduce using rule 4 (expr -> expr TIMES expr .)
+    $end            reduce using rule 4 (expr -> expr TIMES expr .)
+    RPAREN          reduce using rule 4 (expr -> expr TIMES expr .)
+    POW             shift and go to state 10
+
+  ! POW             [ reduce using rule 4 (expr -> expr TIMES expr .) ]
+  ! PLUS            [ shift and go to state 6 ]
+  ! MINES           [ shift and go to state 7 ]
+  ! TIMES           [ shift and go to state 8 ]
+  ! DIV             [ shift and go to state 9 ]
+
+
+state 16
+
+    (5) expr -> expr DIV expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    PLUS            reduce using rule 5 (expr -> expr DIV expr .)
+    MINES           reduce using rule 5 (expr -> expr DIV expr .)
+    TIMES           reduce using rule 5 (expr -> expr DIV expr .)
+    DIV             reduce using rule 5 (expr -> expr DIV expr .)
+    $end            reduce using rule 5 (expr -> expr DIV expr .)
+    RPAREN          reduce using rule 5 (expr -> expr DIV expr .)
+    POW             shift and go to state 10
+
+  ! POW             [ reduce using rule 5 (expr -> expr DIV expr .) ]
+  ! PLUS            [ shift and go to state 6 ]
+  ! MINES           [ shift and go to state 7 ]
+  ! TIMES           [ shift and go to state 8 ]
+  ! DIV             [ shift and go to state 9 ]
+
+
+state 17
+
+    (6) expr -> expr POW expr .
+    (2) expr -> expr . PLUS expr
+    (3) expr -> expr . MINES expr
+    (4) expr -> expr . TIMES expr
+    (5) expr -> expr . DIV expr
+    (6) expr -> expr . POW expr
+
+    PLUS            reduce using rule 6 (expr -> expr POW expr .)
+    MINES           reduce using rule 6 (expr -> expr POW expr .)
+    TIMES           reduce using rule 6 (expr -> expr POW expr .)
+    DIV             reduce using rule 6 (expr -> expr POW expr .)
+    $end            reduce using rule 6 (expr -> expr POW expr .)
+    RPAREN          reduce using rule 6 (expr -> expr POW expr .)
+    POW             shift and go to state 10
+
+  ! POW             [ reduce using rule 6 (expr -> expr POW expr .) ]
+  ! PLUS            [ shift and go to state 6 ]
+  ! MINES           [ shift and go to state 7 ]
+  ! TIMES           [ shift and go to state 8 ]
+  ! DIV             [ shift and go to state 9 ]
+
+
+state 18
+
+    (7) expr -> LPAREN expr RPAREN .
+
+    PLUS            reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+    MINES           reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+    TIMES           reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+    DIV             reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+    POW             reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+    $end            reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 7 (expr -> LPAREN expr RPAREN .)
+

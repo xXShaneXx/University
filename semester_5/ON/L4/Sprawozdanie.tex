@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{hyperref}
+
+\geometry{a4paper, margin=1in}
+
+\title{Sprawozdanie z Laboratorium: Obliczenia Naukowe\\ Lista 4}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Implementacja funkcji}
+Zgodnie z poleceniem, wszystkie zaimplementowane funkcje zostały umieszczone w module `InterpolacjaNewtona`. Poniżej przedstawiono opis dla każdej z funkcji.
+
+\subsection{Funkcja \texttt{ilorazyRoznicowe}}
+\subsubsection{Opis matematyczny}
+Ilorazy różnicowe definiuje się rekurencyjnie:
+\begin{align*}
+    f[x_i] &= f(x_i) \\
+    f[x_i, \dots, x_{i+k}] &= \frac{f[x_{i+1}, \dots, x_{i+k}] - f[x_i, \dots, x_{i+k-1}]}{x_{i+k} - x_i}
+\end{align*}
+Dla węzłów $x_0, \dots, x_n$ współczynniki wielomianu Newtona to $c_k = f[x_0, \dots, x_k]$.
+
+\subsubsection{Pseudokod}
+\begin{verbatim}
+Function ilorazyRoznicowe(x, f):
+  n = length(x)
+  c = copy(f)
+  for j = 2 to n do:
+    for i = n down to j do:
+      c[i] = (c[i] - c[i-1]) / (x[i] - x[i-j+1])
+  return c
+\end{verbatim}
+
+\subsubsection{Opis działania}
+Algorytm iteracyjnie oblicza ilorazy różnicowe. Dla każdego `j` od 2 do `n`, oblicza `c[i] = (c[i] - c[i-1]) / (x[i] - x[i-j+1])` dla `i` od `n` do `j`. Jest to bezpośrednie przełożenie rekurencyjnej definicji ilorazów różnicowych. Obliczenia w miejscu są poprawne, ponieważ w każdym kroku `j`, wartości `c[i]` i `c[i-1]` przechowują wyniki z poprzedniego kroku `j-1`, które są potrzebne do obliczenia ilorazu rzędu `j`.
+
+\subsubsection{Analiza złożoności}
+Złożoność czasowa algorytmu wynosi O(n\textsuperscript{2}), co wynika z dwóch zagnieżdżonych pętli. Zewnętrzna pętla wykonuje się `n-1` razy, a wewnętrzna średnio `n/2` razy. Złożoność pamięciowa wynosi O(n) ze względu na konieczność przechowywania kopii wektora `f` jako wektora `c`.
+
+\subsection{Funkcja \texttt{warNewton}}
+\subsubsection{Opis matematyczny}
+Wielomian interpolacyjny w postaci Newtona dany jest wzorem:
+\begin{equation}
+    P_n(x) = c_0 + c_1(x-x_0) + c_2(x-x_0)(x-x_1) + \dots + c_n(x-x_0)\dots(x-x_{n-1})
+\end{equation}
+Wartość wielomianu w postaci Newtona można efektywnie obliczyć stosując uogólniony schemat Hornera:
+\begin{equation}
+    P_n(x) = c_0 + (x-x_0)\left(c_1 + (x-x_1)\left(\dots \left(c_{n-1} + c_n(x-x_{n-1})\right)\dots\right)\right)
+\end{equation}
+
+\subsubsection{Pseudokod}
+\begin{verbatim}
+Function warNewton(x, c, t):
+  n = length(c)
+  y = c[n]
+  for i = n-1 down to 1 do:
+    y = c[i] + (t - x[i]) * y
+  return y
+\end{verbatim}
+
+\subsubsection{Opis działania}
+Funkcja implementuje uogólniony schemat Hornera dla wielomianu w postaci Newtona. Algorytm poprawnie zwija to wyrażenie, zaczynając od \texttt{y = c\_n} i iteracyjnie obliczając \texttt{y = c\_i + (t - x\_i) * y}
+
+\subsubsection{Analiza złożoności}
+Algorytm zawiera jedną pętlę, która wykonuje się `n-1` razy. Wewnątrz pętli wykonywana jest stała liczba operacji arytmetycznych. Zatem złożoność czasowa wynosi O(n). Złożoność pamięciowa jest stała, O(1).
+
+\subsection{Funkcja \texttt{naturalna}}
+\subsubsection{Opis matematyczny}
+Postać naturalna wielomianu to:
+\begin{equation}
+    P_n(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0
+\end{equation}
+Aby przejść z postaci Newtona do naturalnej, można skorzystać z algorytmu, który iteracyjnie aktualizuje współczynniki, wykorzystując zależność rekurencyjną wielomianów interpolacyjnych.
+
+\subsubsection{Pseudokod}
+\begin{verbatim}
+Function naturalna(x, c):
+  n = length(c)
+  a = copy(c)
+  for i = n-1 down to 1 do:
+    for j = i to n-1 do:
+      a[j] = a[j] - a[j+1] * x[i]
+  return a
+\end{verbatim}
+
+\subsubsection{Opis działania}
+Algorytm przekształca wielomian z postaci Newtona do postaci naturalnej \(a_0 + a_1 x + \dots + a_n x^n\). Działa on w oparciu o uogólniony schemat Hornera:
+\[ P(x) = c_0 + (x-x_0)\Big(c_1 + (x-x_1)\Big( \dots (c_{n-1} + c_n(x-x_{n-1})) \dots \Big)\Big) \]
+Algorytm iteracyjnie "wymnaża" nawiasy od wewnątrz. Początkowo wektor współczynników $a$ zawiera ilorazy różnicowe $c_i$. W każdej iteracji pętli zewnętrznej (dla $i$ malejącego od $n-1$ do $1$), aktualny wielomian jest mnożony przez czynnik $(x - x_i)$ i dodawany jest wyraz wolny z poprzedniej warstwy.
+
+Kluczowa operacja w pętli wewnętrznej: \texttt{a[j] = a[j] - a[j+1] * x[i]} realizuje mnożenie wielomianu przez dwumian $(x - x_i)$.
+Rozważmy mnożenie wielomianu $W(x)$ przez $(x - x_i)$. Współczynnik przy $x^j$ w wielomianie składa się z dwóch części:
+\begin{itemize}
+    \item pochodzącej od mnożenia $W(x)$ przez $x$ (co przesuwa współczynniki na wyższe potęgi),
+    \item pochodzącej od mnożenia $W(x)$ przez $-x_i$.
+\end{itemize}
+W algorytmie aktualizacja \texttt{a[j]} wykorzystuje \texttt{a[j+1]} (które reprezentuje współczynnik przy wyższej potędze przed przesunięciem) pomnożone przez $x_i$. Dzięki temu, przechodząc po indeksach $j$, efektywnie realizujemy przekształcenie współczynników odpowiadające rozwinięciu kolejnego nawiasu w schemacie Hornera.
+
+\subsubsection{Analiza złożoności}
+Złożoność czasowa algorytmu wynosi O(n\textsuperscript{2}) z powodu zagnieżdżonych pętli, podobnie jak w przypadku funkcji `ilorazyRoznicowe`. Złożoność pamięciowa to O(n) na przechowanie wektora wynikowego `a`.
+
+\subsection{Funkcja \texttt{rysujNnfx}}
+Funkcja ta służy do wizualizacji procesu interpolacji. Rysuje ona wykres funkcji interpolowanej $f(x)$, wielomianu interpolacyjnego $P(x)$ oraz węzłów interpolacji.
+
+\subsubsection{Pseudokod}
+\begin{verbatim}
+Function rysujNnfx(f, a, b, n, wezly):
+  # Generowanie węzłów
+  if wezly == "rownoodlegle":
+    for k = 0 to n:
+      x_nodes[k] = a + k * (b - a) / n
+  else if wezly == "czebyszew":
+    for k = 1 to n + 1:
+      term = (2 * k - 1) / (2 * (n + 1)) * PI
+      x_nodes[k-1] = (a + b) / 2 + (b - a) / 2 * cos(term)
+  
+  # Obliczenie wartości w węzłach
+  for k = 0 to n:
+    y_nodes[k] = f(x_nodes[k])
+
+  # Obliczenie współczynników wielomianu
+  fx = ilorazyRoznicowe(x_nodes, y_nodes)
+  
+  # Dalsza szęść kodu związana z rysowaniem wykresów ...
+\end{verbatim}
+
+\subsubsection{Opis działania}
+Funkcja najpierw generuje $n+1$ węzłów interpolacji w zadanym przedziale $[a, b]$. W zależności od parametru `wezly`, są to węzły równoodległe:
+\begin{equation}
+    x_k = a + k \frac{b-a}{n}, \quad k=0, \dots, n
+\end{equation}
+lub węzły Czebyszewa, dane wzorem:
+\begin{equation}
+    x_k = \frac{1}{2}(a+b) + \frac{1}{2}(b-a) \cos\left(\frac{2k-1}{2(n+1)}\pi\right), \quad k=1, \dots, n+1
+\end{equation}
+Następnie obliczane są wartości funkcji w węzłach oraz ilorazy różnicowe.
+W celu narysowania wykresów generowany jest gęsty zbiór punktów \texttt{x\_plot}, dla których obliczane są wartości funkcji oryginalnej oraz wielomianu interpolacyjnego (przy użyciu funkcji \texttt{warNewton}).
+Ostatecznie generowany jest wykres zawierający obie krzywe oraz zaznaczone węzły interpolacji, który jest zapisywany do pliku.
+
+\section{Testowanie}
+W celu weryfikacji poprawności zaimplementowanych funkcji, stworzono zestaw testów jednostkowych przy użyciu pakietu `Test`. Testy sprawdzają poprawność obliczeń dla funkcji `ilorazyRoznicowe`, `warNewton` oraz `naturalna` na podstawie znanych wyników. Wszystkie testy zakończyły się powodzeniem, co potwierdza poprawność implementacji.
+
+
+\section{Zadanie 5: Interpolacja funkcji gładkich}
+W tym zadaniu badano interpolację dla funkcji gładkich: $f(x) = e^x$ na przedziale $[0, 1]$ oraz $f(x) = x^2 \sin(x)$ na przedziale $[-1, 1]$ przy użyciu węzłów równoodległych.
+
+\subsection{Funkcja $f(x) = e^x$}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/interpolacja_n_exp_5_n=5_węzły_rownoodlegle.png}
+    \caption{Interpolacja $f(x) = e^x$ dla n=5.}
+    \label{fig:exp5}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/interpolacja_n_exp_10_n=10_węzły_rownoodlegle.png}
+    \caption{Interpolacja $f(x) = e^x$ dla n=10.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/interpolacja_n_exp_15_n=15_węzły_rownoodlegle.png}
+    \caption{Interpolacja $f(x) = e^x$ dla n=15.}
+    \label{fig:exp15}
+\end{figure}
+
+\subsection{Funkcja $f(x) = x^2 \sin(x)$}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/interpolacja_n_sin_5_n=5_węzły_rownoodlegle.png}
+    \caption{Interpolacja $f(x) = x^2 \sin(x)$ dla n=5.}
+    \label{fig:sin5}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/interpolacja_n_sin_10_n=10_węzły_rownoodlegle.png}
+    \caption{Interpolacja $f(x) = x^2 \sin(x)$ dla n=10.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/interpolacja_n_sin_15_n=15_węzły_rownoodlegle.png}
+    \caption{Interpolacja $f(x) = x^2 \sin(x)$ dla n=15.}
+    \label{fig:sin15}
+\end{figure}
+
+\subsection{Wnioski}
+Jak widać na wykresach, dla prostytch funkjci nawet dla małej liczby węzłów funkcje są poprawnie interpolowane
+
+\section{Zadanie 6: Zjawisko rozbieżności i zjawisko Rungego}
+W tym zadaniu badano interpolację dla funkcji: $f(x) = |x|$ (funkcja nieróżniczkowalna w punkcie) oraz $f(x) = \frac{1}{1+x^2}$ (funkcja związana ze zjawiskiem Rungego).
+
+\subsection{Funkcja $f(x) = |x|$}
+Dla funkcji $f(x) = |x|$ na przedziale $[-1, 1]$, interpolacja przy użyciu węzłów równoodległych pokazuje oscylacje, szczególnie w pobliżu punktu nieróżniczkowalności (x=0). Użycie węzłów Czebyszewa znacząco poprawia jakość interpolacji, redukując te oscylacje i zapewniając lepsze dopasowanie na całym przedziale.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_n_abs_5_n=5_węzły_rownoodlegle.png}
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_n_abs_5_n=5_węzły_czebyszew.png}
+    \caption{Interpolacja $f(x) = |x|$ dla n=5. Po lewej węzły równoodległe, po prawej węzły Czebyszewa.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_n_abs_10_n=10_węzły_rownoodlegle.png}
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_n_abs_10_n=10_węzły_czebyszew.png}
+    \caption{Interpolacja $f(x) = |x|$ dla n=10. Po lewej węzły równoodległe, po prawej węzły Czebyszewa.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_n_abs_15_n=15_węzły_rownoodlegle.png}
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_n_abs_15_n=15_węzły_czebyszew.png}
+    \caption{Interpolacja $f(x) = |x|$ dla n=15. Po lewej węzły równoodległe, po prawej węzły Czebyszewa.}
+    \label{fig:abs_rownoodlegle}
+    \label{fig:abs_czebyszew}
+\end{figure}
+
+\subsection{Funkcja $f(x) = \frac{1}{1+x^2}$ (Zjawisko Rungego)}
+Dla funkcji $f(x) = \frac{1}{1+x^2}$ na przedziale $[-5, 5]$, przy użyciu węzłów równoodległych obserwujemy klasyczne zjawisko Rungego. W miarę wzrostu stopnia wielomianu, na krańcach przedziału pojawiają się duże oscylacje, a błąd interpolacji rośnie. Zastosowanie węzłów Czebyszewa, które są gęściej rozmieszczone na krańcach przedziału, eliminuje ten problem. Interpolacja z węzłami Czebyszewa jest zbieżna do funkcji na całym przedziale.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_1_(1+x^2)_5_n=5_węzły_rownoodlegle.png}
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_1_(1+x^2)_5_n=5_węzły_czebyszew.png}
+    \caption{Interpolacja $f(x) = \frac{1}{1+x^2}$ dla n=5. Po lewej węzły równoodległe, po prawej węzły Czebyszewa.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_1_(1+x^2)_10_n=10_węzły_rownoodlegle.png}
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_1_(1+x^2)_10_n=10_węzły_czebyszew.png}
+    \caption{Interpolacja $f(x) = \frac{1}{1+x^2}$ dla n=10. Po lewej węzły równoodległe, po prawej węzły Czebyszewa.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_1_(1+x^2)_15_n=15_węzły_rownoodlegle.png}
+    \includegraphics[width=0.49\textwidth]{plots/interpolacja_1_(1+x^2)_15_n=15_węzły_czebyszew.png}
+    \caption{Interpolacja $f(x) = \frac{1}{1+x^2}$ dla n=15. Po lewej węzły równoodległe (zjawisko Rungego), po prawej węzły Czebyszewa.}
+    \label{fig:runge_rownoodlegle}
+    \label{fig:runge_czebyszew}
+\end{figure}
+
+\subsection{Wnioski}
+\begin{itemize}
+    \item Dla funkcji gładkich na krótkich przedziałach, interpolacja z użyciem węzłów równoodległych jest skuteczna, a jej dokładność rośnie wraz ze stopniem wielomianu.
+    \item Interpolacja funkcji, które nie są gładkie (np. $|x|$), jest trudniejsza. Użycie węzłów Czebyszewa pozwala uzyskać znacznie lepsze wyniki niż w przypadku węzłów równoodległych.
+    \item Zjawisko Rungego jest istotnym problemem przy interpolacji niektórych funkcji na dużych przedziałach przy użyciu węzłów równoodległych. Pokazuje ono, że zwiększanie stopnia wielomianu nie zawsze prowadzi do lepszej aproksymacji.
+    \item Zastosowanie węzłów Czebyszewa jest skuteczną metodą na uniknięcie zjawiska Rungego i zapewnienie zbieżności procesu interpolacji.
+\end{itemize}
+
+\end{document}

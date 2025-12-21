@@ -1,0 +1,48 @@
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex2$ cmake .
+CMake Warning (dev) in CMakeLists.txt:
+  No project() command is present.  The top-level CMakeLists.txt file must
+  contain a literal, direct call to the project() command.  Add a line of
+  code such as
+
+    project(ProjectName)
+
+  near the top of the file, but after cmake_minimum_required().
+
+  CMake is pretending there is a "project(Project)" command on the first
+  line.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) in CMakeLists.txt:
+  cmake_minimum_required() should be called prior to this top-level project()
+  call.  Please see the cmake-commands(7) manual for usage documentation of
+  both commands.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/pawel/Desktop/Github/University/semester_4/AIDS/L1/ex2
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex2$ make
+[ 33%] Building CXX object CMakeFiles/main.dir/cpp/main/main.cpp.o
+[ 66%] Building CXX object CMakeFiles/main.dir/cpp/src/LinkedCircularList.cpp.o
+[100%] Linking CXX executable bin/main
+[100%] Built target main
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex2$ ./bin/main
+Merged list: 83 15 35 92 21 27 59 26 26 36 86 77 93 86 49 62 90 63 40 72 
+
+Average cost of 1000 random searches: 9494.91 comparisons
+Average cost of 1000 searches for numbers in the list: 4931.99 comparisons
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex2$ tm
+(base) pawel@pawel-B450-AORUS-ELITE:~/Desktop/Github/University/semester_4/AIDS/L1/ex2$ tmux capture-pane -p -S'-' -E'-' -J > tmux-log  
+
