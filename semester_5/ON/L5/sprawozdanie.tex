@@ -1,0 +1,269 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{caption}
+% Pakiety do pseudokodu
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\geometry{a4paper, total={170mm,257mm}, left=20mm, top=20mm}
+
+\title{
+    \textbf{Obliczenia Naukowe - Lista nr 5}\\
+    \large Rozwiązywanie układów równań liniowych o strukturze blokowej
+}
+\author{
+    \textbf{Paweł Grzegory} \\
+    Nr indeksu: 282211
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Wstęp}
+Celem zadania było opracowanie i zbadanie efektywnych algorytmów rozwiązywania układów równań liniowych $Ax=b$ dla macierzy rzadkiej o specyficznej strukturze blokowej.
+Macierz $A$ składa się z bloków $A_k$ (główna przekątna), $B_k$ (pod przekątną) i $C_k$ (nad przekątną) o rozmiarze $l \times l$.
+\begin{equation}
+A = \begin{pmatrix} 
+A_1 & C_1 & 0 & \dots & 0 \\
+B_2 & A_2 & C_2 & \dots & 0 \\
+0 & B_3 & A_3 & \dots & 0 \\
+\vdots & \vdots & \ddots & \ddots & \vdots \\
+0 & 0 & \dots & B_n & A_n
+\end{pmatrix}
+\end{equation}
+
+\section{Opis algorytmów i analiza złożoności}
+
+Problemem jest rozwiązanie układu $Ax=b$, gdzie macierz $A$ ma strukturę blokowo-trójdiagonalną.
+Zastosowano podejście oparte na eliminacji Gaussa oraz rozkładzie LU, zoptymalizowane dla tej konkretnej struktury.
+
+\subsection{Reprezentacja macierzy i idea blokowa}
+
+Macierz $A$ o rozmiarze $N \times N$ ($N = n \cdot l$) jest przechowywana jako zbiór małych macierzy $l \times l$:
+\begin{itemize}
+    \item \texttt{A\_blocks}: $n$ bloków diagonalnych ($A_1, \dots, A_n$).
+    \item \texttt{B\_blocks}: $n$ bloków poddiagonalnych ($B_2, \dots, B_n$, $B_1$ nieużywane).
+    \item \texttt{C\_blocks}: $n$ bloków naddiagonalnych ($C_1, \dots, C_{n-1}$).
+\end{itemize}
+
+\textbf{Struktura macierzy:}
+
+Struktura macierzy w $k$-tym kroku eliminacji (dla bloków $k$ i $k+1$) wygląda następująco:
+\begin{equation}
+\begin{pmatrix}
+\ddots & & & \\
+ & A_k & C_k & 0 \\
+ & B_{k+1} & A_{k+1} & C_{k+1} \\
+ & & & \ddots
+\end{pmatrix}
+\end{equation}
+
+Kluczową obserwacją jest fakt, że eliminacja zmiennych w kolumnach odpowiadających blokowi $k$ wpływa wyłącznie na blok $k$ oraz blok $k+1$ znajdujący się bezpośrednio pod nim.
+W algorytmach $M$ oznacza strukturę \texttt{BlockMatrix} przechowującą bloki macierzy, natomiast $m$ to mnożnik (factor) używany w eliminacji Gaussa do wyzerowywania elementów poniżej pivota.
+
+\subsection{Algorytm eliminacji Gaussa (bez pivotingu)}
+
+Algorytm przebiega w dwóch głównych fazach: eliminacji w przód oraz podstawienia wstecznego.
+Algorytm działa \textit{in-place na kopii macierzy} (tworząc głęboką kopię bloków), dzięki czemu oryginalne tablice wejściowe nie są modyfikowane.
+
+\subsubsection{Faza 1: Eliminacja w przód}
+Algorytm iteruje po blokach $k$ od $1$ do $n$. W każdym kroku wykonywane są dwie operacje kluczowe:
+
+Dla każdej kolumny $p$ w bloku $k$ oraz wiersza $r$ poniżej elementu głównego (pivota) obliczamy mnożnik:
+\begin{equation}
+m_{r,p} = \frac{A_k[r,p]}{A_k[p,p]}
+\end{equation}
+
+\begin{enumerate}
+    \item \textbf{Eliminacja wewnątrz bloku $A_k$:}
+    Blok $A_k$ jest doprowadzany do postaci górnotrójkątnej.
+    Operacje wierszowe na $A_k$ są powtarzane na bloku $C_k$ (prawe ramię).
+    \item \textbf{Eliminacja bloku $B_{k+1}$ (Fill-in) -- jeśli istnieje:}
+    Celem jest wyzerowanie bloku $B_{k+1}$ przy użyciu wierszy z $A_k$.
+    \[ Wiersz(B_{k+1}) \leftarrow Wiersz(B_{k+1}) - m_{r,p} \cdot Wiersz(A_k) \]
+    Operacja ta powoduje modyfikację $A_{k+1}$ (fill-in z $C_k$):
+    \[ A_{k+1}[r, :] \leftarrow A_{k+1}[r, :] - m_{r,p} \cdot C_k[p, :] \]
+\end{enumerate}
+
+\subsubsection{Faza 2: Podstawienie wsteczne (Back Substitution)}
+Rozwiązywanie układu odbywa się "od dołu". Procedura została podzielona na dwa etapy ze względu na warunki brzegowe:
+
+\begin{enumerate}
+    \item \textbf{Ostatni blok ($k=n$):}
+    Dla ostatniego bloku nie istnieje blok naddiagonalny $C_n$.
+    Równanie $A_n x_n = y_n'$ zależy tylko od $x_n$, więc rozwiązujemy je klasycznie.
+    \item \textbf{Pozostałe bloki ($k=n-1, \dots, 1$):}
+    Dla tych bloków równanie ma postać $A_k x_k + C_k x_{k+1} = y_k'$.
+    Podczas wyliczania $x_k$ musimy odjąć od wektora prawych stron iloczyn $C_k x_{k+1}$ (gdzie $x_{k+1}$ jest już znane z poprzedniego kroku).
+\end{enumerate}
+
+\subsection{Algorytm z częściowym wyborem elementu głównego (Pivoting)}
+
+Wariant ten wprowadza stabilność numeryczną.
+W macierzy blokowej poszukiwanie pivota dla kolumny $p$ w bloku $k$ ogranicza się do:
+\begin{itemize}
+    \item Fragmentu kolumny w $A_k$ (od diagonali w dół).
+    \item Całej kolumny w bloku $B_{k+1}$ (elementy poniżej $B_{k+1}$ są zerowe).
+\end{itemize}
+Jeśli pivot leży w $B_{k+1}$, następuje zamiana wierszy między blokami.
+Pociąga to za sobą konieczność zamiany odpowiednich wierszy w $C_k$ oraz $A_{k+1}$.
+W tej metodzie (Gauss bez zapamiętywania L) nie musimy martwić się o $B_k$, gdyż wartości tam zostały już wyeliminowane (wyzerowane).
+
+\subsection{Rozkład LU}
+
+Algorytm rozkładu LU wyznacza macierze $L$ i $U$ takie, że $A=LU$.
+Mnożniki $L$ są zapisywane w miejscu zerowanych elementów (w dolnym trójkącie $A_k$ oraz w całym $B_{k+1}$).
+
+\subsubsection{Rozkład LU bez pivotingu}
+Wizualizacja zawartości macierzy po wykonaniu procedury \texttt{compute\_lu}:
+\begin{equation}
+\mathbf{M}_{po\_rozkładzie} = 
+\begin{pmatrix}
+\mathbf{L/U}(A_1) & \mathbf{U}(C_1) & 0 \\
+\mathbf{L}(B_2) & \mathbf{L/U}(A_2) & \mathbf{U}(C_2) \\
+0 & \mathbf{L}(B_3) & \mathbf{L/U}(A_3) & \ddots
+\end{pmatrix}
+\end{equation}
+Gdzie $\mathbf{L/U}(A_k)$ oznacza blok, który pod przekątną trzyma $L$, a nad przekątną $U$.
+
+\subsubsection{Rozkład LU z częściowym wyborem elementu głównego (Pivoting)}
+Podobnie jak w eliminacji Gaussa z pivotingiem, dodajemy krok wyboru pivota i zamiany wierszy.
+Wyszukiwanie pivota odbywa się w kolumnie $p$ bloku $A_k$ (od $p$ w dół) i całym bloku $B_{k+1}$.
+W przypadku zamiany wierszy wewnątrz bloku $A_k$, zamieniamy również odpowiednie wiersze w $B_k$ (przechowującym wyliczone wcześniej mnożniki).
+Jeśli najlepszy pivot jest w $B_{k+1}$, zamieniamy wiersze między blokami, aktualizując $A_k$, $B_{k+1}$ oraz $C_k$ i $A_{k+1}$.
+Permutacje są śledzone w wektorze $p\_vec$. Mnożniki $m$ są obliczane po zamianie, a reszta procedury jest analogiczna do wersji bez pivotingu.
+
+\subsection{Rozwiązywanie układu przy użyciu rozkładu LU}
+
+Mając wyznaczony rozkład, rozwiązanie $Ax=b$ sprowadza się do dwóch kroków:
+\begin{itemize}
+    \item \textbf{Podstawienie w przód ($Ly = Pb$):} Iterujemy od góry.
+    Dla każdego bloku odejmujemy wpływ mnożników z $A_k$ oraz z $B_{k+1}$ (blok poniżej).
+    W wersji z pivotingiem stosujemy permutację $P$ do $b$.
+    \item \textbf{Podstawienie wstecz ($Ux = y$):} Iterujemy od dołu, identycznie jak w metodzie Gaussa (z podziałem na ostatni blok i pozostałe).
+\end{itemize}
+
+\subsection{Szczegółowa analiza złożoności}
+
+Złożoność algorytmów zdeterminowana jest przez strukturę blokową macierzy $A$.
+Przyjmujemy oznaczenia: $N$ – całkowity rozmiar macierzy, $l$ – rozmiar bloku, $n = N/l$ – liczba bloków w jednym wymiarze tablicy bloków.
+
+\subsubsection{Złożoność pamięciowa}
+Wszystkie zaimplementowane algorytmy działają \textit{in-place na kopii macierzy} (modyfikują skopiowaną strukturę bloków), nie zmieniając oryginalnej macierzy wejściowej.
+Macierz przechowywana jest w postaci trzech tablic bloków ($A$, $B$, $C$), każda o długości $n$ (z dokładnością do skrajnych elementów). Każdy blok zajmuje $l^2$ pamięci.
+Całkowita złożoność pamięciowa wynosi:
+\begin{equation}
+M(N) \approx 3 \cdot n \cdot l^2 = 3 \cdot \frac{N}{l} \cdot l^2 = 3 N l = O(N)
+\end{equation}
+Złożoność jest więc liniowa względem wymiaru macierzy $N$ (dla ustalonego $l$).
+
+\subsubsection{Złożoność obliczeniowa}
+Analizę podzielono na etap dekompozycji (eliminacji) oraz etap rozwiązywania układu.
+
+\paragraph{Eliminacja Gaussa / Rozkład LU}
+Główna pętla algorytmu wykonuje się $n$ razy. W każdej iteracji $k$:
+\begin{enumerate}
+    \item Eliminacja wewnątrz bloku $A_k$ (faktoryzacja bloku): koszt $O(l^3)$.
+    \item Aktualizacja bloku $C_k$ (modyfikacja wierszy): koszt $O(l^3)$ (mnożenie macierzy).
+    \item Eliminacja bloku $B_{k+1}$ (tylko jeśli $k < n$): koszt $O(l^3)$.
+    \item Aktualizacja bloku $A_{k+1}$ (fill-in): koszt $O(l^3)$.
+\end{enumerate}
+Sumarycznie, w każdym kroku wykonujemy stałą liczbę operacji na macierzach $l \times l$.
+Całkowita liczba operacji zmiennoprzecinkowych (FLOPS) wynosi:
+\begin{equation}
+T_{elim}(N) \approx n \cdot (c \cdot l^3) = \frac{N}{l} \cdot c \cdot l^3 = O(N \cdot l^2)
+\end{equation}
+Dla stałego $l$ otrzymujemy złożoność liniową $O(N)$
+
+\paragraph{Rozwiązywanie (Podstawienie)}
+W fazie podstawiania w przód i wstecz wykonujemy operacje mnożenia macierzy $l \times l$ przez wektor długości $l$. Koszt jednej takiej operacji to $O(l^2)$.
+Dla $n$ bloków:
+\begin{equation}
+T_{solve}(N) \approx n \cdot (c' \cdot l^2) = \frac{N}{l} \cdot c' \cdot l^2 = O(N \cdot l)
+\end{equation}
+Jest to również złożoność liniowa $O(N)$.
+
+\paragraph{Łączna złożoność}
+Całkowity koszt numerycznego rozwiązania układu $Ax=b$ wynosi:
+\begin{equation}
+T_{total}(N) = T_{elim}(N) + T_{solve}(N) \approx O(N l^2) + O(N l) = O(N l^2)
+\end{equation}
+Dla ustalonego rozmiaru bloku $l$, algorytm ma złożoność liniową $O(N)$.
+
+\section{Wyniki eksperymentów}
+
+Testy przeprowadzono dla macierzy testowych.
+Zbadano czas wykonania oraz błąd względny rozwiązania $\text{err} = ||x_{calc} - x_{exact}|| / ||x_{exact}||$.
+
+\subsection{Czas wykonania}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{wykres_czasu.png}
+    \caption{Zależność czasu obliczeń od rozmiaru macierzy $N$.}
+    \label{fig:czas}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Czas wykonania algorytmów (s).}
+\begin{tabular}{|r|c|c|c|c|}
+\hline
+\textbf{N} & \textbf{Gauss} & \textbf{Gauss Piv} & \textbf{LU} & \textbf{LU Piv} \\ \hline
+16 & 0.00006 & 0.00003 & 0.00003 & 0.00003 \\ \hline
+10000 & 0.01010 & 0.01095 & 0.00992 & 0.01151 \\ \hline
+50000 & 0.04884 & 0.05327 & 0.04719 & 0.05400 \\ \hline
+100000 & 0.12901 & 0.13340 & 0.13313 & 0.13037 \\ \hline
+500000 & 1.27484 & 1.38859 & 1.34596 & 1.44282 \\ \hline
+750000 & 2.06248 & 2.23945 & 2.02437 & 2.21018 \\ \hline
+1000000 & 3.04370 & 3.20369 & 3.03559 & 3.11436 \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Interpretacja:} Wykres potwierdza liniową złożoność $O(N)$.
+Czas wykonania LU (dekompozycja + rozwiązanie) jest zbliżony do bezpośredniej eliminacji Gaussa.
+
+\subsection{Dokładność numeryczna}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{wykres_bledu.png}
+    \caption{Błąd względny rozwiązania w zależności od $N$.}
+    \label{fig:blad}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Błąd względny rozwiązania.}
+\begin{tabular}{|r|c|c|c|c|}
+\hline
+\textbf{N} & \textbf{Gauss} & \textbf{Gauss Piv} & \textbf{LU} & \textbf{LU Piv} \\ \hline
+16 & 5.43e-16 & 8.30e-16 & 5.43e-16 & 5.43e-16 \\ \hline
+10000 & 1.80e-14 & 5.22e-16 & 1.80e-14 & 5.22e-16 \\ \hline
+50000 & 9.79e-14 & 5.06e-16 & 9.79e-14 & 5.06e-16 \\ \hline
+100000 & 3.11e-13 & 4.76e-16 & 3.11e-13 & 4.76e-16 \\ \hline
+500000 & 7.48e-13 & 4.37e-16 & 7.48e-13 & 4.37e-16 \\ \hline
+1000000 & 8.05e-14 & 4.17e-16 & 8.05e-14 & 4.17e-16 \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Interpretacja:} Błędy rzędu $10^{-16} - 10^{-14}$ potwierdzają poprawność implementacji. Algorytm z pivotingiem zapewnia wyższą stabilność numeryczną.
+
+\section{Wnioski}
+\begin{enumerate}
+    \item Zaprojektowane algorytmy poprawnie wykorzystują specyficzną strukturę macierzy, redukując złożoność obliczeniową do $O(N)$.
+    \item Wersje z wyborem elementu głównego (Pivoting) gwarantują znacznie lepszą stabilność numeryczną przy minimalnym narzucie czasowym.
+    \item Implementacja rozkładu LU jest szczególnie korzystna, gdy rozwiązujemy wiele układów z tą samą macierzą – koszt kolejnego rozwiązania jest rzędu $O(Nl)$, co jest znacznie szybsze niż pełna eliminacja $O(Nl^2)$.
+    \item Wersje bez pivotingu są delikatnie szybsze, ale mogą być mniej stabilne dla źle uwarunkowanych macierzy.
+\end{enumerate}
+
+\end{document}
