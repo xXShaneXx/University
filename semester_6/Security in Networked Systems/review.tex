@@ -1,0 +1,418 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Review: Security in Networked Systems}
+\author{Paweł Grzegory}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Course Information}
+\begin{tabular}{ll}
+    \textbf{Instructor:} & [Instructor Name] \\
+    \textbf{Semester:} & [Semester 6] \\
+    \textbf{Institution:} & [University of Koblenz] \\
+    \textbf{Credits:} & [6] ECTS \\
+\end{tabular}
+
+\section*{Keywords}
+\textbf{Protocol} --- A set of rules that govern the communication between devices in a network. It defines how data is formatted, transmitted, and received.
+
+
+\section*{Layers in OSI Model}
+\begin{itemize}
+    \item \textbf{Physical Layer:} [Defines the medium and way information is transmitted between two points and how this is to be coded]
+    \item \textbf{Data Link Layer:} [defines the format of data on the network, responsible for error detection and correction, vulnerable to MAC spoofing and ARP poisoning]
+    \item \textbf{Network Layer:} [responsible for logical addressing and routing, vulnerable to IP spoofing and routing attacks]
+    \item \textbf{Transport Layer:} [ensures complete data transfer between applications, vulnerable to TCP hijacking and SYN flood attacks]
+    \item \textbf{Session Layer:} [manages sessions between applications, vulnerable to session hijacking]
+    \item \textbf{Presentation Layer:} [translates data between the application layer and the network, vulnerable to data interception and modification]
+    \item \textbf{Application Layer:} [provides network services directly to end users, vulnerable to various application-level attacks]
+\end{itemize}
+
+\section*{How Information Travels Through the OSI Model}
+To understand networking from scratch, focus on one core idea: each layer adds its own control information before transmission, and the receiver removes that information in reverse order.
+
+\subsection*{Encapsulation and Decapsulation}
+\begin{itemize}
+    \item \textbf{Sender side (encapsulation):} Data moves from Layer 7 down to Layer 1. Each layer adds a header (and sometimes a trailer).
+    \item \textbf{Receiver side (decapsulation):} Data moves from Layer 1 up to Layer 7. Each layer reads and removes its own header.
+    \item \textbf{Hop-by-hop behavior:} Routers process up to Layer 3, then re-encapsulate into a new Layer 2 frame for the next link.
+\end{itemize}
+
+\subsection*{OSI Data Units and Main Role}
+\begin{center}
+\begin{tabular}{|c|c|p{7.5cm}|}
+    \hline
+    \textbf{Layer} & \textbf{PDU Name} & \textbf{Main role during delivery} \\
+    \hline
+    7--5 & Data & Application meaning, formatting, and session context \\
+    \hline
+    4 & Segment (TCP) / Datagram (UDP) & End-to-end process communication using ports and transport rules \\
+    \hline
+    3 & Packet (IP Datagram) & Logical addressing and routing across multiple networks \\
+    \hline
+    2 & Frame & Local-link delivery using MAC addressing and error detection \\
+    \hline
+    1 & Bits & Physical transmission over cable, fiber, or wireless medium \\
+    \hline
+\end{tabular}
+\end{center}
+
+\subsection*{Short Context for Layers 4--7}
+\begin{itemize}
+    \item \textbf{Transport Layer (L4):} Splits application data into segments, uses ports, and can provide reliability (TCP) or low-overhead delivery (UDP).
+    \item \textbf{Session Layer (L5):} Coordinates conversation state between applications (start, maintain, terminate sessions).
+    \item \textbf{Presentation Layer (L6):} Translates data formats, handles encoding, and often includes compression/encryption representation.
+    \item \textbf{Application Layer (L7):} User-facing network services and protocols such as HTTP, DNS, SMTP, and SSH.
+\end{itemize}
+
+\subsection{Physical Layer}
+The Physical Layer is responsible for sending raw data as bits over a physical medium. It performs the following functions:
+
+\begin{itemize}
+    \item \textbf{Signal Transmission:} Converts data into signals that can travel through wires, fiber optics, or wireless channels (encoding) and turns these signals back into data at the receiver (decoding).
+    \item \textbf{Modulation/Demodulation:} Uses techniques like modulation to prepare the data for transmission and demodulation to retrieve it at the other end.
+    \item \textbf{Transmission Modes:} Decides how data flows --- one-way, two-way alternately, or simultaneously.
+    \item \textbf{Timing and Speed:} Controls the speed and timing of data transmission to keep everything running smoothly.
+\end{itemize}
+
+Protocols in Physical Layer
+
+\begin{itemize}
+    \item \textbf{Ethernet (IEEE 802.3)} --- The most widely used protocol for wired local area networks (LANs). It defines the wiring and signaling standards for the physical and data link layers. Ethernet uses CSMA/CD (Carrier Sense Multiple Access with Collision Detection) to manage access to the shared medium. It supports various speeds including 10 Mbps (10BASE-T), 100 Mbps (Fast Ethernet), 1 Gbps (Gigabit Ethernet), and 10 Gbps. Vulnerabilities include MAC spoofing and VLAN hopping attacks.
+    \item \textbf{Wi-Fi (IEEE 802.11)} --- The standard for wireless local area networks (WLANs). It operates in the 2.4 GHz and 5 GHz frequency bands and provides wireless connectivity for devices within a limited range. Wi-Fi includes various security protocols such as WEP, WPA, WPA2, and WPA3. Vulnerabilities include rogue access points, deauthentication attacks, and handshake capture.
+    \item \textbf{Bluetooth (IEEE 802.15.1)} --- A short-range wireless communication protocol designed for low-power devices over personal area networks (PANs). It operates in the 2.4 GHz ISM band and is commonly used for connecting peripherals, audio devices, and IoT devices. Bluetooth uses frequency hopping spread spectrum (FHSS) to reduce interference. Vulnerabilities include Bluejacking, Bluesnarfing, and BLE (Bluetooth Low Energy) exploits.
+    \item \textbf{USB (Universal Serial Bus)} --- A widely used interface for connecting peripheral devices to a computer. USB supports data transfer, power delivery, and device charging. It has evolved through multiple versions: USB 1.1, USB 2.0, USB 3.0, and USB4. Vulnerabilities include BadUSB attacks, firmware-based malware, and physical security threats like USB drop attacks.
+\end{itemize}
+
+\subsection{Data Link Layer}
+
+\subsection*{Terminology}
+\begin{itemize}
+    \item \textbf{Nodes} --- Hosts and routers are called nodes[cite: 1829, 3018].
+    \item \textbf{Links} --- Communication channels that connect adjacent nodes along a path[cite: 1830, 3019]. These include wired links (e.g., copper, fiber), wireless links (e.g., radio), and LANs[cite: 1831, 1832, 3019].
+    \item \textbf{Frame} --- A Layer-2 packet that encapsulates a network-layer datagram[cite: 1833, 3020, 3042].
+    \item \textbf{MAC Address} --- A unique 48-bit (6-byte) identifier assigned to network interfaces, distinct from IP addresses[cite: 1881, 2571, 3021]. It is used for addressing within a local network[cite: 2571, 3022].
+    \item \textbf{Switch} --- A link-layer device that takes an active role in storing and forwarding Ethernet frames based on MAC addresses[cite: 2628, 3023, 3050].
+    \item \textbf{Multiplexing} --- The process of putting multiple conversations over a single shared medium[cite: 1737, 3025, 3026].
+    \item \textbf{Bit Stuffing} --- A technique to ensure data transparency by inserting extra bits to prevent data from being misinterpreted as control flags[cite: 3027, 3028].
+\end{itemize}
+
+\subsection*{Link Layer Services}
+The Data Link Layer is responsible for transferring datagrams between physically adjacent nodes over a link[cite: 1834]. Key services include:
+\begin{itemize}
+    \item \textbf{Framing and Link Access:} Encapsulating datagrams into frames with headers and trailers[cite: 1874].
+    \item \textbf{Reliable Delivery:} Ensuring correct delivery between nodes, which is especially critical for high-error wireless links[cite: 1882, 1884].
+    \item \textbf{Flow Control:} Pacing the transmission between adjacent sending and receiving nodes to prevent overwhelming the receiver[cite: 1919, 1920].
+    \item \textbf{Duplexing:} Supporting both \textbf{half-duplex} (nodes can transmit but not simultaneously) and \textbf{full-duplex} (simultaneous transmission)[cite: 1926, 1927].
+\end{itemize}
+
+\subsection*{Multiplexing and Channel Partitioning}
+To share expensive physical infrastructure, multiple signals are combined using the following techniques:
+\begin{itemize}
+    \item \textbf{Frequency Division Multiplexing (FDM):} The frequency band is split, and each user is allocated a fixed frequency band[cite: 1740, 1741, 1742].
+    \item \textbf{Time Division Multiplexing (TDM):} Users receive a dedicated time slot during which they have full bandwidth[cite: 1745, 1746, 1747].
+    \begin{itemize}
+        \item \textbf{Synchronous TDM:} Fixed slot allocation per channel; resources are wasted if a channel is idle[cite: 1773, 1791].
+        \item \textbf{Asynchronous TDM:} Packets are processed according to arrival time; headers indicate the channel for optimal bandwidth usage[cite: 1801, 1806, 1818].
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Error Detection and Correction}
+Errors caused by signal attenuation or noise are handled through redundant information added to the frame[cite: 1921, 2007].
+\begin{itemize}
+    \item \textbf{Parity Checking:} Includes single-bit parity to detect single errors and 2D parity to detect and correct single-bit errors (Forward Error Correction)[cite: 2033, 2042, 2043].
+    \item \textbf{Cyclic Redundancy Check (CRC):} A powerful method viewing data as binary numbers and dividing them by a generator (G)[cite: 2081, 2084]. If the remainder is non-zero, an error is detected[cite: 2085]. It is widely used in Ethernet and Wi-Fi[cite: 2087].
+\end{itemize}
+
+\subsection*{Multiple Access Protocols}
+In shared broadcast channels, protocols must determine when a node can transmit to avoid collisions[cite: 2185, 2186, 2365].
+\begin{enumerate}
+    \item \textbf{Channel Partitioning Protocols:} Divide the channel into time slots (TDMA) or frequency bands (FDMA) for exclusive use[cite: 2208, 2209, 2210].
+    \item \textbf{Random Access Protocols:} Allow collisions and specify how to recover from them[cite: 2211, 2247, 2248].
+    \begin{itemize}
+        \item \textbf{Slotted ALOHA:} Nodes transmit only at slot starts; efficiency is capped at $1/e \approx 37\%$[cite: 2377, 2426].
+        \item \textbf{Pure ALOHA:} Unsynchronized; nodes transmit immediately upon frame arrival, resulting in half the efficiency of slotted ALOHA[cite: 2433, 2434, 2435].
+        \item \textbf{CSMA/CD (Collision Detection):} Used in wired Ethernet; nodes listen before transmitting and abort if a collision is detected[cite: 2453, 2480, 2482, 2962]. It uses \textbf{Binary Exponential Backoff} to determine retransmission timing[cite: 2504, 2507].
+    \end{itemize}
+    \item \textbf{Taking Turns Protocols:} 
+    \begin{itemize}
+        \item \textbf{Polling:} A master node invites slave nodes to transmit in round-robin fashion[cite: 2777, 2778].
+        \item \textbf{Token Passing:} A control token is passed sequentially between nodes; only the node with the token can transmit[cite: 2797, 2801].
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Frame Structure}
+A frame is a Layer-2 packet that encapsulates a network-layer datagram for transmission between physically adjacent nodes. The data link layer takes packets from the network layer and encapsulates them into frames, which are then sent over the physical medium. Each frame consists of three main components: a header, a payload, and a trailer.
+
+\begin{itemize}
+    \item \textbf{Frame Header:} Contains control information, such as the source and destination MAC addresses. The header ensures the frame is directed to the correct recipient on the local network.
+    \item \textbf{Payload (Data):} This is the actual data being transmitted, which is typically a network-layer packet (e.g., an IP datagram).
+    \item \textbf{Frame Trailer:} Contains error-detection information to ensure the integrity of the data. The most common method is a Frame Check Sequence (FCS), often implemented using a Cyclic Redundancy Check (CRC).
+\end{itemize}
+
+A common example is the \textbf{Ethernet (IEEE 802.3) frame format}, which includes:
+\begin{itemize}
+    \item \textbf{Preamble:} 8 bytes used for synchronization between the sender and receiver.
+    \item \textbf{Source and Destination MAC Addresses:} 6-byte addresses that identify the sender and receiver on the local network.
+    \item \textbf{Type:} A field that indicates the higher-layer protocol encapsulated in the payload (e.g., IPv4, ARP).
+    \item \textbf{Data/Payload:} The encapsulated datagram from the network layer.
+    \item \textbf{CRC (Cyclic Redundancy Check):} A 32-bit error-checking sequence to detect data corruption during transmission.
+\end{itemize}
+
+\vspace{0.3em}
+\centering
+\begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Frame Header} & \textbf{Payload} & \textbf{Frame Trailer} \\
+    \hline
+\end{tabular}
+
+\subsection*{Virtual Local Area Networks (VLANs)}
+VLANs allow multiple virtual LANs to be defined over a single physical infrastructure to improve security and efficiency[cite: 2876, 2888, 2889].
+\begin{itemize}
+    \item \textbf{Port-based VLAN:} Switch ports are grouped so that a physical switch operates as multiple virtual switches[cite: 2866, 2881].
+    \item \textbf{802.1Q Protocol:} Defines frame formats for \textbf{Trunk Ports} carrying traffic between multiple switches, adding a 2-byte Tag Protocol Identifier and 12-bit VLAN ID[cite: 2928, 2931, 2948, 2951].
+\end{itemize}
+
+\subsection*{Devices at the Data Link Layer}
+\begin{enumerate}
+    \item \textbf{Switch}
+    \begin{itemize}
+        \item A key device operating at the Data Link Layer.
+        \item Uses MAC addresses to forward data frames to the correct device within a network.
+        \item Connects multiple devices in local area networks (LANs).
+    \end{itemize}
+
+    \item \textbf{Adapter}
+    \begin{itemize}
+        \item A device that connects a computer to a network.
+        \item Handles the physical connection and data transmission at the Data Link Layer.
+    \end{itemize}
+
+    \item \textbf{Bridge}
+    \begin{itemize}
+        \item Connects two or more LANs, creating a unified network.
+        \item Operates at the Data Link Layer by forwarding frames based on MAC addresses.
+        \item Used to reduce network traffic and segment a network.
+    \end{itemize}
+    
+    \item \textbf{Network Interface Card (NIC)}
+    \begin{itemize}
+        \item A hardware component in computers, printers, and other devices.
+        \item Adds MAC addresses to frames and ensures proper network communication.
+        \item Prepares and sends frames over the physical medium.
+    \end{itemize}
+    
+    \item \textbf{Wireless Access Point (WAP)}
+    \begin{itemize}
+        \item Allows wireless devices to connect to a wired network.
+        \item Manages wireless MAC addresses at the Data Link Layer.
+        \item Uses Wi-Fi (IEEE 802.11) protocols to communicate with devices.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Three Functions of Data Link Layer Protocols}
+A data link protocol provides three main functions:
+
+\begin{enumerate}
+    \item \textbf{Message Delineation (Framing):} Identifies the start and end of a message.
+    \item \textbf{Error Control:} Detects and corrects transmission errors.
+    \item \textbf{Media Access Control (MAC):} Controls when computers transmit.
+\end{enumerate}
+
+
+\subsection{Network Layer}
+The \textbf{Network Layer} (Layer 3) is responsible for end-to-end delivery across multiple networks. It answers two questions for every packet:
+\begin{itemize}
+    \item \textbf{Where should this packet go?} (logical addressing)
+    \item \textbf{Which next hop should be used now?} (forwarding and routing)
+\end{itemize}
+
+\subsection*{Addressing Fundamentals}
+An IP address identifies a network interface in a Layer-3 topology.
+\begin{itemize}
+    \item \textbf{IPv4:} 32-bit address written as four octets, e.g., \texttt{133.33.3.7}.
+    \item \textbf{Network part + host part:} Prefix bits identify the network, remaining bits identify the host inside that network.
+    \item \textbf{Default gateway:} If destination is outside the local subnet, the host sends the packet to its gateway router.
+\end{itemize}
+
+\subsection*{Classful vs Classless Addressing (CIDR)}
+Historically, classful addressing (A/B/C) used fixed network sizes and wasted addresses. Modern networks use \textbf{CIDR} (Classless Inter-Domain Routing), where a prefix length defines network size.
+\begin{itemize}
+    \item \texttt{/24} means 24 network bits and 8 host bits.
+    \item \texttt{/16} means 16 network bits and 16 host bits.
+    \item Smaller prefixes (e.g., \texttt{/8}) represent larger address blocks.
+\end{itemize}
+
+\subsection*{Subnetting and Local-vs-Remote Decision}
+Subnetting divides one network into smaller logical networks. Hosts use subnet masks to decide whether a destination is local or remote.
+\begin{enumerate}
+    \item Host computes local network by applying mask to its own IP.
+    \item Host computes destination network by applying the same mask to destination IP.
+    \item If both network results are equal, send directly on local link.
+    \item Otherwise, send to the default gateway for routing.
+\end{enumerate}
+
+\subsection*{Forwarding vs Routing}
+These terms are related but different:
+\begin{itemize}
+    \item \textbf{Forwarding:} Local, per-router action of moving a packet from an input interface to an output interface.
+    \item \textbf{Routing:} Global process of learning/selecting paths and filling route tables.
+\end{itemize}
+
+\subsection*{Route Selection: Longest Prefix Match}
+Routers perform route lookup using the destination IP and choose the \textbf{most specific matching prefix}.
+\begin{itemize}
+    \item Example entries: \texttt{10.0.0.0/8}, \texttt{10.1.0.0/16}, \texttt{10.1.2.0/24}, \texttt{0.0.0.0/0}.
+    \item Destination \texttt{10.1.2.34} matches all first three entries, but \texttt{/24} is selected.
+    \item If no specific entry exists, fallback to default route \texttt{0.0.0.0/0}.
+\end{itemize}
+
+\subsection*{IPv4 Header: Field-by-Field}
+An IPv4 packet starts with a header (minimum 20 bytes) followed by payload.
+
+\begin{center}
+\begin{tabular}{|l|p{4.2cm}|p{5.5cm}|}
+    \hline
+    \textbf{Field} & \textbf{Purpose} & \textbf{Practical meaning} \\
+    \hline
+    Version & IP version number & Distinguishes IPv4 from IPv6 processing \\
+    \hline
+    IHL & Header length & Tells where payload begins \\
+    \hline
+    DSCP/ToS & Traffic handling hints & Used for QoS prioritization decisions \\
+    \hline
+    Total Length & Full packet length & Lets receiver parse entire datagram size \\
+    \hline
+    Identification & Fragment group identifier & Same value in all fragments of original packet \\
+    \hline
+    Flags (DF, MF) & Fragmentation control bits & DF forbids fragmentation; MF marks more fragments \\
+    \hline
+    Fragment Offset & Fragment position & Used for correct reassembly order \\
+    \hline
+    TTL & Hop limit counter & Decreases at each router to prevent loops \\
+    \hline
+    Protocol & Next upper-layer protocol & Typical values: ICMP=1, TCP=6, UDP=17 \\
+    \hline
+    Header Checksum & Header integrity check & Verified and recomputed at each hop \\
+    \hline
+    Source / Destination IP & End host addresses & Identify packet origin and target \\
+    \hline
+    Options (optional) & Extra control information & Rare in modern high-speed forwarding \\
+    \hline
+\end{tabular}
+\end{center}
+
+\subsection*{TTL and Loop Prevention}
+\textbf{Time To Live (TTL)} is decremented by 1 at each router hop.
+\begin{itemize}
+    \item If TTL reaches 0, router discards the packet.
+    \item Router sends an \textbf{ICMP Time Exceeded} message to the sender.
+    \item \textbf{Traceroute} uses this behavior by sending packets with TTL values 1, 2, 3, ... to reveal each hop.
+\end{itemize}
+
+\subsection*{Fragmentation, MTU, and Path MTU}
+Each Layer-2 technology has a maximum payload size called \textbf{MTU} (Maximum Transmission Unit).
+\begin{itemize}
+    \item If an IPv4 packet is larger than outgoing-link MTU and DF is not set, a router can fragment it.
+    \item Destination host reassembles fragments using Identification + Fragment Offset + MF flag.
+    \item If DF is set and packet is too large, router drops it and returns ICMP error.
+    \item \textbf{Path MTU Discovery} attempts to learn the smallest MTU along the path and avoid fragmentation.
+\end{itemize}
+
+\subsection*{ARP in IPv4 Networks}
+IP chooses the next-hop IP address, but Ethernet delivery needs a MAC address. \textbf{ARP} resolves this mismatch.
+\begin{enumerate}
+    \item Sender checks ARP cache for next-hop IP to MAC mapping.
+    \item If missing, sender broadcasts ARP Request: "Who has this IP?".
+    \item Owner replies with ARP Reply containing its MAC address.
+    \item Sender stores mapping in cache and sends frame to that MAC.
+\end{enumerate}
+ARP is local-link only; routers do not forward ARP broadcasts between subnets.
+
+\subsection*{ICMP: Control and Error Reporting}
+\textbf{ICMP} supports diagnostics and error signaling for IP.
+\begin{itemize}
+    \item \textbf{Echo Request / Echo Reply:} Used by ping to test reachability and RTT.
+    \item \textbf{Destination Unreachable:} Indicates no route, blocked port, or unreachable host/network.
+    \item \textbf{Time Exceeded:} Generated when TTL expires.
+    \item \textbf{Parameter Problem:} Indicates invalid header field value.
+\end{itemize}
+ICMP does not replace transport protocols; it helps IP report network-level conditions.
+
+\subsection*{Public vs Private IPv4 and NAT}
+\begin{itemize}
+    \item \textbf{Private ranges:} \texttt{10.0.0.0/8}, \texttt{172.16.0.0/12}, \texttt{192.168.0.0/16}.
+    \item \textbf{Public addresses:} Globally routable on the Internet.
+\end{itemize}
+\textbf{NAT (Network Address Translation)} allows private hosts to communicate externally through one or more public addresses.
+\begin{itemize}
+    \item \textbf{Source NAT/PAT:} Rewrites internal source IP (and often source port) for outbound traffic.
+    \item \textbf{State table:} NAT device remembers mappings so returning packets are sent to the correct internal host.
+\end{itemize}
+
+\subsection*{IPv4 vs IPv6 in Practice}
+IPv6 addresses scale the Internet and simplify several forwarding behaviors.
+
+\begin{center}
+\begin{tabular}{|l|p{4.3cm}|p{4.7cm}|}
+    \hline
+    \textbf{Aspect} & \textbf{IPv4} & \textbf{IPv6} \\
+    \hline
+    Address length & 32-bit & 128-bit \\
+    \hline
+    Address notation & Dotted decimal (e.g., 192.0.2.10) & Hex groups (e.g., 2001:db8::10) \\
+    \hline
+    Hop control & TTL field & Hop Limit field \\
+    \hline
+    Router fragmentation & Allowed (if DF=0) & Not performed by routers \\
+    \hline
+    Local address resolution & ARP & Neighbor Discovery (ICMPv6) \\
+    \hline
+\end{tabular}
+\end{center}
+
+\subsection*{Network-Layer Protocols Summary}
+\begin{itemize}
+    \item \textbf{IP:} Core datagram delivery and addressing protocol.
+    \item \textbf{ARP:} IPv4 next-hop IP to MAC resolution on local links.
+    \item \textbf{ICMP:} Diagnostic and error signaling for IP operation.
+    \item \textbf{NDP (IPv6):} IPv6 neighbor and local-link discovery functions.
+\end{itemize}
+
+\subsection*{End-to-End Packet Walkthrough}
+\begin{enumerate}
+    \item Application generates data (Layer 7--5 context).
+    \item Transport (Layer 4) adds ports and transport header.
+    \item Network (Layer 3) adds source/destination IP and selects next hop.
+    \item Data Link (Layer 2) wraps packet into a frame for current link.
+    \item Physical (Layer 1) sends bits over the medium.
+    \item At each router, Layer 2 header is replaced, Layer 3 forwarding is repeated, TTL decreases.
+    \item Destination host decapsulates in reverse order and delivers data to the target application.
+\end{enumerate}
+
+\subsection{Transport Layer}
+
+\section*{Overall Rating}
+\begin{center}
+\begin{tabular}{c}
+    \hline
+    $\displaystyle \frac{\text{Your Rating}}{10}$ \\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\end{document}
